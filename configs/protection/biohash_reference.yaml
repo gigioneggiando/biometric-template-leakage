@@ -1,0 +1,6 @@
+scheme: biohash_reference
+input_dim: 512
+output_dim: 128
+threshold: 0.0
+key_semantics: "independent deterministic exposure keys derived from master seed and split scope"
+source_status: "local controlled reference; not verified equivalent to benchmark_cb"

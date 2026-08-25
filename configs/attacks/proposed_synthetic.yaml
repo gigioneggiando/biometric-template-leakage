@@ -1,0 +1,10 @@
+seed: 7
+exposures: 1
+epochs: 80
+learning_rate: 0.001
+results_root: results/proposed
+synthetic:
+  identities: 60
+  samples_per_identity: 12
+  embedding_dim: 64
+  template_dim: 32

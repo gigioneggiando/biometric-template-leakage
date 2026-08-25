@@ -1,0 +1,1785 @@
+
+MASTER PROMPT FOR CODEX
+=======================
+
+ROLE
+----
+You are an autonomous research engineer working on an academic biometrics + AI research project at the University of Southern Denmark (SDU).
+
+This is NOT a generic software-development task. Your job is to behave like a careful reproducibility researcher: read the literature, verify sources, inspect original repositories, acquire only legally/ethically usable datasets and models, create a clean research repository, reproduce one or two relevant published experiments as faithfully as possible, and then prepare the codebase for our own proposed experiment.
+
+Do not merely give me a plan. EXECUTE the plan in the repository as far as the environment and dataset/model licenses allow.
+
+The project is based on the research presentation "When Your Face Becomes the Password", whose central question is:
+
+    Can a low-knowledge, identity-centric neural attacker extract identity information
+    from multiple protected DNN face templates without knowing their secret keys?
+
+The proposed hypothesis is:
+
+    "Identity leakage from individually protected templates can be weak, yet collectively
+    exploitable: a key-agnostic neural set model can aggregate multiple independently
+    protected observations and recover increasingly usable identity information without
+    access to the secret keys."
+
+The intended pipeline is:
+
+    face image
+      -> face-recognition feature extractor (primarily ArcFace)
+      -> cancelable biometric protection (BioHash / MLP-Hash / IoM, etc.)
+      -> protected template
+      -> key-agnostic learned attacker
+      -> identity representation
+      -> identity matching / linkage evaluation
+
+The main experimental axes proposed in the presentation are:
+
+    1 exposure
+    2 exposures
+    5 exposures
+    10 exposures
+
+plus:
+
+    - unseen-key generalization
+    - identity recovery / identity matching
+    - aggregation-method comparisons
+    - optional cross-scheme transfer
+
+The first research milestone, however, is to understand and reproduce the relevant literature before attempting the novel experiment.
+
+======================================================================
+0. NON-NEGOTIABLE RESEARCH RULES
+======================================================================
+
+Follow these rules throughout the project.
+
+1. REPRODUCIBILITY OVER SPEED
+   Do not silently substitute a different dataset, model, protocol, preprocessing step,
+   metric, or attack assumption and call the experiment reproduced.
+
+   If an exact reproduction is impossible, classify the result explicitly as one of:
+
+       EXACT REPRODUCTION
+       CLOSE REPRODUCTION
+       PARTIAL REPRODUCTION
+       CONCEPTUAL REPRODUCTION
+       NOT REPRODUCIBLE YET
+
+   State precisely why.
+
+2. VERIFY EVERYTHING
+   Do not rely on memory or secondary summaries when an original paper, official repository,
+   DOI page, author project page, or official dataset page is available.
+
+   Record:
+       - paper title
+       - authors
+       - venue/year
+       - DOI/arXiv URL
+       - official code URL
+       - exact git commit used
+       - dataset URL
+       - model URL
+       - license/access restrictions
+       - important hyperparameters
+       - protocol details
+       - reported metrics/results
+
+3. DO NOT BYPASS ACCESS CONTROLS
+   Never circumvent dataset registrations, licenses, authentication, robots restrictions,
+   or paywalls.
+
+   If MOBIO or another dataset requires registration or manual approval:
+       - create the scripts/configuration needed to use it once downloaded,
+       - document the exact official acquisition procedure,
+       - stop the automatic download at that boundary,
+       - use a clearly labelled fallback/smoke-test dataset only for engineering validation.
+
+4. USE ONLY PUBLIC/AUTHORIZED RESEARCH DATA
+   Do not scrape random private individuals.
+   Do not create a real-world identity lookup system.
+   Do not test against private databases.
+   Restrict experiments to public/authorized academic datasets and synthetic data.
+
+5. DO NOT COMMIT DATASETS OR LARGE MODEL WEIGHTS TO GIT
+   Put them under ignored directories and provide download/setup scripts.
+
+6. DO NOT COMMIT SECRETS
+   No API keys, tokens, credentials, private URLs, or local machine paths.
+
+7. THIRD-PARTY CODE MUST BE TRACEABLE
+   Prefer:
+       - git submodule,
+       - git subtree,
+       - a script that clones a pinned commit,
+       - or a clearly separated external/ directory.
+
+   Record license and upstream commit.
+   Never copy code without attribution.
+
+8. RESULTS MUST BE MACHINE-REPRODUCIBLE
+   Every meaningful experiment should be runnable with a command and a config file.
+   Do not leave essential steps only in notebooks.
+
+9. CONTROL RANDOMNESS
+   Seed Python, NumPy, and PyTorch where possible.
+   Record all seeds.
+   Run multiple seeds for learned attack models where computationally feasible.
+
+10. NEVER FABRICATE A RESULT
+    A table entry with no completed run must be "TODO / not run", not an invented number.
+
+======================================================================
+1. START BY READING AND VERIFYING THE LITERATURE
+======================================================================
+
+Before implementing the novel experiment, build a literature map.
+
+The presentation mentions or relies on the following works. Verify their exact bibliographic
+information and obtain the paper and official code where available.
+
+A. CENTRAL BASELINE PAPER
+-------------------------
+
+"Benchmarking of Cancelable Biometrics for Deep Templates"
+Hatef Otroshi Shahreza et al.
+Journal on Image and Video Processing, version of record published 2026.
+Earlier preprint: arXiv:2302.13286
+
+Known official/open-source code:
+    https://github.com/otroshi/benchmark_cb
+
+Paper:
+    https://arxiv.org/abs/2302.13286
+    https://doi.org/10.1186/s13640-025-00679-y
+
+This paper is extremely important because it benchmarks several cancelable biometric
+protection schemes on DNN templates, including:
+
+    - BioHashing
+    - MLP-Hash
+    - Bloom Filters
+    - IoM-URP
+    - IoM-GRP
+    - Rand-Hash baseline
+
+For face recognition it uses:
+    - ArcFace
+    - MOBIO face data
+
+The presentation cites approximately the following face recognition EER values as targets
+to cross-check against the original paper/code, NOT as values to hard-code:
+
+    BioHash     ~0.02%
+    MLP-Hash    ~0.02%
+    Bloom       ~2.19%
+    IoM-GRP     ~0.02%
+    IoM-URP     ~0.72%
+    Rand-Hash   ~0.02%
+
+The presentation also highlights a BioHash face mutual-information example:
+
+    unknown-key MI ~39.63
+    known-key MI   ~98.81
+
+Again, VERIFY these values in the original source before putting them in reproduction tables.
+
+B. TEMPLATE INVERSION / GAFAR
+-----------------------------
+
+"Template Inversion Attack against Face Recognition Systems using 3D Face Reconstruction"
+Hatef Otroshi Shahreza and Sebastien Marcel
+ICCV 2023
+
+Official code:
+    https://github.com/idiap/gafar
+
+CVF paper:
+    https://openaccess.thecvf.com/content/ICCV2023/html/
+    Shahreza_Template_Inversion_Attack_against_Face_Recognition_Systems_using_3D_Face_ICCV_2023_paper.html
+
+Also verify the related TPAMI article:
+"Comprehensive Vulnerability Evaluation of Face Recognition Systems to Template Inversion
+Attacks Via 3D Face Reconstruction."
+
+GaFaR uses an EG3D-based generator and provides pretrained mapping-network checkpoints.
+Treat this as an OPTIONAL reproduction because it can require substantial model downloads,
+FFHQ access, GPU memory, and compute.
+
+If reproducing it, prefer first reproducing an official pretrained-checkpoint evaluation rather
+than training the whole method from scratch.
+
+C. PROTECTED-TEMPLATE RECONSTRUCTION
+------------------------------------
+
+"Breaking Template Protection: Reconstruction of Face Images from Protected Facial Templates"
+Hatef Otroshi Shahreza and Sebastien Marcel
+FG 2024
+DOI: 10.1109/FG59268.2024.10581959
+
+Author-hosted paper:
+    https://publications.idiap.ch/attachments/papers/2024/
+    OtroshiShahreza_FG-2_2024.pdf
+
+The paper studies learned reconstruction from protected face templates, including protection
+schemes such as:
+    - BioHashing
+    - MLP-Hashing
+    - Homomorphic Encryption
+
+It uses a high-knowledge/full-disclosure threat model, which is different from our proposed
+key-agnostic setting.
+
+This distinction MUST be made clear in notes and reports.
+
+D. IDENTITY-CENTRIC LEAKAGE / FACELINKGEN
+-----------------------------------------
+
+"FaceLinkGen: Rethinking Identity Leakage in Privacy-Preserving Face Recognition with
+Identity Extraction"
+Wenqi Guo and Shan Du
+arXiv:2602.02914, 2026
+
+Paper:
+    https://arxiv.org/abs/2602.02914
+
+This is conceptually central to our proposed work.
+
+Core idea:
+    Instead of requiring pixel-level reconstruction of the original face, learn to recover an
+    identity-discriminative embedding from a protected representation.
+
+The paper uses ArcFace-domain identity supervision and evaluates linkage/matching and
+regeneration. It studies privacy-preserving face-representation systems such as:
+    - PartialFace
+    - MinusFace
+    - FracFace
+
+Important paper details to verify:
+    - teacher/student setup
+    - exact loss
+    - student architecture
+    - datasets
+    - train/validation split
+    - query/key construction
+    - linkage metrics
+    - verification metrics
+    - low-knowledge setting
+    - whether official code exists
+
+Do NOT assume an official FaceLinkGen repository exists. Search carefully. If there is no
+official released implementation, state that and implement a reproduction directly from the
+paper.
+
+The paper reports using:
+    - CASIA-WebFace subset for distillation
+    - LFW for evaluation/distribution shift
+    - TPDNE synthetic faces for some evaluation
+    - Antelopev2 / ArcFace-compatible identity embeddings
+    - Arc2Face for optional face regeneration
+
+Official Arc2Face implementation:
+    https://github.com/foivospar/Arc2Face
+
+IMPORTANT:
+For our research, the most important FaceLinkGen component is IDENTITY EXTRACTION AND
+LINKAGE, not photorealistic face regeneration. Regeneration is optional and should not block
+the project.
+
+E. ATTACKER-KNOWLEDGE SURVEY
+----------------------------
+
+"Biometric template attacks and recent protection mechanisms: A survey"
+S. M. Abdullahi et al.
+Information Fusion 103 (2024), 102144.
+
+Find the official paper/author-hosted copy and extract the threat-model taxonomy relevant to:
+    - attacker knowledge
+    - protected-template access
+    - secret/key knowledge
+    - feature-extractor knowledge
+    - attack goals
+    - privacy/security evaluation
+
+This paper is for literature/threat-model grounding, not necessarily for direct reproduction.
+
+F. MULTIPLE-RECORD / MULTIPLE-TEMPLATE WORK
+-------------------------------------------
+
+Verify the exact Li & Hu (2014) paper cited in the presentation regarding attacks that exploit
+multiple protected records from cancelable biometric templates.
+
+Do not guess the citation. Find the exact paper and identify:
+    - protection type
+    - attacker assumptions
+    - number/type of records
+    - attack goal
+    - whether code/data exist
+    - what "multiple records" adds compared with a single record
+
+Also read:
+
+"On Measuring Linkability of Multiple Protected Biometric Templates Using Maximal Leakage"
+Hatef Otroshi Shahreza, Yanina Y. Shkel, Sebastien Marcel
+IEEE Access, 2024
+DOI: 10.1109/ACCESS.2024.3433536
+
+The authors state that code for the measure/experiments is public. Locate it and record the
+exact URL/commit.
+
+This is useful to distinguish:
+    - classical linkability measurement
+from
+    - learned identity extraction from a SET of protected observations.
+
+======================================================================
+2. CREATE A LITERATURE AUDIT BEFORE CODING EXPERIMENTS
+======================================================================
+
+Create:
+
+    docs/literature/
+        literature_matrix.csv
+        literature_matrix.md
+        threat_models.md
+        reproducibility_ranking.md
+        paper_notes/
+            benchmark_cb.md
+            gafar.md
+            breaking_template_protection.md
+            facelinkgen.md
+            sani_survey.md
+            multi_record.md
+
+The literature matrix must contain at least:
+
+    paper_id
+    title
+    year
+    venue
+    authors
+    paper_url
+    doi
+    official_code_url
+    code_available (yes/no/unclear)
+    dataset(s)
+    feature_extractor(s)
+    template_protection_scheme(s)
+    attacker_goal
+    attacker_knows_key
+    attacker_knows_protection_parameters
+    attacker_knows_feature_extractor
+    single_or_multi_template
+    number_of_exposures
+    reconstruction_based
+    identity_embedding_based
+    primary_metrics
+    compute_requirements
+    data_access_difficulty
+    estimated_reproduction_difficulty
+    relevance_to_our_project
+    exact_result_we_want_to_reproduce
+    notes
+
+For every paper, create a 1-3 page technical note answering:
+
+    1. What is the research question?
+    2. What is the exact threat model?
+    3. What data are used?
+    4. How are face embeddings generated?
+    5. What protected representations are used?
+    6. What does the attack observe?
+    7. What does the attack predict/reconstruct?
+    8. What supervision does it receive?
+    9. What is trained?
+    10. What metrics are reported?
+    11. What are the strongest results?
+    12. What code/data are public?
+    13. What is needed for a faithful reproduction?
+    14. What differs from OUR proposed setting?
+    15. Which pieces can we reuse?
+
+Create a threat-model comparison table with rows for:
+    - benchmark_cb
+    - Breaking Template Protection
+    - GaFaR
+    - FaceLinkGen
+    - our proposed experiment
+
+and columns:
+    protected template access
+    raw template access
+    protection scheme known
+    secret key known
+    protection parameters known
+    FR backbone known
+    public face data available
+    same identities in public data?
+    multiple observations?
+    output goal
+    attack metric
+
+======================================================================
+3. SELECT TWO REPRODUCTION TARGETS
+======================================================================
+
+Unless verified evidence shows they are infeasible, prioritize the following TWO targets:
+
+TARGET 1 - MANDATORY:
+    Benchmarking of Cancelable Biometrics for Deep Templates
+    Reproduce the FACE branch, not every biometric modality.
+
+TARGET 2 - PREFERRED:
+    FaceLinkGen
+    Reproduce the core IDENTITY-EXTRACTION / LINKAGE thesis on one open-source
+    PPFR method or the closest faithful public setup available.
+
+If FaceLinkGen cannot be faithfully reproduced because code/data details are unavailable,
+choose one of these alternatives and document why:
+
+    Alternative A:
+        GaFaR using official pretrained checkpoints, reproduce a small official evaluation.
+
+    Alternative B:
+        Breaking Template Protection, reproduce one protected-template reconstruction setting
+        if all required implementation details are available.
+
+Do not spend weeks attempting a fully faithful reproduction of a blocked paper when another
+relevant open-source reproduction can be completed.
+
+Create:
+    docs/reproduction_selection.md
+
+It must contain a decision matrix scoring each candidate 1-5 on:
+    - relevance to our hypothesis
+    - code availability
+    - dataset availability
+    - GPU/compute requirements
+    - expected implementation time
+    - scientific value
+    - ability to validate our pipeline
+
+Then explain the final choice.
+
+======================================================================
+4. REPOSITORY STRUCTURE
+======================================================================
+
+Create a repository with approximately this structure, adapting only when justified:
+
+    biometric-multiexposure-ai/
+    |
+    |-- README.md
+    |-- LICENSE
+    |-- CITATION.cff
+    |-- .gitignore
+    |-- .env.example
+    |-- pyproject.toml
+    |-- requirements-lock.txt          # or conda-lock/environment files
+    |-- Makefile
+    |
+    |-- configs/
+    |   |-- data/
+    |   |-- embeddings/
+    |   |-- protection/
+    |   |-- reproduction/
+    |   |-- attacks/
+    |   `-- evaluation/
+    |
+    |-- data/
+    |   |-- raw/                       # gitignored
+    |   |-- interim/                   # gitignored
+    |   |-- processed/                 # gitignored
+    |   `-- README.md
+    |
+    |-- models/                        # weights gitignored
+    |   `-- README.md
+    |
+    |-- external/
+    |   |-- README.md
+    |   `-- manifests/
+    |
+    |-- scripts/
+    |   |-- setup/
+    |   |-- data/
+    |   |-- reproduce/
+    |   |-- train/
+    |   |-- evaluate/
+    |   `-- diagnostics/
+    |
+    |-- src/
+    |   `-- biometrics_ai/
+    |       |-- data/
+    |       |-- face/
+    |       |-- protection/
+    |       |-- attacks/
+    |       |-- aggregation/
+    |       |-- evaluation/
+    |       |-- utils/
+    |       `-- plotting/
+    |
+    |-- tests/
+    |   |-- unit/
+    |   `-- integration/
+    |
+    |-- experiments/
+    |   |-- reproduction_benchmark_cb/
+    |   |-- reproduction_facelinkgen/
+    |   `-- proposed_multiexposure/
+    |
+    |-- results/
+    |   |-- reproduced/
+    |   |-- proposed/
+    |   `-- figures/
+    |
+    |-- docs/
+    |   |-- literature/
+    |   |-- setup/
+    |   |-- protocols/
+    |   |-- reproduction/
+    |   |-- proposed_experiment/
+    |   `-- research_log.md
+    |
+    `-- reports/
+        |-- reproduction_report.md
+        `-- final_research_status.md
+
+README.md must tell a new researcher:
+
+    - what question the repo investigates
+    - what has been reproduced
+    - what has NOT yet been reproduced
+    - how to install
+    - how to acquire datasets legally
+    - how to acquire models
+    - how to run a CPU smoke test
+    - how to run the main GPU experiments
+    - where results are written
+    - expected compute/storage
+    - current limitations
+
+======================================================================
+5. ENVIRONMENT AND REPRODUCIBILITY ENGINEERING
+======================================================================
+
+Before long experiments:
+
+1. Detect and record:
+       OS
+       Python version
+       CUDA version
+       GPU model
+       GPU VRAM
+       PyTorch version
+       driver version
+
+2. Create:
+       scripts/diagnostics/system_info.py
+
+   It must write:
+       results/system_info.json
+
+3. Prefer a modern isolated Python environment.
+   If upstream code requires older pinned dependencies, DO NOT destroy the main environment.
+   Use a separate environment/container for that reproduction.
+
+4. Pin dependencies.
+
+5. Add:
+       python -m pytest
+
+6. Add a tiny synthetic smoke test:
+       make smoke-test
+
+   This must run without downloading a huge dataset.
+
+7. Record exact upstream code commits in:
+       external/manifests/upstream_sources.yaml
+
+Example fields:
+       name
+       url
+       commit
+       license
+       purpose
+       date_retrieved
+
+8. Add deterministic seeding utilities.
+
+9. Use config-driven experiments (YAML/TOML/JSON).
+   Do not scatter hyperparameters across scripts.
+
+======================================================================
+6. DATASET ACQUISITION
+======================================================================
+
+Primary datasets from the presentation/literature include MOBIO and LFW.
+
+MOBIO
+-----
+
+Official dataset:
+    https://www.idiap.ch/dataset/mobio
+
+MOBIO contains mobile face/speech recordings and has official biometric protocols.
+
+For the benchmark_cb face reproduction, MOBIO is the preferred dataset because the paper
+uses it.
+
+Implement:
+
+    scripts/data/prepare_mobio.py
+
+but do not bypass any access requirement.
+
+The script should:
+    - validate that the user supplied/downloaded dataset exists
+    - inspect directory structure
+    - create a manifest
+    - compute file counts/checksums where practical
+    - build the protocol index needed by our code
+    - never copy the full dataset into git
+
+Document:
+    docs/setup/MOBIO.md
+
+Include:
+    official source
+    registration/license requirements
+    expected directory structure
+    how to configure MOBIO_ROOT
+    expected subject/sample counts from the exact paper/protocol
+    preprocessing used
+    troubleshooting
+
+LFW
+---
+
+Use LFW as:
+    - a public engineering fallback,
+    - an evaluation dataset where scientifically appropriate,
+    - a smoke-test/sanity-check dataset,
+    - NOT a silent replacement for MOBIO in a claimed exact benchmark_cb reproduction.
+
+The original LFW source is associated with UMass; scikit-learn also provides a maintained
+fetcher.
+
+Create:
+    scripts/data/download_lfw.py
+
+Record:
+    source URL
+    checksum if available
+    downloaded archive version
+    preprocessing variant (original/funneled/aligned)
+
+CASIA-WebFace
+-------------
+
+Only download/use CASIA-WebFace if the licensing/access path permits it.
+
+If needed for FaceLinkGen reproduction:
+    - document exact source
+    - document subset selection
+    - create an identity-disjoint train/validation/test split
+    - ensure test identities are never used to train the attacker
+
+TPDNE / SYNTHETIC DATA
+----------------------
+
+If using synthetic "this person does not exist" data or another synthetic test set:
+    - document exact source/version
+    - do not treat synthetic identity labels as equivalent to real multi-image identity data
+    - explain the role it plays in the experiment
+
+GENERAL DATA RULE
+-----------------
+
+Create:
+    data/manifest.json
+
+For every dataset:
+    name
+    source
+    license/access notes
+    local root env var
+    downloaded yes/no
+    file count
+    identities
+    split definition
+    preprocessing
+    checksum/version info
+
+======================================================================
+7. FACE EMBEDDING PIPELINE
+======================================================================
+
+Implement a standalone face-template generation pipeline.
+
+Primary feature extractor:
+    ArcFace
+
+Preferred source:
+    official InsightFace implementation where licensing permits.
+
+Official project:
+    https://github.com/deepinsight/insightface
+
+IMPORTANT:
+Model weights and training-data licensing may differ from the code license.
+Document the exact model/checkpoint and terms.
+
+Pipeline:
+
+    image
+      -> face detection
+      -> landmark alignment
+      -> crop/normalization
+      -> ArcFace embedding
+      -> L2 normalization if required by the exact protocol
+      -> serialized unprotected template
+
+Create:
+
+    src/biometrics_ai/face/arcface.py
+    scripts/train_or_extract/extract_arcface.py
+or an equivalent clean structure.
+
+Output:
+    data/processed/embeddings/<dataset>/<model>/
+
+Every embedding record should include metadata:
+    sample_id
+    identity_id
+    source_image
+    split
+    embedding_model
+    model_hash/version
+    dimension
+    preprocessing version
+
+Add sanity checks:
+    - embedding dimension
+    - finite values
+    - normalization
+    - repeatability
+    - intra-identity similarity > typical inter-identity similarity on a small sanity subset
+
+Before adding template protection, reproduce an UNPROTECTED verification baseline.
+
+Metrics:
+    - cosine similarity
+    - ROC
+    - EER
+    - TAR at selected FARs if protocol supports it
+
+For benchmark_cb/MOBIO, reproduce the paper's ArcFace baseline as closely as possible.
+
+Do not proceed to attack results until the unprotected face baseline is scientifically plausible.
+
+======================================================================
+8. CANCELABLE TEMPLATE PROTECTION
+======================================================================
+
+First, prefer using the authors' official implementations from benchmark_cb or the underlying
+Bob packages.
+
+Official benchmark repository to inspect:
+    https://github.com/otroshi/benchmark_cb
+
+Do not reimplement algorithms from memory if working original code exists.
+
+We need at least:
+
+MANDATORY:
+    BioHashing
+
+HIGH PRIORITY:
+    MLP-Hash
+    IoM-GRP
+
+OPTIONAL:
+    IoM-URP
+    Rand-Hash
+    Bloom Filter
+
+Create a uniform interface such as:
+
+    protect(
+        embedding,
+        key,
+        scheme_config
+    ) -> protected_template
+
+Each protection implementation must expose:
+    scheme name
+    input dimension
+    output dimension
+    key/seed representation
+    normalization/binarization
+    comparison metric
+    exact source implementation / citation
+
+KEY GENERATION IS SCIENTIFICALLY IMPORTANT.
+
+Create deterministic key-generation logic from a master experiment seed, while treating
+different keys as independent transformations.
+
+Store only experimental key IDs/seeds needed for reproducibility.
+Never confuse:
+    subject-specific key
+    exposure-specific key
+    global scheme seed
+
+Document the exact semantics.
+
+Create:
+    docs/protocols/template_protection.md
+
+For each scheme describe:
+    mathematical transformation
+    key usage
+    output type
+    distance/similarity function
+    known-key scenario
+    unknown-key scenario
+    how multiple independent exposures are created
+
+======================================================================
+9. REPRODUCTION TARGET 1:
+   BENCHMARKING OF CANCELABLE BIOMETRICS FOR DEEP TEMPLATES
+======================================================================
+
+Goal:
+Reproduce a meaningful subset of the FACE experiments from benchmark_cb.
+
+Minimum acceptable reproduction:
+
+    Dataset:
+        MOBIO face, exact paper protocol if accessible.
+
+    Feature:
+        ArcFace.
+
+    Protection:
+        BioHash.
+
+    Metrics:
+        recognition performance / EER
+        plus at least one privacy metric from the paper if its code is available and understood.
+
+Preferred reproduction:
+
+    ArcFace + MOBIO
+    with:
+        BioHash
+        MLP-Hash
+        IoM-GRP
+        IoM-URP
+        Rand-Hash
+        optionally Bloom
+
+Reproduce BOTH relevant attacker/key scenarios used by the paper when applicable:
+    - unknown-key
+    - known-key / stolen-token / paper's exact terminology
+
+Do not translate scenario names casually. Use the exact definitions in the paper.
+
+Implementation strategy:
+
+1. Clone/pin official benchmark_cb.
+2. Read its README/configs/source.
+3. Identify its exact face experiment entry point.
+4. Run the smallest official diagnostic/example.
+5. Reproduce ArcFace/MOBIO unprotected baseline.
+6. Reproduce BioHash first.
+7. Only then expand schemes.
+8. Record every deviation from upstream.
+
+Create:
+    experiments/reproduction_benchmark_cb/
+
+Containing:
+    README.md
+    configs/
+    run.sh or run.py
+    upstream_notes.md
+    expected_results.csv
+    reproduced_results.csv
+    comparison.md
+
+comparison.md must include a table:
+
+    metric
+    paper value
+    our value
+    absolute difference
+    relative difference
+    reproduction status
+    explanation
+
+Include plots:
+    ROC / DET where appropriate
+    EER comparison
+    privacy metric comparison if reproduced
+
+Acceptance criterion:
+We are not demanding bit-for-bit identity, but the result must be close enough that the
+direction and scale of the published result are recovered, and discrepancies must be explained.
+
+If exact MOBIO acquisition blocks the run:
+    - finish all code and protocol preparation,
+    - validate the pipeline on LFW,
+    - label it "engineering validation, not paper reproduction",
+    - leave a single clear command that should run once MOBIO_ROOT is supplied.
+
+======================================================================
+10. REPRODUCTION TARGET 2:
+    FACELINKGEN CORE IDENTITY-EXTRACTION THESIS
+======================================================================
+
+First determine whether an official FaceLinkGen code release exists.
+
+If YES:
+    clone/pin it and reproduce one official linkage/identity-extraction experiment.
+
+If NO:
+    implement a faithful minimal reproduction from the paper.
+
+The key conceptual experiment to reproduce is:
+
+    protected representation
+      -> learned identity extractor
+      -> embedding aligned with a standard identity space
+      -> identity linkage/matching succeeds despite the representation being called
+         privacy-preserving
+
+DO NOT make photorealistic regeneration a prerequisite.
+
+A. SOURCE PROTECTION METHOD
+---------------------------
+
+Prefer one open-source PPFR method from the paper:
+    PartialFace
+    MinusFace
+    FracFace
+
+Choose the one with:
+    easiest reproducible official code,
+    manageable compute,
+    clear preprocessing,
+    available checkpoint if training is expensive.
+
+Document why.
+
+B. TEACHER TARGET
+-----------------
+
+Use the exact teacher identity embedding model from FaceLinkGen if feasible.
+
+The paper discusses ArcFace-domain supervision and an Antelopev2/ArcFace-compatible setup.
+
+Do not mix ArcFace checkpoints without documenting it.
+
+C. ATTACKER/STUDENT
+-------------------
+
+Reconstruct the paper's student mapping as faithfully as possible.
+
+The training objective should align the extracted identity embedding from the protected
+representation with the teacher identity embedding of the original image.
+
+Verify the exact paper loss:
+    cosine loss?
+    MSE?
+    normalized embedding loss?
+    combinations?
+
+Do not guess. Read the paper.
+
+D. SPLITS
+---------
+
+Identity leakage evaluation must be identity-disjoint.
+
+At minimum:
+    train identities
+    validation identities
+    held-out test identities
+
+The test identity must not appear in attacker training.
+
+E. METRICS
+----------
+
+Prioritize:
+    1-to-1 verification
+    AUROC
+    EER
+    top-1 closed-set linkage if the protocol supports it
+    TAR / pass rate at FAR thresholds where the paper reports them
+
+Optional:
+    face regeneration using Arc2Face
+
+Do not use a commercial face API unless credentials are explicitly provided.
+Prefer a fully local verification metric for reproducibility.
+
+F. OUTPUT
+--------
+
+Create:
+    experiments/reproduction_facelinkgen/
+
+with the same expected-vs-reproduced reporting discipline as Target 1.
+
+======================================================================
+11. OPTIONAL GAFAR REPRODUCTION
+======================================================================
+
+Only after the mandatory baseline is working.
+
+Official repo:
+    https://github.com/idiap/gafar
+
+GaFaR depends on EG3D and pretrained face-generation assets.
+
+Preferred first reproduction:
+    run an official pretrained mapping-network checkpoint
+    on the authors' documented evaluation setup
+    and recover a small subset of their reported identity-similarity behavior.
+
+Do NOT start by training EG3D or GaFaR from scratch.
+
+Record:
+    external repos
+    exact commits
+    checkpoint hashes
+    model licenses
+    data licenses
+    GPU memory
+    runtime
+
+This reproduction is useful for confirming:
+    "raw face templates can be inverted"
+but it is NOT the same threat model as:
+    "key-agnostic identity extraction from multiple cancelable templates."
+
+Explain that distinction.
+
+======================================================================
+12. AFTER REPRODUCTION: BUILD OUR PROPOSED EXPERIMENT
+======================================================================
+
+Once at least the template-protection pipeline and one identity-extraction pipeline are
+validated, create the experiment proposed in the presentation.
+
+RESEARCH QUESTION
+-----------------
+
+Can identity information be extracted from multiple independently protected DNN face
+templates without knowing their secret keys?
+
+CORE THREAT MODEL
+-----------------
+
+The attacker:
+
+HAS ACCESS TO:
+    - protected templates
+    - public face data / public training identities
+    - public knowledge of the protection scheme category/algorithm if this matches our final
+      threat model
+
+DOES NOT HAVE ACCESS TO:
+    - secret key used to create each protected template
+    - test-subject secret keys
+    - privileged internal key material
+    - raw enrollment face corresponding to the attacked protected template
+
+The presentation additionally frames the attacker as low-knowledge with respect to internal
+architecture/protection parameters. We must turn this into a PRECISE threat model rather
+than an ambiguous phrase.
+
+Create at least two explicit levels:
+
+    K0 / KEY-AGNOSTIC:
+        scheme family known,
+        secret keys unknown,
+        test keys unseen during training.
+
+    K1 / STRONGER KNOWLEDGE CONTROL:
+        scheme hyperparameters known,
+        keys still unknown.
+
+If useful, add additional controls, but never blur them together.
+
+======================================================================
+13. DATA GENERATION FOR MULTI-EXPOSURE
+======================================================================
+
+For every image x of identity y:
+
+    e = ArcFace(x)
+
+For every exposure j:
+
+    k_j ~ independent key distribution
+    t_j = Protect(e, k_j)
+
+An "exposure" means an independently protected observation produced under a different key
+unless the literature/protocol motivates another definition.
+
+Create experiments with:
+
+    n = 1
+    n = 2
+    n = 5
+    n = 10
+
+If enough images per identity exist, consider two distinct sources of multiplicity:
+
+A. SAME underlying image / different protection keys
+B. DIFFERENT images of same identity / different protection keys
+
+These test different questions and MUST NOT be conflated.
+
+Preferred main experiment:
+    different face samples + independently sampled keys,
+because it better approximates repeated enrollments/exposures across systems.
+
+But also include a controlled same-image/different-key experiment if feasible, because it
+isolates the effect of the protection transformation.
+
+Write:
+    docs/protocols/multi_exposure.md
+
+with exact sampling rules.
+
+======================================================================
+14. TRAIN/VAL/TEST SPLITTING
+======================================================================
+
+IDENTITY DISJOINTNESS IS MANDATORY.
+
+No person in test may occur in attack-model training.
+
+Create deterministic split manifests:
+    data/processed/splits/train.csv
+    data/processed/splits/val.csv
+    data/processed/splits/test.csv
+
+The attack should learn a transformation that generalizes to unseen identities, not memorize
+identity labels.
+
+UNSEEN-KEY GENERALIZATION
+-------------------------
+
+Also split keys:
+
+    train key pool
+    validation key pool
+    test key pool
+
+The final unseen-key experiment must use keys that were never used during attack-model
+training.
+
+This is central to the claim "key-agnostic".
+
+We need at least four diagnostic conditions:
+
+    A. seen identities + seen keys      # sanity upper bound / debugging
+    B. unseen identities + seen keys
+    C. seen identities + unseen keys
+    D. unseen identities + unseen keys # MAIN evaluation
+
+Do not present condition A as evidence of generalization.
+
+======================================================================
+15. ATTACK MODEL BASELINES
+======================================================================
+
+Implement strong simple baselines before sophisticated set models.
+
+SINGLE-TEMPLATE BASELINES
+-------------------------
+
+Input:
+    one protected template
+
+Models:
+    1. linear projection
+    2. 2-layer MLP
+    3. deeper residual MLP if useful
+
+Target:
+    original unprotected ArcFace identity embedding
+
+Loss candidates to evaluate:
+    - cosine embedding loss
+    - normalized MSE
+    - combination
+
+Choose based on validation and document.
+
+MULTI-TEMPLATE NON-LEARNED BASELINES
+------------------------------------
+
+Given protected templates t_1...t_n, test:
+
+    - raw mean pooling, then MLP
+    - raw max pooling, then MLP
+    - per-template encoder -> mean
+    - per-template encoder -> max
+
+MULTI-TEMPLATE LEARNED SET MODELS
+---------------------------------
+
+Implement in increasing complexity:
+
+    1. DeepSets-style encoder:
+           z_i = phi(t_i)
+           z = mean(z_i)
+           output = rho(z)
+
+    2. Attention pooling
+
+    3. Set Transformer
+
+IMPORTANT:
+Models must be permutation invariant with respect to the order of exposures unless there is
+a scientifically justified ordering.
+
+All models should support a mask so n can vary within a batch.
+
+======================================================================
+16. PRIMARY OUTPUT REPRESENTATION
+======================================================================
+
+The attacker's primary output should be an identity embedding aligned to the original ArcFace
+space.
+
+Why:
+    - it directly tests identity leakage,
+    - it avoids requiring photorealistic reconstruction,
+    - it allows local matching metrics,
+    - it connects directly to FaceLinkGen's identity-centric thesis.
+
+For test sample/set S belonging to identity y:
+
+    z_hat = attacker(S)
+
+Compare z_hat against:
+    - ArcFace embeddings from held-out real images of y
+    - embeddings from other identities
+
+Evaluate whether z_hat is identity-discriminative.
+
+Do not train a closed-set classifier over test identities and call that identity recovery.
+
+======================================================================
+17. METRICS FOR OUR PROPOSED EXPERIMENT
+======================================================================
+
+At minimum report:
+
+A. EMBEDDING RECOVERY
+    - cosine similarity to target ArcFace embedding
+    - normalized L2 distance
+
+B. VERIFICATION
+    - ROC
+    - AUROC
+    - EER
+    - TAR at FAR = 1e-2, 1e-3, and if statistically supported 1e-4 / 1e-5
+
+C. LINKAGE / RETRIEVAL
+    - top-1 identification/linkage
+    - top-5
+    - CMC curve where appropriate
+
+D. EXPOSURE EFFECT
+    Plot metric versus:
+        1
+        2
+        5
+        10
+
+E. GENERALIZATION
+    Compare:
+        seen key
+        unseen key
+
+F. PROTECTION-SCHEME COMPARISON
+    At least:
+        BioHash
+    Prefer:
+        BioHash
+        MLP-Hash
+        IoM-GRP
+
+G. STATISTICS
+    Run multiple seeds where feasible.
+    Report:
+        mean
+        standard deviation
+        confidence interval or bootstrap interval
+
+For the key research claim:
+    "multi-exposure increases usable identity leakage"
+
+perform a statistical comparison of n=1 vs n>1.
+
+Do not claim significance only from visual plot differences.
+
+======================================================================
+18. ABLATIONS
+======================================================================
+
+Minimum useful ablations:
+
+1. number of exposures:
+       1 / 2 / 5 / 10
+
+2. aggregation:
+       mean / max / attention / Set Transformer
+
+3. key generalization:
+       seen / unseen
+
+4. attacker capacity:
+       linear / MLP / set model
+
+5. underlying images:
+       same image, new keys
+       different images, new keys
+
+6. unprotected upper bound:
+       attacker receives raw ArcFace embeddings
+
+7. random/no-information control:
+       replace protected templates with shuffled templates or random vectors of matching
+       dimensions to establish a lower bound
+
+8. identity-label leakage check:
+       ensure file paths, filenames, ordering, keys, or metadata do not encode identity
+
+Optional:
+9. cross-scheme transfer:
+       train BioHash -> test IoM / MLP-Hash
+
+The presentation explicitly treats cross-scheme transfer as an EXTENSION, not the core
+contribution. Follow that priority.
+
+======================================================================
+19. DATA LEAKAGE CHECKS
+======================================================================
+
+This project can produce deceptively strong results if there is accidental leakage.
+
+Implement automated checks for:
+
+    - same image appearing in train and test
+    - same identity appearing in train and test
+    - duplicate files across splits
+    - same protected template reused across splits
+    - same key reused unexpectedly across key-disjoint experiments
+    - deterministic filenames exposing identity
+    - data normalization statistics computed using test data
+    - nearest duplicate images
+
+Create:
+    scripts/diagnostics/check_leakage.py
+
+The main experiment must refuse to run if critical split leakage is detected.
+
+======================================================================
+20. RESULT ARTIFACTS
+======================================================================
+
+Every run should save:
+
+    run_config.yaml
+    git_commit.txt
+    system_info.json
+    seeds.json
+    metrics.json
+    predictions.parquet or csv
+    checkpoint metadata
+    stdout/stderr log
+    timing.json
+
+Use a unique run directory, e.g.:
+
+    results/proposed/biohash/deepsets/exposures_5/seed_0001/
+
+Create a summary script that aggregates runs into:
+
+    results/proposed/summary.csv
+
+and publication-ready plots under:
+
+    results/figures/
+
+Required plots:
+
+    1. identity recovery metric vs number of exposures
+    2. EER vs number of exposures
+    3. top-1 linkage vs number of exposures
+    4. seen-key vs unseen-key
+    5. aggregation method comparison
+    6. protection scheme comparison if >1 scheme
+
+Do not choose colors that make plots unreadable when printed.
+Include error bars where multiple seeds exist.
+
+======================================================================
+21. TESTING
+======================================================================
+
+Write unit tests for:
+
+    - deterministic key generation
+    - protected-template shape/type
+    - BioHash repeatability with same key
+    - BioHash difference with different keys
+    - IoM/MLP output if implemented
+    - dataset split identity disjointness
+    - key split disjointness
+    - set-model permutation invariance
+    - masked variable-size batches
+    - metric correctness
+    - EER computation
+    - linkage top-k computation
+
+Integration test:
+    tiny synthetic dataset
+      -> embeddings
+      -> protection
+      -> one training epoch
+      -> evaluation
+      -> result artifact
+
+======================================================================
+22. COMPUTE MANAGEMENT
+======================================================================
+
+Before launching a large run, estimate:
+
+    number of samples
+    storage
+    model size
+    GPU VRAM
+    expected runtime
+
+Use a staged process:
+
+STAGE A:
+    100-1000 samples / smoke test
+
+STAGE B:
+    small real subset
+
+STAGE C:
+    full baseline reproduction
+
+STAGE D:
+    multi-seed main experiment
+
+If a reproduction requires >24 hours or unusually large GPU resources, first determine whether
+official pretrained weights can reproduce the relevant result.
+
+Never waste compute because of an unchecked preprocessing bug.
+
+======================================================================
+23. LOGBOOK
+======================================================================
+
+Maintain:
+    docs/research_log.md
+
+Every significant work session should append:
+
+    date/time
+    task
+    source/paper consulted
+    commands run
+    result
+    blockers
+    decisions
+    next step
+
+When a reproduction result differs from the paper, log hypotheses:
+    - model checkpoint mismatch
+    - dataset protocol mismatch
+    - preprocessing mismatch
+    - dependency version
+    - random seed
+    - metric implementation
+    - paper ambiguity
+
+Then test those hypotheses systematically.
+
+======================================================================
+24. FINAL REPORTS
+======================================================================
+
+Create two reports.
+
+A. reports/reproduction_report.md
+
+For each reproduced paper:
+    - exact citation
+    - exact code/data used
+    - reproduction level
+    - environment
+    - methods
+    - published result
+    - our result
+    - discrepancy
+    - reason
+    - lessons for our proposed work
+
+B. reports/final_research_status.md
+
+Sections:
+
+    1. Research question
+    2. Literature review summary
+    3. Threat model
+    4. Reproduced papers
+    5. Working datasets
+    6. Working protection schemes
+    7. Working attacker models
+    8. Single-exposure results
+    9. Multi-exposure results
+    10. Unseen-key generalization
+    11. Cross-scheme results if run
+    12. Ablations
+    13. Statistical analysis
+    14. Failure cases
+    15. Limitations
+    16. What is genuinely novel
+    17. Recommended next experiments
+    18. Exact commands to reproduce all main figures
+
+======================================================================
+25. SUCCESS CRITERIA
+======================================================================
+
+The project is successful when the repository can demonstrate the following chain:
+
+1. We can generate ArcFace templates from an authorized face dataset.
+2. We can reproduce or closely validate at least one published cancelable-template
+   protection experiment.
+3. We can generate independently keyed protected templates using at least BioHash.
+4. We can reproduce the central identity-extraction/linkage idea of at least one relevant
+   identity-leakage paper, preferably FaceLinkGen.
+5. We can train a key-agnostic attacker on TRAIN identities and TRAIN keys.
+6. We can test it on UNSEEN identities and UNSEEN keys.
+7. We can compare 1, 2, 5, and 10 protected observations.
+8. We can determine empirically whether identity matching improves with more exposures.
+9. Every result is traceable to a config, seed, code commit, and dataset protocol.
+10. A new researcher can clone the repository, follow README instructions, obtain the
+    permitted data/models, and reproduce the experiment.
+
+======================================================================
+26. PRIORITY ORDER
+======================================================================
+
+Do tasks in this order unless a verified blocker requires a deviation:
+
+P0
+    Create repository, environment, logbook, literature matrix.
+
+P1
+    Read/verify benchmark_cb, FaceLinkGen, Sani survey, GaFaR, Breaking Template Protection,
+    multi-record literature.
+
+P2
+    Clone/pin benchmark_cb and upstream dependencies.
+
+P3
+    Acquire/configure LFW and prepare MOBIO acquisition path.
+
+P4
+    ArcFace embedding pipeline + unprotected verification baseline.
+
+P5
+    BioHash pipeline + published benchmark reproduction.
+
+P6
+    Add MLP-Hash / IoM-GRP if practical.
+
+P7
+    FaceLinkGen identity-extraction reproduction or closest faithful equivalent.
+
+P8
+    Build our single-template key-agnostic MLP baseline.
+
+P9
+    Build multi-exposure DeepSets model.
+
+P10
+    1/2/5/10 exposure experiment.
+
+P11
+    unseen-key experiment.
+
+P12
+    attention / Set Transformer ablations.
+
+P13
+    optional cross-scheme transfer.
+
+P14
+    optional GaFaR reconstruction evaluation.
+
+======================================================================
+27. WHAT NOT TO DO
+======================================================================
+
+Do NOT:
+
+    - start with a huge neural model before validating the baseline
+    - call LFW a MOBIO reproduction
+    - train/test on the same identities
+    - leak keys between key-disjoint conditions
+    - use identity labels as the attack target for test identities
+    - measure only train accuracy
+    - judge privacy only by reconstructed image quality
+    - report only a single cherry-picked seed
+    - download data from unofficial mirrors without documenting provenance
+    - assume a GitHub repo is official without verifying the author/project page
+    - rewrite official implementations unnecessarily
+    - hide failed experiments
+    - invent missing paper hyperparameters
+    - commit face datasets to git
+    - commit model weights unless their license explicitly permits it and there is a strong
+      reason
+    - build any service intended to identify arbitrary real people
+
+======================================================================
+28. FIRST ACTIONS TO EXECUTE NOW
+======================================================================
+
+Start immediately.
+
+Your first concrete actions should be:
+
+1. Initialize the repository.
+2. Create docs/research_log.md.
+3. Verify all six literature clusters listed above.
+4. Create literature_matrix.csv and threat_models.md.
+5. Verify availability/license/status of:
+       benchmark_cb
+       GaFaR
+       FaceLinkGen code
+       Breaking Template Protection code
+       MOBIO
+       LFW
+       ArcFace/InsightFace checkpoint
+       Arc2Face
+6. Create reproduction_selection.md and choose the two target reproductions.
+7. Pin the official benchmark_cb repository.
+8. Inspect how its face/MOBIO experiments are run.
+9. Build the local environment without changing upstream behavior unnecessarily.
+10. Run the smallest possible upstream smoke test.
+11. Create the LFW acquisition pipeline so engineering can proceed even while MOBIO access
+    is pending.
+12. Implement/validate the ArcFace extraction and verification baseline.
+13. Reproduce BioHash face-template protection.
+14. Write the first reproduction comparison table.
+15. Only after that begin the identity-extraction reproduction.
+
+At the end of every major phase, update README.md and docs/research_log.md.
+
+======================================================================
+29. HOW TO COMMUNICATE WITH ME WHILE WORKING
+======================================================================
+
+Do not flood me with generic status messages.
+
+When you need input from me, ask only when the task genuinely requires a human action, such as:
+
+    - accepting a dataset license
+    - manually downloading a restricted dataset
+    - providing a path to MOBIO
+    - providing credentials for a service we explicitly chose to use
+    - choosing between two scientifically meaningful alternatives with similar tradeoffs
+
+When blocked, give me:
+
+    BLOCKER:
+    exact reason
+
+    HUMAN ACTION:
+    one concrete action
+
+    AFTER THAT:
+    exact command you will run
+
+Otherwise, continue autonomously.
+
+When reporting progress, use:
+
+    COMPLETED
+    - ...
+
+    VERIFIED
+    - ...
+
+    RESULTS
+    - ...
+
+    DIFFERENCES FROM PAPER
+    - ...
+
+    BLOCKERS
+    - ...
+
+    NEXT
+    - ...
+
+======================================================================
+30. SCIENTIFIC END STATE
+======================================================================
+
+The repository should ultimately let us answer a precise question, not merely demonstrate
+that a neural network can fit protected vectors.
+
+The desired final evidence is a plot/table showing, for held-out identities and unseen
+protection keys:
+
+    Number of protected observations:
+        1     2     5     10
+
+versus identity-recovery quality such as:
+        cosine similarity
+        verification EER
+        TAR@FAR
+        top-1 linkage
+
+for one or more cancelable protection schemes.
+
+The strongest scientifically meaningful outcome would be evidence that:
+
+    performance improves systematically as independently protected observations of the same
+    identity are aggregated,
+
+while:
+
+    the attacker never receives the corresponding secret keys,
+    test identities are unseen during training,
+    test keys are unseen during training,
+    and no metadata leakage explains the result.
+
+A negative result is also scientifically valuable. If multi-exposure does NOT improve
+identity recovery under a rigorously controlled protocol, report it faithfully and investigate
+why.
+
+The objective is not to force the hypothesis to be true. The objective is to build the
+cleanest reproducible experiment capable of falsifying it.
+
+BEGIN.

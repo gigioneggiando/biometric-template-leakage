@@ -1,0 +1,26 @@
+sources:
+  - name: benchmark_cb
+    url: https://github.com/otroshi/benchmark_cb
+    commit: null
+    license: unknown
+    purpose: target 1 cancelable-biometric benchmark
+    date_retrieved: '2026-08-25'
+    status: URL returned 404; obtain corrected official source from authors before cloning
+  - name: gafar
+    url: https://github.com/idiap/gafar
+    commit: f6a8f74373d3e7b4315bb3f5a46e483c4b7bbe13
+    license: BSD-3-Clause
+    purpose: optional template-inversion checkpoint evaluation
+    date_retrieved: '2026-08-25'
+  - name: insightface
+    url: https://github.com/deepinsight/insightface
+    commit: 7fadd420c2351d0ffa8cac403421c1a3ed733365
+    license: MIT (code; weights separate)
+    purpose: face detection/alignment/ArcFace extraction candidate
+    date_retrieved: '2026-08-25'
+  - name: Arc2Face
+    url: https://github.com/foivospar/Arc2Face
+    commit: 8f3acd701d17fda7fde4c9f1d170fc88fecbe9ad
+    license: MIT
+    purpose: optional identity-conditioned regeneration
+    date_retrieved: '2026-08-25'
