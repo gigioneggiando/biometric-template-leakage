@@ -1,3 +1,8 @@
-from .arcface import extract_arcface_embedding
+from .arcface import ArcFaceExtractor, OpenCvArcFaceExtractor, OpenCvYuNetArcFaceExtractor, extract_arcface_embedding
 
-__all__ = ["extract_arcface_embedding"]
+__all__ = [
+	"ArcFaceExtractor",
+	"OpenCvArcFaceExtractor",
+	"OpenCvYuNetArcFaceExtractor",
+	"extract_arcface_embedding",
+]

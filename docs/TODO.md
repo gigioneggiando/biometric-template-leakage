@@ -30,10 +30,10 @@ python scripts\data\prepare_mobio.py --root $env:MOBIO_ROOT
 
 ## Priority 2: ArcFace / InsightFace checkpoint
 
-- [ ] Choose a legally usable ArcFace-compatible checkpoint. The initial candidate is an InsightFace/`antelopev2` setup, but model-weight and training-data terms must be reviewed separately from code licensing.
-- [ ] Preserve: source URL, filename, SHA-256, license, training-data notes, and acquisition date.
-- [ ] Store weights under `models/` or a controlled local archive. `models/` is ignored by Git.
-- [ ] Create an isolated environment:
+- [x] Choose a legally usable ArcFace-compatible checkpoint for engineering validation: official InsightFace `buffalo_l`, non-commercial research use only. This does not select the future MOBIO reproduction checkpoint.
+- [x] Preserve source URL, filenames, SHA-256 hashes, model terms, training-data note, and acquisition date.
+- [x] Store weights under gitignored `models/`.
+- [x] Create an isolated environment:
 
 ```powershell
 python -m venv .venv
@@ -41,8 +41,8 @@ python -m venv .venv
 python -m pip install -e ".[dev,face]"
 ```
 
-- [ ] Create an input CSV with `sample_id`, `identity_id`, `source_image`, and `split` columns.
-- [ ] Extract embeddings only from authorized data:
+- [x] Create an input CSV with `sample_id`, `identity_id`, `source_image`, and `split` columns.
+- [x] Extract embeddings only from authorized data. The completed real-dataset commands are documented in `docs/protocols/real_datasets_month1.md`.
 
 ```powershell
 python scripts\train_or_extract\extract_arcface.py `
@@ -52,31 +52,33 @@ python scripts\train_or_extract\extract_arcface.py `
   --output data\processed\embeddings\<dataset>\antelopev2
 ```
 
-**Done when:** local manifests reproducibly identify checkpoint, preprocessing, and inputs; embeddings are not committed.
+**Done for Month 1 engineering validation:** local manifests identify checkpoint hashes, preprocessing, and inputs for LFW, Olivetti, and CFP; all embeddings remain uncommitted. Checkpoint selection for exact MOBIO reproduction remains pending upstream recovery.
 
-## Priority 3: LFW engineering fallback
+## Priority 3: real-dataset engineering fallback
 
-- [ ] If MOBIO is still pending, download LFW using the documented fetcher:
+- [x] While MOBIO is pending, download LFW using the documented fetcher:
 
 ```powershell
 python scripts\data\download_lfw.py
 ```
 
-- [ ] Use LFW only to test ArcFace extraction, splits, metrics, and protected-template plumbing.
-- [ ] Label every LFW output as `engineering validation`, never as a `benchmark_cb` or MOBIO reproduction.
+- [x] Use LFW only to test ArcFace extraction, splits, metrics, and protected-template plumbing.
+- [x] Acquire and hash-verify the public Olivetti and CFP research datasets without redistributing them.
+- [x] Run deterministic identity-disjoint protocols on LFW, Olivetti, and CFP.
+- [x] Label every fallback output as `engineering validation`, never as a `benchmark_cb`, MOBIO, or FaceLinkGen reproduction.
 
-**Done when:** acquisition and the local manifest work. Do not add LFW data to Git.
+**Done:** acquisition, local manifests, protocol checks, and experiments work on all three datasets. Do not add biometric data to Git.
 
 ## Priority 4: GPU environment
 
-- [ ] Check whether the machine has a supported NVIDIA GPU:
+- [x] Check whether the machine has a supported NVIDIA GPU:
 
 ```powershell
 nvidia-smi
 ```
 
 - [ ] Create a separate environment with a CUDA-compatible PyTorch build selected from the official PyTorch site. Do not replace the working CPU environment until GPU validation succeeds.
-- [ ] Verify CUDA through Python:
+- [x] Verify CUDA through Python (result: Torch CPU build, CUDA unavailable):
 
 ```powershell
 python -c "import torch; print(torch.__version__); print(torch.cuda.is_available()); print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'no CUDA device')"
@@ -86,6 +88,18 @@ python scripts\diagnostics\system_info.py
 - [ ] Share `results/system_info.json` internally without committing it if it contains sensitive host details.
 
 **Done when:** PyTorch reports CUDA available and records GPU model/VRAM. CPU is sufficient for smoke tests but not extended reproductions.
+
+## Month 1 real-dataset baseline
+
+- [x] Confirm the proposal's Weeks 1-4 requirements from the research PDF.
+- [x] Build deterministic identity-disjoint LFW, Olivetti, and CFP train/validation/test splits.
+- [x] Extract and sanity-check ArcFace-compatible embeddings.
+- [x] Apply one protection scheme and keep fixed-transform versus independent-key conditions separate.
+- [x] Train a single-template MLP over three seeds and report cosine, normalized L2, AUROC, EER, TAR@FAR, and top-k linkage.
+- [x] Test primary top-1 counts against chance and record a negative result without overstating it.
+- [x] Test robustness across frontal/profile views, SCRFD/YuNet preprocessing, 60/150-identity LFW subsets, and 64/128/256-bit templates.
+- [x] Document protocol, hashes, commands, aggregate results, limitations, and novelty implications.
+- [ ] Start the real-data 1/2/5/10 comparison only after explicit authorization to enter Month 2.
 
 ## Priority 5: benchmark_cb reproduction
 
@@ -109,6 +123,8 @@ python scripts\diagnostics\system_info.py
 **Done when:** the experiment identifies the PPFR source, teacher, student, data, splits, and evaluation protocol verifiably.
 
 ## Priority 7: proposed multi-exposure experiment
+
+**Status:** paused at the Month 1 boundary pending explicit approval.
 
 - [ ] Create identity-disjoint train/validation/test splits on authorized data.
 - [ ] Generate disjoint train/validation/test key pools.
@@ -142,6 +158,13 @@ git diff --cached --stat
 python -m pytest
 python scripts\diagnostics\system_info.py
 python scripts\reproduce\run_smoke_test.py
+python scripts\setup\download_buffalo_l.py --verify-only
+python scripts\setup\download_yunet.py --verify-only
+python scripts\diagnostics\check_leakage.py --manifest data\interim\lfw_month1_protocol.csv
+python scripts\train\run_lfw_month1.py --config configs\attacks\month1_lfw.yaml
+python scripts\train\run_lfw_month1.py --config configs\attacks\month1_cfp.yaml
+python scripts\train\run_lfw_month1.py --config configs\attacks\month1_olivetti.yaml
+python scripts\train\run_month1_dimension_sweep.py --base-config configs\attacks\month1_lfw_yunet.yaml --output-root results\month1_sweeps\lfw_yunet
 ```
 
-Smoke-test results are synthetic engineering validation, not a published reproduction or a conclusion about biometric leakage.
+Synthetic runs are pipeline tests only. LFW, Olivetti, and CFP results are engineering validation, not published reproductions, and support only the documented single-template conclusion.

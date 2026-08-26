@@ -1,0 +1,7 @@
+condition,evaluator,target_cosine_mean,target_cosine_std,top1_mean,top1_std,auroc_mean,auroc_std,eer_mean,eer_std,notes
+chance,reference,N/A,N/A,0.083333,0,0.5,0,0.5,0,12-way gallery
+unprotected_arcface,direct,N/A,N/A,0.983051,0,0.998746,0,0.008475,0,59 probes
+shared_key_biohash,direct,N/A,N/A,0.983051,0,0.993576,0,0.018490,0,fixed transformation
+shared_key_calibration,mlp,0.154535,0.002996,0.531073,0.025890,0.892525,0.010676,0.206728,0.018939,three seeds; upper bound
+independent_key_biohash,direct,N/A,N/A,0.050847,0,0.523739,0,0.521572,0,independent key per image
+independent_unseen_keys,mlp,0.034210,0.005177,0.096045,0.009786,0.513933,0.018834,0.491269,0.033971,three seeds; primary condition

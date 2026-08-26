@@ -29,6 +29,35 @@ def top_k_linkage(predictions: np.ndarray, gallery: np.ndarray, identity_ids: np
     return float(np.mean([identity_ids[i] in identity_ids[ranks[i]] for i in range(len(identity_ids))]))
 
 
+def gallery_probe_metrics(
+    predictions: np.ndarray,
+    gallery: np.ndarray,
+    probe_identity_ids: np.ndarray,
+    gallery_identity_ids: np.ndarray,
+) -> dict[str, float]:
+    predictions = np.asarray(predictions, dtype=np.float64)
+    gallery = np.asarray(gallery, dtype=np.float64)
+    predictions /= np.linalg.norm(predictions, axis=1, keepdims=True).clip(min=1e-12)
+    gallery /= np.linalg.norm(gallery, axis=1, keepdims=True).clip(min=1e-12)
+    scores = predictions @ gallery.T
+    matches = np.asarray(probe_identity_ids)[:, None] == np.asarray(gallery_identity_ids)[None, :]
+    if not np.all(matches.sum(axis=1) == 1):
+        raise ValueError("Each probe must have exactly one matching gallery identity")
+    genuine_scores = scores[matches]
+    impostor_scores = scores[~matches]
+    ranks = np.argsort(-scores, axis=1)
+    ranked_identity_ids = np.asarray(gallery_identity_ids)[ranks]
+    probe_identity_ids = np.asarray(probe_identity_ids)
+    top5_width = min(5, gallery.shape[0])
+    return {
+        "mean_genuine_cosine": float(genuine_scores.mean()),
+        "mean_impostor_cosine": float(impostor_scores.mean()),
+        "top1_linkage": float(np.mean(ranked_identity_ids[:, 0] == probe_identity_ids)),
+        "top5_linkage": float(np.mean(np.any(ranked_identity_ids[:, :top5_width] == probe_identity_ids[:, None], axis=1))),
+        **verification_metrics(genuine_scores, impostor_scores),
+    }
+
+
 def verification_metrics(genuine_scores: np.ndarray, impostor_scores: np.ndarray) -> dict[str, float]:
     labels = np.concatenate([np.ones(len(genuine_scores)), np.zeros(len(impostor_scores))])
     scores = np.concatenate([genuine_scores, impostor_scores])

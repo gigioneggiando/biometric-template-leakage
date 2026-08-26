@@ -1,3 +1,3 @@
-from .biohash import BioHashConfig, biohash, generate_key
+from .biohash import BioHashConfig, biohash, biohash_batch, generate_key
 
-__all__ = ["BioHashConfig", "biohash", "generate_key"]
+__all__ = ["BioHashConfig", "biohash", "biohash_batch", "generate_key"]

@@ -1,2 +1,16 @@
-scheme,metric,paper_value,source,status
-BioHash,EER,TODO / verify from version of record,paper table,not transcribed until source-table verification
+scheme,scenario,metric,paper_value,unit,source,status
+Unprotected,normal,EER,0.02,percent,Table I and Table II arXiv:2302.13286v1,verified from official TeX 2026-08-26
+BioHash,normal,EER,0.02,percent,Table II arXiv:2302.13286v1,verified from official TeX 2026-08-26
+BioHash,stolen-token,EER,0.04,percent,Table II arXiv:2302.13286v1,verified from official TeX 2026-08-26
+MLP-Hash,normal,EER,0.02,percent,Table II arXiv:2302.13286v1,verified from official TeX 2026-08-26
+MLP-Hash,stolen-token,EER,0.02,percent,Table II arXiv:2302.13286v1,verified from official TeX 2026-08-26
+Bloom Filters,normal,EER,2.19,percent,Table II arXiv:2302.13286v1,verified from official TeX 2026-08-26
+Bloom Filters,stolen-token,EER,35.40,percent,Table II arXiv:2302.13286v1,verified from official TeX 2026-08-26
+IoM-GRP,normal,EER,0.02,percent,Table II arXiv:2302.13286v1,verified from official TeX 2026-08-26
+IoM-GRP,stolen-token,EER,0.04,percent,Table II arXiv:2302.13286v1,verified from official TeX 2026-08-26
+IoM-URP,normal,EER,0.72,percent,Table II arXiv:2302.13286v1,verified from official TeX 2026-08-26
+IoM-URP,stolen-token,EER,1.10,percent,Table II arXiv:2302.13286v1,verified from official TeX 2026-08-26
+Rand-Hash,normal,EER,0.02,percent,Table II arXiv:2302.13286v1,verified from official TeX 2026-08-26
+Rand-Hash,stolen-token,EER,0.08,percent,Table II arXiv:2302.13286v1,verified from official TeX 2026-08-26
+BioHash,normal,mutual_information,39.63,paper MI estimate,Table IV arXiv:2302.13286v1,verified from official TeX 2026-08-26
+BioHash,stolen-token,mutual_information,98.81,paper MI estimate,Table IV arXiv:2302.13286v1,verified from official TeX 2026-08-26

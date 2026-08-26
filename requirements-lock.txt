@@ -1,7 +1,10 @@
 # Verified local baseline (2026-08-25); use pyproject.toml as the source of truth.
 numpy==2.3.3
-torch==2.11.0
+torch==2.8.0
 scikit-learn==1.8.0
 PyYAML==6.0.2
 Pillow==12.2.0
 pytest==8.4.2
+insightface==1.0.1
+onnxruntime==1.23.2
+opencv-python==5.0.0.93

@@ -44,3 +44,11 @@ def biohash(embedding: np.ndarray, key: int | str | bytes, config: BioHashConfig
         raise ValueError(f"Expected embedding shape {(config.input_dim,)}, got {embedding.shape}")
     projection = _orthonormal_projection(config.input_dim, config.output_dim, key)
     return (embedding @ projection >= config.threshold).astype(np.uint8)
+
+
+def biohash_batch(embeddings: np.ndarray, key: int | str | bytes, config: BioHashConfig = BioHashConfig()) -> np.ndarray:
+    embeddings = np.asarray(embeddings, dtype=np.float32)
+    if embeddings.ndim != 2 or embeddings.shape[1] != config.input_dim:
+        raise ValueError(f"Expected embedding shape (n, {config.input_dim}), got {embeddings.shape}")
+    projection = _orthonormal_projection(config.input_dim, config.output_dim, key)
+    return (embeddings @ projection >= config.threshold).astype(np.uint8)

@@ -7,11 +7,18 @@ name = "biometrics-ai"
 version = "0.1.0"
 description = "Reproducible research infrastructure for protected face-template leakage"
 requires-python = ">=3.10"
-dependencies = ["numpy>=1.26", "torch>=2.2", "scikit-learn>=1.4", "PyYAML>=6.0", "Pillow>=10.0"]
+dependencies = [
+	"numpy>=1.26",
+	"torch>=2.2,<2.9; platform_system == 'Windows'",
+	"torch>=2.2; platform_system != 'Windows'",
+	"scikit-learn>=1.4",
+	"PyYAML>=6.0",
+	"Pillow>=10.0",
+]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
-face = ["insightface>=0.7", "onnxruntime>=1.17"]
+face = ["insightface>=0.7", "onnxruntime>=1.17", "opencv-python>=4.9"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

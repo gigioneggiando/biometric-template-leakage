@@ -1,30 +1,147 @@
 # Key-agnostic multi-exposure biometric template leakage
 
-This repository investigates whether a learned, key-agnostic set model can recover an identity-discriminative embedding from multiple independently protected face templates. It is research infrastructure, not a service for identifying arbitrary people.
+**Last status update:** 2026-08-26
 
-## Current status
+**Research question:** Can a key-agnostic attacker recover identity information from multiple independently protected face templates without their secret keys?
 
-- A deterministic, CPU-runnable synthetic engineering pipeline is implemented: BioHash reference protection, identity/key-disjoint splits, single-template and DeepSets attackers, verification/linkage metrics, leakage checks, and traceable run artifacts.
-- No published result has been reproduced yet. The requested `benchmark_cb` GitHub URL returned 404 on 2026-08-25, and MOBIO requires authorized manual access. FaceLinkGen has no verified official repository at this time.
-- Synthetic smoke-test output is explicitly **engineering validation, not paper reproduction**.
+**Overall status:**
+
+- [x] Month 1 engineering milestone completed on 2026-08-26.
+- [ ] Month 2 main novel experiment completed.
+- [ ] Month 3 validation, paper, and submission completed.
+- [ ] Published `benchmark_cb` or FaceLinkGen result reproduced.
+
+LFW, Olivetti, and CFP results are **engineering validation, not paper reproduction**. Synthetic runs validate plumbing only and are excluded from the scientific evidence. No published result has been reproduced yet.
+
+## [x] Month 1 - Foundation and baselines
+
+**Proposal period:** Weeks 1-4
+
+**Completed:** 2026-08-26, for the cross-dataset real-image engineering protocol
+
+- [x] Literature review and threat-model comparison.
+- [x] ArcFace-compatible extraction with official InsightFace `buffalo_l`.
+- [x] Local 128-bit BioHash reference and independent-key generation.
+- [x] Deterministic LFW, Olivetti, and CFP protocols with identity-disjoint train/validation/test splits.
+- [x] Single-template MLP, three seeds, leakage checks, and evaluation metrics.
+- [x] Six real-image protocol variants covering detector, sample-size, and pose robustness.
+- [x] BioHash dimension robustness at 64/128/256 bits on two real datasets.
+- [x] Cross-dataset leakage result documented and reproducible.
+- [ ] Exact ArcFace + BioHash + MOBIO `benchmark_cb` reproduction. Blocked by MOBIO access and the missing official source.
+
+**Data:** Funneled LFW (small SCRFD/YuNet and 150-identity YuNet protocols), all 40 Olivetti identities, and all 500 CFP identities in separate frontal/profile protocols. The largest run used 4,999 CFP frontal embeddings, 100 gallery identities, and 900 probes.
+
+**Results:**
+
+- Unprotected ArcFace top-1: `94.92%` to `100.00%` across six protocol variants.
+- Fixed-transform calibration top-1: `51.11%` to `91.00%`, confirming learnability when the transform is reusable.
+- Independent unseen-key top-1 remained at the applicable chance rate on every protocol; AUROC stayed near `0.5` and EER near `50%`.
+- CFP frontal: `1.15% +/- 0.17%` top-1 versus `1.00%` chance over 900 probes.
+- Larger LFW: `3.83% +/- 0.93%` top-1 versus `3.33%` chance over 270 probes.
+- No per-seed descriptive exact binomial test rejected chance (`p >= 0.1205`); 64/128/256-bit sweeps were also null.
+
+**Milestone question:** Can a key-free attacker recover identity from one template?
+
+**[x] Answered on 2026-08-26 for the tested real-data protocols:** No useful recovery was detected under independent unseen keys. This is a robust but scoped negative result, not a universal privacy or irreversibility claim.
+
+Evidence: [cross-dataset protocol](docs/protocols/real_datasets_month1.md), [aggregate results](experiments/month1_real_datasets/results_summary.csv), [dimension sweep](experiments/month1_real_datasets/dimension_sweep.csv), and [research log](docs/research_log.md).
+
+## [ ] Month 2 - Main novel contribution
+
+**Proposal period:** Weeks 5-8
+
+**Status checked:** 2026-08-26
+
+**Project hold:** Do not start Month 2 until the Month 1 evidence is reviewed and an explicit decision is made to proceed.
+
+- [x] Masked permutation-invariant DeepSets model implemented and tested on synthetic data.
+- [x] Synthetic 1/2/5/10 exposure smoke runs available for pipeline validation only.
+- [ ] Build real LFW sets for 1/2/5/10 independently keyed exposures.
+- [ ] Separate same-image/new-key from different-image/new-key experiments.
+- [ ] Run held-out identities with unseen test keys over multiple seeds.
+- [ ] Compare mean pooling, max pooling, DeepSets, attention, and Set Transformer.
+- [ ] Statistically compare one exposure with 2/5/10 exposures.
+
+**Results:** No real-data multi-exposure result yet.
+
+**Milestone question:** Does multi-exposure create significantly greater identity leakage?
+
+**[ ] Not answered as of 2026-08-26.** The Month 1 result covers one template only; synthetic runs cannot answer the research question.
+
+## [ ] Month 3 - Validation and paper
+
+**Proposal period:** Weeks 9-12
+
+**Status checked:** 2026-08-26
+
+- [ ] Run cross-scheme tests and required ablations.
+- [ ] Complete confidence intervals, significance tests, and failure analysis.
+- [ ] Run revisions and final experiments.
+- [ ] Produce final figures, reproducible commands, and paper draft.
+- [ ] Submit the paper.
+
+**Results:** Not started. No cross-scheme or final multi-exposure evidence exists.
+
+**Proposal deliverable:** Reproducible attack framework, results, and paper.
+
+**[ ] Not met as of 2026-08-26.** The framework is partially implemented, but the main Month 2 evidence and paper are pending.
+
+## Dataset status
+
+| Dataset              | Status       | Work completed                                                        | Next action                                         |
+| -------------------- | ------------ | --------------------------------------------------------------------- | --------------------------------------------------- |
+| Synthetic identities | [x] Plumbing | CPU smoke pipeline only; excluded from scientific evidence            | Keep as test data only                              |
+| LFW funneled         | [x] Used     | SCRFD/YuNet comparison, 150-identity replication, and dimension sweep | Preserve as Month 1 evidence                        |
+| Olivetti faces       | [x] Used     | Full 40-identity protocol and dimension sweep                         | Preserve as cross-dataset evidence                  |
+| CFP                  | [x] Used     | Full 500-identity frontal and profile protocols                       | Preserve as large-scale/view evidence               |
+| MOBIO                | [ ] Blocked  | Setup and validation script prepared; data not acquired               | Obtain authorized Idiap access and set `MOBIO_ROOT` |
+| CASIA-WebFace        | [ ] Not used | Reviewed as a possible FaceLinkGen training source                    | Use only after license and protocol verification    |
+| TPDNE                | [ ] Not used | Reviewed as optional FaceLinkGen evaluation data                      | Defer until core identity linkage works             |
+
+Data, embeddings, keys, model weights, and detailed run artifacts are gitignored.
+
+## Models and reproductions
+
+- [x] InsightFace `buffalo_l` archive and model hashes verified on 2026-08-26.
+- [x] OpenCV SCRFD/ArcFace and hash-pinned OpenCV Zoo YuNet/ArcFace backends validated because ONNX Runtime cannot initialize on this host.
+- [x] Local BioHash and single-template attack path validated.
+- [ ] `benchmark_cb`: paper targets verified, but the official repository is unavailable and MOBIO is pending.
+- [ ] FaceLinkGen: no verified official implementation or local reproduction.
+
+## Next work
+
+1. Review the Month 1 cross-dataset protocol, exact aggregate CSVs, and limitations.
+2. Obtain authorized MOBIO access and request the corrected official `benchmark_cb` source; do not substitute unofficial data or code.
+3. Keep Month 2 paused until an explicit project decision authorizes multi-exposure work.
+4. When authorized, preregister the 1/2/5/10 comparison and clustered statistical analysis before running it.
+
+Full task details and human-only blockers are in [docs/TODO.md](docs/TODO.md).
+
+## AI handoff rules
+
+Any AI assistant working in this repository must update this README when project status changes.
+
+1. Read this README, [docs/TODO.md](docs/TODO.md), [docs/research_log.md](docs/research_log.md), and the relevant protocol/results before changing a checkbox.
+2. Mark a task `[x]` only after it has executable evidence. Mark a month `[x]` only when its milestone question or deliverable is answered; partial code is not enough.
+3. Update `Last status update` and add the completion or status-check date in `YYYY-MM-DD` format.
+4. Under the relevant month, record what ran, the dataset/protocol, exact headline results, and whether the milestone question was answered.
+5. Update the dataset table and `Next work`; carry unresolved blockers forward.
+6. Append commands, results, failures, and decisions to [docs/research_log.md](docs/research_log.md).
+7. Never convert LFW or synthetic validation into a paper-reproduction claim, and never fabricate a missing result.
+8. Never commit biometric data, embeddings, keys, credentials, private paths, model weights, or detailed sensitive artifacts.
 
 ## Install and run
-
-Use an isolated environment, then install the project and existing local dependencies:
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,face]"
 make test
-make system-info
 make smoke-test
 ```
 
-The smoke test trains on synthetic identities at 1/2/5/10 exposures and writes artifacts under `results/`. Main GPU work requires an authorized face dataset, a documented InsightFace checkpoint, and a reviewed protocol; start with `python scripts/train/run_multiexposure.py --config configs/attacks/proposed_synthetic.yaml` only as an engineering baseline.
+Run the completed studies through the Month 1 targets in the `Makefile` after following the [real-dataset protocol](docs/protocols/real_datasets_month1.md). Results are written under gitignored `results/`. On Windows systems without GNU Make, run the listed Python commands directly.
 
-## Data and models
+MOBIO must be obtained through the [official access procedure](docs/setup/MOBIO.md). The repository does not bypass dataset or model access controls.
 
-MOBIO must be obtained from its official Idiap access route. Set `MOBIO_ROOT` and run `python scripts/data/prepare_mobio.py --root $env:MOBIO_ROOT`; the script does not download or bypass access controls. LFW may be downloaded via `python scripts/data/download_lfw.py` for engineering work only. Data and model weights are ignored by Git.
-
-Expected scale: CPU smoke tests are small; full ArcFace/MOBIO or FaceLinkGen reproductions need disk for image data/embeddings and likely a CUDA GPU. See [MOBIO setup](docs/setup/MOBIO.md), [reproduction selection](docs/reproduction_selection.md), and [final status](reports/final_research_status.md).
+See [reports/final_research_status.md](reports/final_research_status.md) for the current scientific interpretation and limitations.
