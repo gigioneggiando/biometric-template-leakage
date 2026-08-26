@@ -44,3 +44,13 @@
 - Interpretation: convergent evidence across three real datasets, pose, detector, sample size, and template dimension supports a robust negative single-template baseline. It does not establish universal irreversibility and does not test the proposed multi-exposure novelty.
 - Validation: 11 tests passed; `pip check`, Python compilation, YAML/CSV/link parsing, model/dataset hash verification, five protocol leakage audits, aggregate-to-detail comparisons, `git diff --check`, and editor diagnostics passed. GNU Make is unavailable on this Windows host, so target wiring was validated directly and the underlying Python commands were run.
 - Decision: Month 1 is complete. Keep Month 2 paused until explicit approval; continue waiting for MOBIO authorization and the corrected official `benchmark_cb` source.
+
+## 2026-08-26 (Month 1 robustness strengthening)
+
+- Task: strengthen the real-data single-template conclusion without starting Month 2 or using synthetic evidence.
+- Design: crossed three deterministic identity assignments (`20260826-20260828`), three stable `sample_id`-scoped key seeds (`20260826-20260828`), and three model seeds (`7/17/27`) on larger LFW and CFP frontal. Stable sample-ID keys keep identity assignment and key randomness as separate factors; every run retained unique, split-disjoint keys.
+- Statistics: summarized model runs within each split/key cell before study-level ranges. Added deterministic 2,000-resample identity-clustered percentile intervals for top-1, retaining all probes from each sampled identity.
+- Result: independent-key cell means were `2.59-3.58%` on larger LFW versus `3.33%` chance and `0.81-1.11%` on CFP frontal versus `1.00%` chance. All 54 independent-key run-level clustered intervals included chance. Fixed-transform cell means remained `66.54-77.41%` and `91.70-94.74%`, respectively.
+- Interpretation: the negative single-template result is robust to the tested identity assignment, key randomness, and optimizer randomness. Cells share fixed datasets, so this is descriptive sensitivity evidence, not 27 independent replications per condition, an equivalence test, or proof of irreversibility. Run-level interval checks were not multiplicity-adjusted.
+- Artifacts: detailed 108-run outputs remain gitignored; four study summaries and all 36 split/key cell aggregates are tracked under `experiments/month1_real_datasets/`.
+- Validation: 15 tests passed; dependencies, Python compilation, YAML/CSV/link parsing, editor diagnostics, detailed-to-tracked aggregate equality, all 18 key audits, and `git diff --check` passed. The refactored runner reproduced every prior LFW YuNet scientific metric exactly across all six attacker runs.

@@ -18,4 +18,4 @@
 
 ## Engineering validation
 
-`make smoke-test` runs the synthetic pipeline. The completed LFW Month 1 experiment adds a real-image single-template baseline: the independent unseen-key MLP remained at chance, while a fixed-transform calibration learned identity signal. Both are **CONCEPTUAL/ENGINEERING VALIDATION**, not publication reproductions or substitutes for MOBIO.
+`make smoke-test` runs the synthetic pipeline for plumbing only. The completed Month 1 real-image single-template baseline covers LFW, Olivetti, and CFP. Independent unseen-key results remained compatible with chance across dataset, detector, pose, sample-size, template-dimension, and crossed identity/key/model seed checks, while fixed-transform calibrations learned strong identity signal. These are **CONCEPTUAL/ENGINEERING VALIDATION**, not publication reproductions or substitutes for MOBIO.

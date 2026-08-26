@@ -58,6 +58,54 @@ def gallery_probe_metrics(
     }
 
 
+def identity_clustered_top1_interval(
+    predictions: np.ndarray,
+    gallery: np.ndarray,
+    probe_identity_ids: np.ndarray,
+    gallery_identity_ids: np.ndarray,
+    *,
+    seed: int,
+    n_resamples: int = 2000,
+    confidence: float = 0.95,
+) -> dict[str, float | int]:
+    if n_resamples < 1:
+        raise ValueError("n_resamples must be positive")
+    if not 0.0 < confidence < 1.0:
+        raise ValueError("confidence must be between zero and one")
+
+    predictions = np.asarray(predictions, dtype=np.float64)
+    gallery = np.asarray(gallery, dtype=np.float64)
+    predictions = predictions / np.linalg.norm(predictions, axis=1, keepdims=True).clip(min=1e-12)
+    gallery = gallery / np.linalg.norm(gallery, axis=1, keepdims=True).clip(min=1e-12)
+    probe_identity_ids = np.asarray(probe_identity_ids)
+    gallery_identity_ids = np.asarray(gallery_identity_ids)
+    predicted_ids = gallery_identity_ids[np.argmax(predictions @ gallery.T, axis=1)]
+    correctness = predicted_ids == probe_identity_ids
+
+    identities = np.unique(probe_identity_ids)
+    cluster_successes = np.asarray(
+        [correctness[probe_identity_ids == identity].sum() for identity in identities],
+        dtype=np.float64,
+    )
+    cluster_sizes = np.asarray(
+        [(probe_identity_ids == identity).sum() for identity in identities],
+        dtype=np.float64,
+    )
+    rng = np.random.default_rng(seed)
+    sampled_clusters = rng.integers(0, len(identities), size=(n_resamples, len(identities)))
+    estimates = cluster_successes[sampled_clusters].sum(axis=1) / cluster_sizes[sampled_clusters].sum(axis=1)
+    alpha = (1.0 - confidence) / 2.0
+    return {
+        "estimate": float(correctness.mean()),
+        "lower": float(np.quantile(estimates, alpha)),
+        "upper": float(np.quantile(estimates, 1.0 - alpha)),
+        "confidence": confidence,
+        "resamples": n_resamples,
+        "identity_clusters": len(identities),
+        "seed": seed,
+    }
+
+
 def verification_metrics(genuine_scores: np.ndarray, impostor_scores: np.ndarray) -> dict[str, float]:
     labels = np.concatenate([np.ones(len(genuine_scores)), np.zeros(len(impostor_scores))])
     scores = np.concatenate([genuine_scores, impostor_scores])

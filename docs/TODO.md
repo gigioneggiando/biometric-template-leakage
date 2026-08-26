@@ -98,6 +98,8 @@ python scripts\diagnostics\system_info.py
 - [x] Train a single-template MLP over three seeds and report cosine, normalized L2, AUROC, EER, TAR@FAR, and top-k linkage.
 - [x] Test primary top-1 counts against chance and record a negative result without overstating it.
 - [x] Test robustness across frontal/profile views, SCRFD/YuNet preprocessing, 60/150-identity LFW subsets, and 64/128/256-bit templates.
+- [x] Cross three identity assignments, three key seeds, and three model seeds on larger LFW and CFP frontal.
+- [x] Add identity-clustered bootstrap intervals and preserve cell-first descriptive summaries.
 - [x] Document protocol, hashes, commands, aggregate results, limitations, and novelty implications.
 - [ ] Start the real-data 1/2/5/10 comparison only after explicit authorization to enter Month 2.
 
@@ -165,6 +167,7 @@ python scripts\train\run_lfw_month1.py --config configs\attacks\month1_lfw.yaml
 python scripts\train\run_lfw_month1.py --config configs\attacks\month1_cfp.yaml
 python scripts\train\run_lfw_month1.py --config configs\attacks\month1_olivetti.yaml
 python scripts\train\run_month1_dimension_sweep.py --base-config configs\attacks\month1_lfw_yunet.yaml --output-root results\month1_sweeps\lfw_yunet
+python scripts\train\run_month1_seed_robustness.py --config configs\attacks\month1_seed_robustness.yaml
 ```
 
 Synthetic runs are pipeline tests only. LFW, Olivetti, and CFP results are engineering validation, not published reproductions, and support only the documented single-template conclusion.

@@ -24,7 +24,7 @@ def _seed_from_key(key: int | str | bytes) -> int:
     return int.from_bytes(hashlib.sha256(raw).digest()[:8], "little", signed=False)
 
 
-def generate_key(master_seed: int, split: str, index: int) -> int:
+def generate_key(master_seed: int, split: str, index: int | str) -> int:
     """Generate a stable split-scoped key identifier without hidden global state."""
     return _seed_from_key(f"biohash:{master_seed}:{split}:{index}")
 

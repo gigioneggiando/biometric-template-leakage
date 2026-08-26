@@ -36,6 +36,12 @@ Two conditions are kept separate:
 
 The attacker is a `template_bits -> 256 -> 512` MLP with ReLU and L2-normalized output, trained with cosine loss plus `0.1` MSE. Early stopping uses validation identities. Model seeds are `7`, `17`, and `27`. Evaluation uses one gallery embedding per test identity, remaining images as probes, top-k linkage, AUROC, EER, and TAR at fixed FAR.
 
+### Seed-robustness design
+
+The larger LFW and CFP frontal protocols also use a crossed `3 identity assignments x 3 key seeds x 3 model seeds` design. Identity-assignment and key seeds are `20260826`, `20260827`, and `20260828`; model seeds remain `7`, `17`, and `27`. Robustness keys are derived from each stable `sample_id` rather than row order or assigned split, keeping identity-assignment and key factors separate while retaining unique, split-disjoint keys within every run. Protected templates are therefore computed once per key seed and reused across identity assignments without changing their values. Each split/key cell is summarized across its three model runs before study-level ranges are computed, so model runs are not treated as independent protocol replications. Cells share fixed datasets and pipeline components; this is a sensitivity analysis, not 27 independent replications per condition.
+
+Top-1 uncertainty is additionally estimated by resampling test identities with replacement and retaining all probes belonging to each sampled identity. The deterministic percentile interval uses 2,000 resamples at 95% confidence. This respects within-identity probe clustering, but percentile intervals can under-cover with few identity clusters. Run-level intervals are inspected without familywise error correction; chance inclusion means compatibility with chance under that protocol, not equivalence, irreversibility, or a universal privacy guarantee.
+
 ## Cross-dataset results
 
 | Protocol | Chance | Unprotected top-1 | Fixed-transform MLP | Independent-key MLP | AUROC | EER |
@@ -51,14 +57,25 @@ Independent-key per-seed top-1 counts were `5/59, 6/59, 6/59`; `5/60, 5/60, 2/60
 
 The dimension sweep was also null. LFW independent-key top-1 was `6.67%`, `6.67%`, and `7.22%` at 64/128/256 bits versus `8.33%` chance. Olivetti was `12.04%`, `11.57%`, and `10.65%` versus `12.50%` chance.
 
+### Crossed-seed sensitivity results
+
+| Dataset/condition | Chance | Mean across 9 split/key cells | Cell-mean range | Run intervals including chance |
+| --- | ---: | ---: | ---: | ---: |
+| CFP frontal, independent keys | 1.00% | 0.97% +/- 0.10% | 0.81-1.11% | 27/27 |
+| CFP frontal, fixed transform | 1.00% | 93.57% +/- 1.21% | 91.70-94.74% | 0/27 |
+| LFW large, independent keys | 3.33% | 3.14% +/- 0.31% | 2.59-3.58% | 27/27 |
+| LFW large, fixed transform | 3.33% | 73.58% +/- 3.82% | 66.54-77.41% | 0/27 |
+
+Mean and standard deviation above summarize nine dependent split/key cell means; they are not standard errors over independent datasets. All 54 independent-key run-level identity-clustered intervals included chance, while every fixed-transform interval excluded it. This supports robustness to the tested identity assignment, key randomness, and optimizer randomness. It does not prove equivalence to chance, and the many interval checks have no familywise error correction.
+
 ## Interpretation
 
-The fixed-transform control is strongly learnable while the independent-key condition is consistently at chance across three datasets, frontal/profile views, two detectors, a 4.2x LFW sample expansion, and three template dimensions. This is convergent evidence that the current key-agnostic MLP does not recover useful identity information from one independently keyed template under these protocols.
+The fixed-transform control is strongly learnable while the independent-key condition is consistently compatible with chance across three datasets, frontal/profile views, two detectors, a 4.2x LFW sample expansion, three template dimensions, and crossed identity/key/model seeds on larger LFW and CFP. This is convergent evidence that the current key-agnostic MLP does not recover useful identity information from one independently keyed template under these protocols.
 
 This result does not establish universal irreversibility and does not test the proposed novelty. The unresolved research question is whether combining 2/5/10 independent observations changes leakage. That belongs to Month 2 and was intentionally not run here.
 
 ## Reproduction
 
-Dataset acquisition and protocol commands are exposed through `scripts/data/`. Extraction uses `scripts/train_or_extract/extract_arcface.py --backend opencv-yunet`. Tracked experiment configs are under `configs/attacks/month1_*.yaml`; training uses `scripts/train/run_lfw_month1.py`. The dimension sweep uses `scripts/train/run_month1_dimension_sweep.py`.
+Dataset acquisition and protocol commands are exposed through `scripts/data/`. Extraction uses `scripts/train_or_extract/extract_arcface.py --backend opencv-yunet`. Tracked experiment configs are under `configs/attacks/month1_*.yaml`; training uses `scripts/train/run_lfw_month1.py`. The dimension sweep uses `scripts/train/run_month1_dimension_sweep.py`; crossed seed robustness uses `scripts/train/run_month1_seed_robustness.py`.
 
 Exact aggregate values are tracked in `experiments/month1_real_datasets/`. Raw data, protocol manifests containing local source paths, embeddings, model weights, keys, and detailed result artifacts stay gitignored.

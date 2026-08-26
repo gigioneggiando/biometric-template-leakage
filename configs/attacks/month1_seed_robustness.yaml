@@ -1,0 +1,10 @@
+classification: engineering validation, not benchmark_cb reproduction
+output_root: results/month1_seed_robustness
+identity_split_seeds: [20260826, 20260827, 20260828]
+key_seeds: [20260826, 20260827, 20260828]
+independent_key_scope: sample_id
+studies:
+  - name: lfw_large
+    base_config: configs/attacks/month1_lfw_large.yaml
+  - name: cfp_frontal
+    base_config: configs/attacks/month1_cfp.yaml

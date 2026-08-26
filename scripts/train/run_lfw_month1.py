@@ -20,7 +20,11 @@ import yaml
 from torch.nn import functional as F
 
 from biometrics_ai.aggregation.models import SingleTemplateMLP
-from biometrics_ai.evaluation.metrics import gallery_probe_metrics, verification_metrics
+from biometrics_ai.evaluation.metrics import (
+    gallery_probe_metrics,
+    identity_clustered_top1_interval,
+    verification_metrics,
+)
 from biometrics_ai.protection import BioHashConfig, biohash, biohash_batch, generate_key
 from biometrics_ai.utils.seeding import seed_record_dict
 
@@ -53,6 +57,20 @@ def validate_splits(metadata: list[dict]) -> dict[str, set[str]]:
     if not all(split_identities.values()):
         raise ValueError("Every split must contain identities")
     return split_identities
+
+
+def resplit_metadata(metadata: list[dict], seed: int) -> list[dict]:
+    identities = sorted({str(row["identity_id"]) for row in metadata})
+    if len(identities) < 5:
+        raise ValueError("At least five identities are required for deterministic resplitting")
+    shuffled = np.random.default_rng(seed).permutation(identities)
+    train_end = int(0.6 * len(identities))
+    validation_end = int(0.8 * len(identities))
+    split_by_identity = {
+        identity_id: "train" if index < train_end else "val" if index < validation_end else "test"
+        for index, identity_id in enumerate(shuffled)
+    }
+    return [{**row, "split": split_by_identity[str(row["identity_id"])]} for row in metadata]
 
 
 def gallery_probe_indices(metadata: list[dict]) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
@@ -101,6 +119,7 @@ def protect_embeddings(
     condition: str,
     key_seed: int,
     template_dim: int,
+    independent_key_scope: str = "split_index",
 ) -> tuple[np.ndarray, dict[str, int | bool]]:
     scheme = BioHashConfig(input_dim=embeddings.shape[1], output_dim=template_dim)
     if condition == "shared_key_calibration":
@@ -112,11 +131,33 @@ def protect_embeddings(
     if condition != "independent_unseen_keys":
         raise ValueError(f"Unknown condition: {condition}")
 
-    templates, keys_by_split = [], defaultdict(set)
-    for index, (embedding, row) in enumerate(zip(embeddings, metadata, strict=True)):
+    keys, key_audit = independent_keys(metadata, key_seed, independent_key_scope)
+    templates = [
+        biohash(embedding, key, scheme)
+        for embedding, key in zip(embeddings, keys, strict=True)
+    ]
+    return np.asarray(templates, dtype=np.float32), key_audit
+
+
+def independent_keys(
+    metadata: list[dict],
+    key_seed: int,
+    key_scope: str,
+) -> tuple[list[int], dict[str, int | bool]]:
+    if key_scope not in {"split_index", "sample_id"}:
+        raise ValueError("independent_key_scope must be split_index or sample_id")
+    keys, keys_by_split = [], defaultdict(set)
+    for index, row in enumerate(metadata):
         split = str(row["split"])
-        key = generate_key(key_seed, split, index)
-        templates.append(biohash(embedding, key, scheme))
+        if key_scope == "split_index":
+            scope, key_index = split, index
+        else:
+            sample_id = str(row.get("sample_id", "")).strip()
+            if not sample_id:
+                raise ValueError("sample_id key scope requires a non-empty sample_id on every row")
+            scope, key_index = "sample", sample_id
+        key = generate_key(key_seed, scope, key_index)
+        keys.append(key)
         keys_by_split[split].add(key)
     split_key_disjoint = not (
         keys_by_split["train"] & keys_by_split["val"]
@@ -128,7 +169,7 @@ def protect_embeddings(
         raise RuntimeError("Independent key generation produced duplicate keys within a split")
     if not split_key_disjoint:
         raise RuntimeError("Independent key generation produced overlapping split key pools")
-    return np.asarray(templates, dtype=np.float32), {
+    return keys, {
         "unique_keys": unique_key_count,
         "split_key_disjoint": split_key_disjoint,
     }
@@ -199,6 +240,15 @@ def train_attacker(
     with torch.no_grad():
         probe_predictions = model(torch.tensor(templates[probe_indices], dtype=torch.float32)).numpy()
     target_cosines = np.sum(probe_predictions * embeddings[probe_indices], axis=1)
+    clustered_interval = identity_clustered_top1_interval(
+        probe_predictions,
+        embeddings[gallery_indices],
+        probe_ids,
+        gallery_ids,
+        seed=seed,
+        n_resamples=int(training_config.get("bootstrap_resamples", 2000)),
+        confidence=float(training_config.get("bootstrap_confidence", 0.95)),
+    )
     metrics: dict[str, float | int | dict] = {
         "seed": seed,
         "seed_record": seed_record,
@@ -207,6 +257,7 @@ def train_attacker(
         "mean_target_cosine": float(target_cosines.mean()),
         "normalized_l2": float(np.linalg.norm(probe_predictions - embeddings[probe_indices], axis=1).mean()),
         "elapsed_seconds": time.time() - started,
+        "top1_identity_clustered_interval": clustered_interval,
         **gallery_probe_metrics(probe_predictions, embeddings[gallery_indices], probe_ids, gallery_ids),
     }
     return metrics
@@ -235,18 +286,19 @@ def aggregate_runs(runs: list[dict]) -> dict[str, dict[str, float]]:
     return summary
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--config", type=Path, required=True)
-    args = parser.parse_args()
-    config = yaml.safe_load(args.config.read_text(encoding="utf-8"))
+def evaluate_experiment(
+    config: dict,
+    embeddings: np.ndarray,
+    metadata: list[dict],
+    embedding_manifest: dict,
+    precomputed_templates: dict[str, np.ndarray] | None = None,
+) -> dict:
     if config.get("classification") != "engineering validation, not benchmark_cb reproduction":
         raise ValueError("Month 1 runs must retain the engineering-validation classification")
     dataset = str(config.get("dataset", "")).strip()
     if not dataset:
         raise ValueError("Month 1 runs must name the dataset in the experiment config")
 
-    embeddings, metadata, embedding_manifest = load_embeddings(Path(config["embedding_dir"]))
     split_identities = validate_splits(metadata)
     gallery_indices, gallery_ids, probe_indices, probe_ids = gallery_probe_indices(metadata)
     unprotected_baseline = gallery_probe_metrics(
@@ -255,13 +307,27 @@ def main() -> None:
 
     condition_results = {}
     for condition in config["conditions"]:
-        templates, key_audit = protect_embeddings(
-            embeddings,
-            metadata,
-            condition,
-            int(config["key_seed"]),
-            int(config["template_dim"]),
-        )
+        if precomputed_templates is None:
+            templates, key_audit = protect_embeddings(
+                embeddings,
+                metadata,
+                condition,
+                int(config["key_seed"]),
+                int(config["template_dim"]),
+                str(config.get("independent_key_scope", "split_index")),
+            )
+        else:
+            templates = precomputed_templates[condition]
+            if len(templates) != len(metadata):
+                raise ValueError(f"Precomputed {condition} template count does not match metadata")
+            if condition == "shared_key_calibration":
+                key_audit = {"unique_keys": 1, "split_key_disjoint": False}
+            else:
+                _, key_audit = independent_keys(
+                    metadata,
+                    int(config["key_seed"]),
+                    str(config.get("independent_key_scope", "split_index")),
+                )
         protected_scores = 1.0 - np.mean(
             templates[probe_indices, None, :] != templates[gallery_indices][None, :, :],
             axis=2,
@@ -288,7 +354,7 @@ def main() -> None:
             "attacker_summary": aggregate_runs(runs),
         }
 
-    result = {
+    return {
         "classification": config["classification"],
         "dataset": dataset,
         "embedding_manifest": embedding_manifest,
@@ -307,6 +373,10 @@ def main() -> None:
         "git_commit": subprocess.run(["git", "rev-parse", "HEAD"], text=True, capture_output=True).stdout.strip(),
     }
 
+
+def write_result(config: dict, result: dict) -> None:
+    condition_results = result["conditions"]
+
     results_directory = Path(config["results_dir"])
     results_directory.mkdir(parents=True, exist_ok=True)
     (results_directory / "run_config.yaml").write_text(yaml.safe_dump(config, sort_keys=True), encoding="utf-8")
@@ -317,6 +387,16 @@ def main() -> None:
         for condition, values in condition_results.items():
             for metric_name, statistics in values["attacker_summary"].items():
                 writer.writerow([condition, metric_name, statistics["mean"], statistics["std"]])
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", type=Path, required=True)
+    args = parser.parse_args()
+    config = yaml.safe_load(args.config.read_text(encoding="utf-8"))
+    embeddings, metadata, embedding_manifest = load_embeddings(Path(config["embedding_dir"]))
+    result = evaluate_experiment(config, embeddings, metadata, embedding_manifest)
+    write_result(config, result)
     print(json.dumps(result, indent=2))
 
 

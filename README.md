@@ -26,6 +26,8 @@ LFW, Olivetti, and CFP results are **engineering validation, not paper reproduct
 - [x] Single-template MLP, three seeds, leakage checks, and evaluation metrics.
 - [x] Six real-image protocol variants covering detector, sample-size, and pose robustness.
 - [x] BioHash dimension robustness at 64/128/256 bits on two real datasets.
+- [x] Crossed identity-assignment/key/model sensitivity study on larger LFW and CFP frontal.
+- [x] Identity-clustered bootstrap intervals for correlated probes.
 - [x] Cross-dataset leakage result documented and reproducible.
 - [ ] Exact ArcFace + BioHash + MOBIO `benchmark_cb` reproduction. Blocked by MOBIO access and the missing official source.
 
@@ -35,16 +37,18 @@ LFW, Olivetti, and CFP results are **engineering validation, not paper reproduct
 
 - Unprotected ArcFace top-1: `94.92%` to `100.00%` across six protocol variants.
 - Fixed-transform calibration top-1: `51.11%` to `91.00%`, confirming learnability when the transform is reusable.
-- Independent unseen-key top-1 remained at the applicable chance rate on every protocol; AUROC stayed near `0.5` and EER near `50%`.
+- Independent unseen-key top-1 remained compatible with the applicable chance rate on every protocol; AUROC stayed near `0.5` and EER near `50%`.
 - CFP frontal: `1.15% +/- 0.17%` top-1 versus `1.00%` chance over 900 probes.
 - Larger LFW: `3.83% +/- 0.93%` top-1 versus `3.33%` chance over 270 probes.
 - No per-seed descriptive exact binomial test rejected chance (`p >= 0.1205`); 64/128/256-bit sweeps were also null.
+- In the crossed `3 identity assignments x 3 key seeds x 3 model seeds` sensitivity study, independent-key cell means were `0.81-1.11%` on CFP versus `1.00%` chance and `2.59-3.58%` on larger LFW versus `3.33%` chance.
+- All 54 independent-key run-level identity-clustered 95% intervals included chance; fixed-transform cell means remained `91.70-94.74%` on CFP and `66.54-77.41%` on LFW.
 
 **Milestone question:** Can a key-free attacker recover identity from one template?
 
 **[x] Answered on 2026-08-26 for the tested real-data protocols:** No useful recovery was detected under independent unseen keys. This is a robust but scoped negative result, not a universal privacy or irreversibility claim.
 
-Evidence: [cross-dataset protocol](docs/protocols/real_datasets_month1.md), [aggregate results](experiments/month1_real_datasets/results_summary.csv), [dimension sweep](experiments/month1_real_datasets/dimension_sweep.csv), and [research log](docs/research_log.md).
+Evidence: [cross-dataset protocol](docs/protocols/real_datasets_month1.md), [aggregate results](experiments/month1_real_datasets/results_summary.csv), [dimension sweep](experiments/month1_real_datasets/dimension_sweep.csv), [seed-robustness summary](experiments/month1_real_datasets/seed_robustness_summary.csv), [cell aggregates](experiments/month1_real_datasets/seed_robustness_cells.csv), and [research log](docs/research_log.md).
 
 ## [ ] Month 2 - Main novel contribution
 
@@ -91,9 +95,9 @@ Evidence: [cross-dataset protocol](docs/protocols/real_datasets_month1.md), [agg
 | Dataset              | Status       | Work completed                                                        | Next action                                         |
 | -------------------- | ------------ | --------------------------------------------------------------------- | --------------------------------------------------- |
 | Synthetic identities | [x] Plumbing | CPU smoke pipeline only; excluded from scientific evidence            | Keep as test data only                              |
-| LFW funneled         | [x] Used     | SCRFD/YuNet comparison, 150-identity replication, and dimension sweep | Preserve as Month 1 evidence                        |
+| LFW funneled         | [x] Used     | Detector, sample-size, dimension, and crossed-seed sensitivity checks | Preserve as Month 1 evidence                        |
 | Olivetti faces       | [x] Used     | Full 40-identity protocol and dimension sweep                         | Preserve as cross-dataset evidence                  |
-| CFP                  | [x] Used     | Full 500-identity frontal and profile protocols                       | Preserve as large-scale/view evidence               |
+| CFP                  | [x] Used     | Full frontal/profile protocols and crossed-seed sensitivity checks    | Preserve as large-scale/view evidence               |
 | MOBIO                | [ ] Blocked  | Setup and validation script prepared; data not acquired               | Obtain authorized Idiap access and set `MOBIO_ROOT` |
 | CASIA-WebFace        | [ ] Not used | Reviewed as a possible FaceLinkGen training source                    | Use only after license and protocol verification    |
 | TPDNE                | [ ] Not used | Reviewed as optional FaceLinkGen evaluation data                      | Defer until core identity linkage works             |

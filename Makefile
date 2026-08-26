@@ -1,4 +1,4 @@
-.PHONY: test smoke-test system-info proposed-small lfw-protocol lfw-large-protocol cfp-protocol olivetti-protocol month1-lfw month1-lfw-yunet month1-lfw-large month1-cfp month1-cfp-profile month1-olivetti month1-dimension-sweeps
+.PHONY: test smoke-test system-info proposed-small lfw-protocol lfw-large-protocol cfp-protocol olivetti-protocol month1-lfw month1-lfw-yunet month1-lfw-large month1-cfp month1-cfp-profile month1-olivetti month1-dimension-sweeps month1-seed-robustness
 
 test:
 	python -m pytest
@@ -45,3 +45,6 @@ month1-olivetti:
 month1-dimension-sweeps:
 	python scripts/train/run_month1_dimension_sweep.py --base-config configs/attacks/month1_lfw_yunet.yaml --output-root results/month1_sweeps/lfw_yunet
 	python scripts/train/run_month1_dimension_sweep.py --base-config configs/attacks/month1_olivetti.yaml --output-root results/month1_sweeps/olivetti
+
+month1-seed-robustness:
+	python scripts/train/run_month1_seed_robustness.py --config configs/attacks/month1_seed_robustness.yaml
