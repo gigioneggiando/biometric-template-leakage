@@ -54,7 +54,7 @@ Evidence: [cross-dataset protocol](docs/protocols/real_datasets_month1.md), [agg
 
 **Proposal period:** Weeks 5-8
 
-**Completed:** 2026-09-04 for the first preregistered MOBIO protocol; confirmation remains open.
+**Completed:** 2026-09-04 for preregistered BioHash and MLP-Hash MOBIO protocols; broader validation remains open.
 
 - [x] Masked permutation-invariant DeepSets model implemented and tested on synthetic data.
 - [x] Synthetic 1/2/5/10 exposure smoke runs available for pipeline validation only.
@@ -70,6 +70,8 @@ Evidence: [cross-dataset protocol](docs/protocols/real_datasets_month1.md), [agg
 
 **[x] Exploratorily answered on 2026-09-04:** No greater identity leakage was detected up to 10 independently keyed exposures. This is a scoped negative result requiring confirmation, not proof of irreversibility.
 
+**Cross-scheme confirmation:** Paper-specified MLP-Hash also remained at chance: `2.50% +/- 1.10%` top-1 at one record and `3.33%` for 10-record DeepSets, with AUROC `0.4998`. The shared-key and unprotected controls remained strongly positive.
+
 Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO multi-exposure results](experiments/mobio_multiexposure/README.md).
 
 ## [ ] Month 3 - Validation and paper
@@ -78,13 +80,16 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 
 **Status checked:** 2026-09-04
 
-- [ ] Run cross-scheme tests and required ablations. A paper-specified MLP-Hash confirmation was preregistered and started on 2026-09-04; results are not yet claimed.
+- [x] Run a preregistered paper-specified MLP-Hash cross-scheme test with new key/set/model seeds.
+- [ ] Run key-reuse/correlation, norm-leakage, same-image, and shuffled-record boundary ablations.
 - [ ] Complete confidence intervals, significance tests, and failure analysis.
 - [ ] Run revisions and final experiments.
 - [ ] Produce final figures, reproducible commands, and paper draft.
 - [ ] Submit the paper.
 
-**Results:** Cross-scheme implementation and focused tests are complete; the confirmation run is in progress. No cross-scheme result is claimed until the run completes.
+**Results:** BioHash and MLP-Hash both show chance-level identity recovery under fresh independent hidden keys. A scoped rotational-invariance proposition explains why arbitrary record multiplicity cannot help under fixed-norm ideal assumptions; the key-reuse boundary below tests one important violation.
+
+**Positive boundary result:** With 10 records and session-aligned recurring BioHash transforms, mean-pool top-1 was `66.39%/61.11%/47.64%/33.89%` for pools of 1/2/5/10, versus `2.92%` with fresh keys. A preregistered sample-randomized confirmation retained severe leakage for pools 1/2/5 (`77.50%/69.44%/46.94%`) but not pool 10 (`5.56%`, equal to the fresh endpoint). The all-pools criterion therefore failed, refining the result to a small-pool reuse threshold rather than a universal monotonic curve.
 
 **Proposal deliverable:** Reproducible attack framework, results, and paper.
 
@@ -114,10 +119,10 @@ Data, embeddings, keys, model weights, and detailed run artifacts are gitignored
 
 ## Next work
 
-1. Confirm the exploratory MOBIO null result across new protocol and key seeds.
-2. Add at least one substantially different cancelable transform before making a cross-scheme claim.
-3. Run the same-image/different-key control separately from the completed different-image/different-key condition.
-4. Request the corrected official `benchmark_cb` source; do not substitute unofficial code.
+1. Formalize and independently check the multiplicity-invariance proof and its exact assumptions.
+2. Map the randomized key-pool threshold more densely and confirm it with new protocol seeds and MLP-Hash.
+3. Run norm-leakage, same-image/different-key, and shuffled-record controls.
+4. Recover a source-exact published transform and add another dataset before making a general claim.
 
 Full task details and human-only blockers are in [docs/TODO.md](docs/TODO.md).
 

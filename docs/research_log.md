@@ -63,3 +63,22 @@
 - Result: independent unseen-key top-1 ranged `2.64-4.17%` against `3.33%` chance. All 10-exposure models reached `3.33%`; DeepSets AUROC was `0.4988`, EER `49.81%`, and its change from one exposure was `-0.83` points. Every run-level clustered interval included chance, so the amplification criterion failed.
 - Controls: the unprotected 10-exposure oracle reached `100%` top-1. Shared-key mean pooling increased from `73.47%` at one exposure to `87.36%` at five, showing that the pipeline can exploit reusable-transform leakage.
 - Interpretation: no multi-exposure identity amplification was detected for independently keyed local BioHash templates. This strengthens a negative result but is not irreversibility proof or a positive breakthrough. Confirm with new protocol/key seeds and another transform before publication-level claims.
+
+## 2026-09-04 (MLP-Hash cross-scheme confirmation)
+
+- Method: implemented the public-paper MLP-Hash specification with three 1024-unit ReLU hidden layers, 512-bit output-mean binarization, and semi-orthogonal random projections. The implementation is not source-exact because the stated GitLab repository was unreachable and the paper's row-orthonormal instruction is impossible for its narrowing output layer.
+- Protocol: repeated the MOBIO 1/2/5/10 study with key/set seed identifier `20260911`, model seeds 37/47/57, 1,799 unique split-disjoint keys, and the preregistered five-point amplification threshold. Runtime was 18.23 minutes.
+- Result: independent-key one-record top-1 was `2.50% +/- 1.10%`; 10-record DeepSets was `3.33%`, AUROC `0.4998`, and EER `49.81%`, against `3.33%` chance. The amplification criterion failed. The 10-record unprotected oracle was `100%`; shared-key mean pooling peaked at `80.83%` at five records.
+- Interpretation: the second null is predicted by rotational invariance. For fixed-norm inputs and independent hidden Haar-like projections, each protected record has the same distribution for every source, and independent multiplicity cannot add identity information. This is a scoped proposition, not universal irreversibility; key reuse/correlation, norm leakage, finite-key defects, and non-invariant transforms are the next boundary tests.
+
+## 2026-09-04 (system-key-pool boundary)
+
+- Protocol: preregistered BioHash sweep with globally recurring hidden transform pools of 1/2/5/10 keys, a fresh 1,799-key endpoint, key seed 90431, set seed 90437, and model seeds 67/77/87. Keys recur across identity splits but remain hidden from the attack model. Runtime was 7.14 minutes.
+- Result: at 10 records, mean-pool top-1 was `66.39%`, `61.11%`, `47.64%`, and `33.89%` for pools 1/2/5/10, versus `2.92%` for fresh keys and `3.33%` chance. Corresponding AUROCs were `0.9692`, `0.9639`, `0.9351`, `0.9043`, and `0.4991`. Every recurring-pool run's clustered lower bound exceeded chance; all recurring pools exceeded the fresh endpoint by at least five points.
+- Interpretation at completion: this was a positive leakage phase boundary under transform reuse, not a contradiction of the fresh-key result. Pool size 1 repeated the prior calibration; pools 2/5/10 established the initial session-aligned curve. The randomized assignment below was required to separate key reuse from session ordering; new splits and cross-scheme confirmation remain necessary.
+
+## 2026-09-04 (randomized key-pool confirmation)
+
+- Protocol: preregistered sample-ID-hashed assignment, independent of session index, with key seed 90503, set seed 90509, model seeds 97/107/117, and otherwise unchanged evaluation. Runtime was 7.30 minutes.
+- Result: 10-record mean-pool top-1 was `77.50%`, `69.44%`, `46.94%`, and `5.56%` for pools 1/2/5/10; AUROC was `0.9754`, `0.9608`, `0.8927`, and `0.5257`. The fresh endpoint was also `5.56%` top-1 with AUROC `0.4992`. Pools 1/2/5 excluded chance in every clustered interval; pool 10 did not.
+- Decision: the preregistered all-recurring-pools criterion failed. The confirmation supports severe leakage for small recurring transform pools and locates a protocol-specific boundary between 5 and 10, but does not confirm the original session-aligned pool-10 effect. Future claims and figures must show both runs and must not describe the initial curve as universal.

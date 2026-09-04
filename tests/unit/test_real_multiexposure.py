@@ -1,10 +1,12 @@
 from pathlib import Path
 
 import numpy as np
+import pytest
 import torch
 
 from biometrics_ai.aggregation.models import PooledTemplateMLP
 from biometrics_ai.data.multiexposure import ExposureSetConfig, build_real_exposure_sets
+from scripts.train import run_real_multiexposure
 
 
 def _inputs(tmp_path: Path):
@@ -49,3 +51,100 @@ def test_pooled_template_mlp_is_permutation_invariant():
     for pooling in ("mean", "max"):
         model = PooledTemplateMLP(5, 3, pooling=pooling)
         assert torch.allclose(model(values), model(values[:, [2, 0, 3, 1]]), atol=1e-6)
+
+
+def test_system_key_pool_recurs_across_identity_splits(monkeypatch: pytest.MonkeyPatch):
+    embeddings = np.ones((6, 4), dtype=np.float32)
+    metadata = [
+        {"sample_id": str(index), "sample_index": index % 3, "split": split}
+        for index, split in enumerate(("train", "train", "val", "val", "test", "test"))
+    ]
+
+    monkeypatch.setattr(
+        run_real_multiexposure,
+        "biohash",
+        lambda embedding, key, config: np.full(config.output_dim, key % 251, dtype=np.uint8),
+    )
+    templates, audit = run_real_multiexposure.protect_embeddings(
+        embeddings,
+        metadata,
+        "system_key_pool_2",
+        key_seed=31,
+        template_dim=2,
+    )
+
+    assert np.array_equal(templates[0], templates[2])
+    assert np.array_equal(templates[1], templates[4])
+    assert not np.array_equal(templates[0], templates[1])
+    assert audit == {
+        "scheme": "biohash",
+        "unique_keys": 2,
+        "split_key_disjoint": False,
+        "key_scope": "system-wide recurring",
+        "key_pool_size": 2,
+    }
+
+
+def test_key_pool_evidence_compares_recurring_pools_with_fresh_keys():
+    def model(top1: float, lower: float) -> dict:
+        return {
+            "summary": {"top1_linkage": {"mean": top1}},
+            "runs": [{"top1_identity_clustered_interval": {"lower": lower}}],
+        }
+
+    conditions = {
+        "system_key_pool_1": {"exposures": {"10": {"models": {"mean_mlp": model(0.7, 0.5)}}}},
+        "system_key_pool_10": {"exposures": {"10": {"models": {"mean_mlp": model(0.3, 0.2)}}}},
+        "independent_unseen_keys": {"exposures": {"10": {"models": {"mean_mlp": model(0.03, 0.0)}}}},
+    }
+    metadata = [{"identity_id": str(index), "split": "test"} for index in range(30)]
+    config = {
+        "primary_analysis": "key_pool_boundary",
+        "conditions": ["system_key_pool_1", "system_key_pool_10", "independent_unseen_keys"],
+        "amplification_threshold": 0.05,
+    }
+
+    evidence = run_real_multiexposure.evaluate_primary_evidence(conditions, metadata, config)
+
+    assert evidence["analysis"] == "key_pool_boundary"
+    assert evidence["all_recurring_pools_exclude_chance"]
+    assert evidence["all_recurring_pools_meet_minimum_effect"]
+
+
+def test_random_key_pool_assignment_is_stable_and_not_session_bound(monkeypatch: pytest.MonkeyPatch):
+    embeddings = np.ones((40, 8), dtype=np.float32)
+    metadata = [
+        {"sample_id": f"sample_{index}", "sample_index": index % 4, "split": "train"}
+        for index in range(40)
+    ]
+    pool = [run_real_multiexposure.generate_key(41, "system_pool", index) for index in range(2)]
+    pool_slots = {key: slot for slot, key in enumerate(pool)}
+    monkeypatch.setattr(
+        run_real_multiexposure,
+        "biohash",
+        lambda embedding, key, config: np.full(config.output_dim, pool_slots[key], dtype=np.uint8),
+    )
+    first, first_audit = run_real_multiexposure.protect_embeddings(
+        embeddings,
+        metadata,
+        "random_key_pool_2",
+        key_seed=41,
+        template_dim=4,
+    )
+    second, second_audit = run_real_multiexposure.protect_embeddings(
+        embeddings,
+        metadata,
+        "random_key_pool_2",
+        key_seed=41,
+        template_dim=4,
+    )
+
+    assert np.array_equal(first, second)
+    assert first_audit == second_audit
+    assert first_audit["key_scope"] == "system-wide recurring randomized"
+    expected_slots = [
+        run_real_multiexposure.generate_key(41, "pool_assignment", row["sample_id"]) % 2
+        for row in metadata
+    ]
+    assert np.array_equal(first[:, 0], expected_slots)
+    assert len(set(first[::4, 0])) == 2

@@ -21,3 +21,15 @@ Report top-1/top-5 linkage, AUROC, EER, TAR at FAR `1e-2` and `1e-3`, target cos
 The cross-scheme confirmation repeats the MOBIO 1/2/5/10 study using MLP-Hash, fixed key/set seed identifier `20260911`, and model seeds 37/47/57. The seed identifier is not an execution date. It retains the same identity split and held-out-gallery design to isolate protection-scheme effects. The primary endpoint and five-point amplification threshold are unchanged; this is a cross-scheme robustness test, not an independent dataset replication.
 
 The implementation follows the public MLP-Hash paper: three ReLU hidden layers of width 1024 for 512-D ArcFace input, a 512-bit output, key-seeded random semi-orthogonal projections, and output-mean binarization. The paper says each projection is row-orthonormal, which is impossible for its narrowing 1024-to-512 output layer. We therefore use orthonormal rows when widening and orthonormal columns when narrowing. The authors' stated GitLab source was unavailable at preregistration, so results must be labelled `paper-specified, not source-exact`.
+
+## System-key-pool boundary preregistration (2026-09-04)
+
+The boundary study tests the multiplicity-invariance assumption that keys are fresh and independent. It uses BioHash, the fixed MOBIO identity split, key seed 90431, set seed 90437, model seeds 67/77/87, and the unchanged 1/2/5/10 exposure construction and training settings. No architecture or threshold is selected from boundary results.
+
+Globally recurring hidden transform pools contain 1, 2, 5, or 10 keys. A source record receives key `sample_index mod pool_size`, so each transform recurs across training, validation, and test identities while its value remains hidden from the attack model. The fresh independent unseen-key condition is rerun as the endpoint control. This is a seen-transform deployment-misconfiguration threat model, not evidence against the fresh unseen-key proposition.
+
+The primary descriptive curve is 10-record mean-pool top-1 versus key-pool size, ending at fresh keys. Evidence that key reuse breaks the ideal guarantee requires a recurring-pool identity-clustered interval above `3.33%` chance and an absolute top-1 increase of at least five points over the fresh-key endpoint. Mean/max/DeepSets and lower exposure counts are secondary diagnostics.
+
+## Randomized key-pool confirmation preregistration (2026-09-04)
+
+The first boundary result assigns transforms by `sample_index mod pool_size`, which may confound key recurrence with session ordering. Before inspecting a randomized result, a confirmation was fixed with key seed 90503, set seed 90509, model seeds 97/107/117, and the same pools, exposure levels, models, metrics, and success criterion. Each sample is assigned reproducibly to a pool slot by hashing its sample ID with a separate assignment scope. This breaks the session-to-key mapping while retaining system-wide recurrence across identity splits.

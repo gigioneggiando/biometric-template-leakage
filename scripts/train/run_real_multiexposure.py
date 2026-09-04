@@ -77,6 +77,28 @@ def protect_embeddings(
         key = generate_key(key_seed, "shared", 0)
         templates = protect_batch(embeddings, key, scheme)
         return templates, {"scheme": scheme_name, "unique_keys": 1, "split_key_disjoint": False}
+    if condition.startswith(("system_key_pool_", "random_key_pool_")):
+        random_assignment = condition.startswith("random_key_pool_")
+        prefix = "random_key_pool_" if random_assignment else "system_key_pool_"
+        key_pool_size = int(condition.removeprefix(prefix))
+        if key_pool_size < 1:
+            raise ValueError("System key pool size must be positive")
+        key_pool = [generate_key(key_seed, "system_pool", index) for index in range(key_pool_size)]
+        if random_assignment:
+            keys = [
+                key_pool[generate_key(key_seed, "pool_assignment", str(row["sample_id"])) % key_pool_size]
+                for row in metadata
+            ]
+        else:
+            keys = [key_pool[int(row["sample_index"]) % key_pool_size] for row in metadata]
+        templates = np.stack([protect_one(embedding, key, scheme) for embedding, key in zip(embeddings, keys)])
+        return templates, {
+            "scheme": scheme_name,
+            "unique_keys": len(set(keys)),
+            "split_key_disjoint": False,
+            "key_scope": "system-wide recurring randomized" if random_assignment else "system-wide recurring",
+            "key_pool_size": key_pool_size,
+        }
     if condition != "independent_unseen_keys":
         raise ValueError(f"Unknown condition: {condition}")
 
@@ -214,6 +236,53 @@ def aggregate_runs(runs: list[dict]) -> dict[str, dict[str, float]]:
     }
 
 
+def evaluate_primary_evidence(condition_results: dict, metadata: list[dict], config: dict) -> dict:
+    chance = 1.0 / len({str(row["identity_id"]) for row in metadata if row["split"] == "test"})
+    if config.get("primary_analysis") == "key_pool_boundary":
+        fresh = condition_results["independent_unseen_keys"]["exposures"]["10"]["models"]["mean_mlp"]
+        boundary = {}
+        for condition in config["conditions"]:
+            if not condition.startswith(("system_key_pool_", "random_key_pool_")):
+                continue
+            model = condition_results[condition]["exposures"]["10"]["models"]["mean_mlp"]
+            boundary[condition] = {
+                "top1_mean": model["summary"]["top1_linkage"]["mean"],
+                "all_clustered_intervals_exclude_chance": all(
+                    run["top1_identity_clustered_interval"]["lower"] > chance for run in model["runs"]
+                ),
+            }
+        fresh_top1 = fresh["summary"]["top1_linkage"]["mean"]
+        minimum_effect = float(config["amplification_threshold"])
+        return {
+            "analysis": "key_pool_boundary",
+            "chance_top1": chance,
+            "fresh_key_top1_mean": fresh_top1,
+            "ten_exposure_mean_pool_boundary": boundary,
+            "all_recurring_pools_exclude_chance": all(
+                row["all_clustered_intervals_exclude_chance"] for row in boundary.values()
+            ),
+            "all_recurring_pools_meet_minimum_effect": all(
+                row["top1_mean"] - fresh_top1 >= minimum_effect for row in boundary.values()
+            ),
+        }
+
+    primary = condition_results["independent_unseen_keys"]["exposures"]
+    level_one = primary["1"]["models"]["single_mlp"]
+    level_ten = primary["10"]["models"]["deepsets"]
+    increase = level_ten["summary"]["top1_linkage"]["mean"] - level_one["summary"]["top1_linkage"]["mean"]
+    all_intervals_exclude_chance = all(run["top1_identity_clustered_interval"]["lower"] > chance for run in level_ten["runs"])
+    return {
+        "analysis": "exposure_amplification",
+        "chance_top1": chance,
+        "level_1_top1_mean": level_one["summary"]["top1_linkage"]["mean"],
+        "level_10_deepsets_top1_mean": level_ten["summary"]["top1_linkage"]["mean"],
+        "absolute_increase": increase,
+        "all_level_10_clustered_intervals_exclude_chance": all_intervals_exclude_chance,
+        "minimum_effect_met": increase >= float(config["amplification_threshold"]),
+        "exposure_amplification_detected": all_intervals_exclude_chance and increase >= float(config["amplification_threshold"]),
+    }
+
+
 def run(config: dict) -> dict:
     if config.get("classification") != "exploratory independent study, not benchmark_cb reproduction":
         raise ValueError("The real multi-exposure classification must remain explicit")
@@ -259,21 +328,7 @@ def run(config: dict) -> dict:
             }
         condition_results[condition] = {"key_audit": key_audit, "exposures": exposure_results}
 
-    primary = condition_results["independent_unseen_keys"]["exposures"]
-    level_one = primary["1"]["models"]["single_mlp"]
-    level_ten = primary["10"]["models"]["deepsets"]
-    chance = 1.0 / len({str(row["identity_id"]) for row in metadata if row["split"] == "test"})
-    increase = level_ten["summary"]["top1_linkage"]["mean"] - level_one["summary"]["top1_linkage"]["mean"]
-    all_intervals_exclude_chance = all(run["top1_identity_clustered_interval"]["lower"] > chance for run in level_ten["runs"])
-    evidence = {
-        "chance_top1": chance,
-        "level_1_top1_mean": level_one["summary"]["top1_linkage"]["mean"],
-        "level_10_deepsets_top1_mean": level_ten["summary"]["top1_linkage"]["mean"],
-        "absolute_increase": increase,
-        "all_level_10_clustered_intervals_exclude_chance": all_intervals_exclude_chance,
-        "minimum_effect_met": increase >= float(config["amplification_threshold"]),
-        "exposure_amplification_detected": all_intervals_exclude_chance and increase >= float(config["amplification_threshold"]),
-    }
+    evidence = evaluate_primary_evidence(condition_results, metadata, config)
     return {
         "classification": config["classification"],
         "dataset": config["dataset"],
