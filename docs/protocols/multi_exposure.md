@@ -33,3 +33,13 @@ The primary descriptive curve is 10-record mean-pool top-1 versus key-pool size,
 ## Randomized key-pool confirmation preregistration (2026-09-04)
 
 The first boundary result assigns transforms by `sample_index mod pool_size`, which may confound key recurrence with session ordering. Before inspecting a randomized result, a confirmation was fixed with key seed 90503, set seed 90509, model seeds 97/107/117, and the same pools, exposure levels, models, metrics, and success criterion. Each sample is assigned reproducibly to a pool slot by hashing its sample ID with a separate assignment scope. This breaks the session-to-key mapping while retaining system-wide recurrence across identity splits.
+
+## Key-pool generalization preregistration (2026-09-04)
+
+Three follow-up runs were fixed before inspecting any of their results. All use sample-ID-hashed randomized pool assignment, the 1/2/5/10 exposure construction, mean-pool MLP and DeepSets, unchanged training settings, and the key-pool-boundary evidence block. A new secondary endpoint is recorded for every pool: multiplicity amplification, defined as 10-record mean-pool top-1 minus 1-record single-MLP top-1. Under the invariance proposition this must be about zero for fresh keys; under reuse it may be positive.
+
+1. Dense threshold sweep: BioHash, pools 3/4/6/7/8/9 plus fresh keys, key seed 90521, set seed 90527, model seeds 127/137/147. Purpose: locate where the randomized 10-record curve crosses the five-point margin between the confirmed pool-5 leakage and the pool-10 collapse.
+2. Cross-scheme key pools: paper-specified MLP-Hash, pools 1/2/5/10 plus fresh keys, key seed 90533, set seed 90539, model seeds 157/167/177. Purpose: test whether the reuse boundary is a BioHash artefact.
+3. Protocol replication: BioHash, pools 1/2/5/10 plus fresh keys, identities re-permuted across the 90/30/30 splits with split reassignment seed 90551, key seed 90557, set seed 90563, model seeds 187/197/207. Purpose: test the boundary on a new identity partition.
+
+Success for each run is judged per pool by the existing criterion (all clustered intervals above chance and at least five points over the fresh endpoint). A pool that fails is reported as failing. No threshold, model, or seed is changed after inspection.

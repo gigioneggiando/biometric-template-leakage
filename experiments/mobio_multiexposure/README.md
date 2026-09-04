@@ -32,7 +32,21 @@ This is evidence of a deployment boundary, not a break of the fresh-key guarante
 
 The confirmation assigned pool slots by a deterministic hash of sample ID, independent of session index. Ten-record mean-pool top-1 was `77.50%`, `69.44%`, and `46.94%` for pools 1/2/5, with all clustered intervals excluding chance. Pool 10 fell to `5.56%` with AUROC `0.5257`, matching the fresh endpoint's `5.56%` top-1 and failing the preregistered interval and five-point criteria. The defensible result is therefore severe leakage under small recurring pools, with a boundary between 5 and 10 transforms under this protocol. It is not evidence for a smooth universal curve; the session-aligned pool-10 result was partly confounded.
 
-Full metrics remain local under `results/mobio_multiexposure/`, `results/mobio_multiexposure_mlphash/`, `results/mobio_key_pool_boundary/`, and `results/mobio_random_key_pool_confirmation/`. Compact tracked summaries are stored beside this file. Reproduce with:
+## Generalization runs
+
+Three runs were preregistered together (randomized assignment; 10-record mean-pool top-1; 1-record single-MLP top-1 in parentheses; chance `3.33%`):
+
+| run | pool 1 | pool 2 | pool 3 | pool 4 | pool 5 | pool 6 | pool 7 | pool 8 | pool 9 | pool 10 | fresh |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| BioHash, new partition | 81.67 (75.97) | 73.89 (35.00) | - | - | 51.11 (4.31) | - | - | - | - | 5.56 (4.31) | 3.61 (4.03) |
+| BioHash, dense sweep | - | - | 65.00 (27.50) | 54.03 (3.47) | - | 17.36 (3.47) | 34.44 (4.17) | 10.42 (4.03) | 3.89 (3.19) | - | 5.56 (3.19) |
+| MLP-Hash | 71.39 (52.08) | 68.89 (33.61) | - | - | 22.92 (4.44) | - | - | - | - | 1.94 (4.58) | 3.06 (2.92) |
+
+Per-pool pass (all clustered intervals above chance and at least five points over fresh): new partition 1/2/5 pass, 10 fails; dense sweep 3/4/7 pass, 6/8/9 fail; MLP-Hash 1/2 pass, 5 fails on the interval criterion only (one lower bound reached `0.0`), 10 fails. No run passed for all pools; this is reported as designed.
+
+The robust pattern is multiplicity amplification gated by transform diversity: wherever the pool is small enough, single records at chance become `34-54%` linkable with ten records, while fresh keys show no amplification in any run. The boundary location is protocol-specific and noisy near 6-9 (pool 6 scored below pool 7 with a seed std of `18.2` points), so it must be reported as a range, not a point.
+
+Full metrics remain local under `results/mobio_multiexposure/`, `results/mobio_multiexposure_mlphash/`, `results/mobio_key_pool_boundary/`, `results/mobio_random_key_pool_confirmation/`, `results/mobio_dense_key_pool_sweep/`, `results/mobio_mlphash_key_pool/`, and `results/mobio_key_pool_split_replication/`. Compact tracked summaries are stored beside this file. Reproduce with:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\train\run_real_multiexposure.py `
@@ -43,4 +57,10 @@ Full metrics remain local under `results/mobio_multiexposure/`, `results/mobio_m
   --config configs\attacks\mobio_key_pool_boundary.yaml
 .\.venv\Scripts\python.exe scripts\train\run_real_multiexposure.py `
   --config configs\attacks\mobio_random_key_pool_confirmation.yaml
+.\.venv\Scripts\python.exe scripts\train\run_real_multiexposure.py `
+  --config configs\attacks\mobio_dense_key_pool_sweep.yaml
+.\.venv\Scripts\python.exe scripts\train\run_real_multiexposure.py `
+  --config configs\attacks\mobio_mlphash_key_pool.yaml
+.\.venv\Scripts\python.exe scripts\train\run_real_multiexposure.py `
+  --config configs\attacks\mobio_key_pool_split_replication.yaml
 ```

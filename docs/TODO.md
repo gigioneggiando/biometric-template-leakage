@@ -142,6 +142,8 @@ python scripts\diagnostics\system_info.py
 - [x] Run the preregistered system-key-pool boundary and its sample-randomized confirmation.
 - [ ] Confirm with new protocol seeds, a denser key-pool sweep (6-9 keys), and MLP-Hash key pools.
 - [ ] Add same-image/different-key, shuffled-record, and norm-leakage controls.
+- [ ] Add a preregistered Haar sign-corrected projection variant (`Q * sign(diag R)`); the current QR output is not exactly Haar, so the theorem in `docs/theory/multiplicity_invariance.md` covers the idealized construction only.
+- [ ] Recheck the novelty claim against IEEE Xplore and Google Scholar before submission.
 
 **Done when:** 1/2/5/10 exposure plots and tables are reproducible from configuration, seed, code, and protocol with no identity, key, or metadata leakage.
 

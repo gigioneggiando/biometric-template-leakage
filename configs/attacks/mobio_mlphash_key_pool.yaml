@@ -1,0 +1,36 @@
+classification: exploratory independent study, not benchmark_cb reproduction
+dataset: MOBIO selected still images, identity-disjoint 12-session protocol
+embedding_dir: data/processed/embeddings/mobio/buffalo_l_yunet
+results_dir: results/mobio_mlphash_key_pool
+template_dim: 512
+protection:
+  scheme: mlphash_paper_specified
+  hidden_dim: 1024
+  hidden_layers: 3
+  source_paper: https://arxiv.org/abs/2204.11054
+  source_exact: false
+primary_analysis: key_pool_boundary
+key_seed: 90533
+set_seed: 90539
+repeats_per_identity: 8
+exposures: [1, 2, 5, 10]
+conditions:
+  - random_key_pool_1
+  - random_key_pool_2
+  - random_key_pool_5
+  - random_key_pool_10
+  - independent_unseen_keys
+models:
+  - mean_mlp
+  - deepsets
+amplification_threshold: 0.05
+training:
+  seeds: [157, 167, 177]
+  epochs: 400
+  patience: 60
+  hidden_dim: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  mse_weight: 0.1
+  bootstrap_resamples: 2000
+  bootstrap_confidence: 0.95

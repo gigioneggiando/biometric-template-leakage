@@ -82,6 +82,8 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 
 - [x] Run a preregistered paper-specified MLP-Hash cross-scheme test with new key/set/model seeds.
 - [x] Run session-aligned and sample-randomized key-reuse boundary ablations (pools 1/2/5/10 versus fresh keys).
+- [x] Replicate the key-pool boundary on a new identity partition, a dense 3-9 pool sweep, and paper-specified MLP-Hash.
+- [x] Write the fresh-key multiplicity-invariance theorem with explicit assumptions and implementation caveats.
 - [ ] Run key-correlation, norm-leakage, same-image, and shuffled-record boundary ablations.
 - [ ] Complete confidence intervals, significance tests, and failure analysis.
 - [ ] Run revisions and final experiments.
@@ -91,6 +93,14 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 **Results:** BioHash and MLP-Hash both show chance-level identity recovery under fresh independent hidden keys. A scoped rotational-invariance proposition explains why arbitrary record multiplicity cannot help under fixed-norm ideal assumptions; the key-reuse boundary below tests one important violation.
 
 **Positive boundary result:** With 10 records and session-aligned recurring BioHash transforms, mean-pool top-1 was `66.39%/61.11%/47.64%/33.89%` for pools of 1/2/5/10, versus `2.92%` with fresh keys. A preregistered sample-randomized confirmation retained severe leakage for pools 1/2/5 (`77.50%/69.44%/46.94%`) but not pool 10 (`5.56%`, equal to the fresh endpoint). The all-pools criterion therefore failed, refining the result to a small-pool reuse threshold rather than a universal monotonic curve.
+
+**Generalization (three further preregistered runs):**
+
+- New identity partition (split seed 90551): pools 1/2/5 gave `81.67%/73.89%/51.11%`, pool 10 gave `5.56%`, fresh `3.61%`. Pools 1/2/5 passed, pool 10 failed, matching the first randomized run.
+- Dense sweep: pools 3/4/6/7/8/9 gave `65.00%/54.03%/17.36%/34.44%/10.42%/3.89%`, fresh `5.56%`. Pools 3/4/7 passed; 6/8/9 failed. The threshold lies near 7-9 transforms under this protocol and is noisy near the boundary (pool 6 below pool 7).
+- Paper-specified MLP-Hash: pools 1/2/5/10 gave `71.39%/68.89%/22.92%/1.94%`, fresh `3.06%`. Pools 1/2 passed; pool 5 exceeded the five-point margin but one clustered interval touched chance; pool 10 failed.
+
+**Multiplicity amplification is gated by transform diversity.** For pools 4-7 (BioHash) and pool 5 (new partition), a single record is at chance (`3.5%-4.3%`) while 10 records recover `34%-54%` of identities. Under fresh keys the 1-record and 10-record rates coincide (`3.2%` vs `5.6%`; `4.0%` vs `3.6%`), as the invariance theorem in [docs/theory/multiplicity_invariance.md](docs/theory/multiplicity_invariance.md) requires.
 
 **Proposal deliverable:** Reproducible attack framework, results, and paper.
 
@@ -104,7 +114,7 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 | LFW funneled         | [x] Used     | Detector, sample-size, dimension, and crossed-seed sensitivity checks | Preserve as Month 1 evidence                        |
 | Olivetti faces       | [x] Used     | Full 40-identity protocol and dimension sweep                         | Preserve as cross-dataset evidence                  |
 | CFP                  | [x] Used     | Full frontal/profile protocols and crossed-seed sensitivity checks    | Preserve as large-scale/view evidence               |
-| MOBIO                | [x] Used     | 150-identity BioHash/MLP-Hash multi-exposure and key-pool boundary studies | Add new protocol seeds and dense key-pool threshold |
+| MOBIO                | [x] Used     | BioHash/MLP-Hash multi-exposure, key-pool boundary, dense sweep, new partition | Two more partitions on the 3-9 sweep; controls |
 | CASIA-WebFace        | [ ] Not used | Reviewed as a possible FaceLinkGen training source                    | Use only after license and protocol verification    |
 | TPDNE                | [ ] Not used | Reviewed as optional FaceLinkGen evaluation data                      | Defer until core identity linkage works             |
 
@@ -120,10 +130,10 @@ Data, embeddings, keys, model weights, and detailed run artifacts are gitignored
 
 ## Next work
 
-1. Formalize and independently check the multiplicity-invariance proof and its exact assumptions.
-2. Map the randomized key-pool threshold more densely and confirm it with new protocol seeds and MLP-Hash.
+1. Independent review of the theorem in [docs/theory/multiplicity_invariance.md](docs/theory/multiplicity_invariance.md); add a preregistered Haar sign-corrected projection variant so the theorem covers the exact code.
+2. Repeat the 3-9 pool sweep on two more identity partitions to resolve the noisy 6-9 boundary; add MLP-Hash pools 3/4.
 3. Run norm-leakage, same-image/different-key, and shuffled-record controls.
-4. Recover a source-exact published transform and add another dataset before making a general claim.
+4. Recover a source-exact published transform and add a second dataset before making a general claim.
 
 Full task details and human-only blockers are in [docs/TODO.md](docs/TODO.md).
 

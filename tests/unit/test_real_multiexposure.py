@@ -148,3 +148,21 @@ def test_random_key_pool_assignment_is_stable_and_not_session_bound(monkeypatch:
     ]
     assert np.array_equal(first[:, 0], expected_slots)
     assert len(set(first[::4, 0])) == 2
+
+
+def test_reassign_identity_splits_preserves_counts_and_disjointness(tmp_path: Path):
+    _, _, metadata = _inputs(tmp_path)
+    original = {split: {r["identity_id"] for r in metadata if r["split"] == split} for split in ("train", "val", "test")}
+
+    reassigned = run_real_multiexposure.reassign_identity_splits(metadata, seed=5)
+    again = run_real_multiexposure.reassign_identity_splits(metadata, seed=5)
+    new = {split: {r["identity_id"] for r in reassigned if r["split"] == split} for split in ("train", "val", "test")}
+
+    assert reassigned == again
+    assert {s: len(v) for s, v in new.items()} == {s: len(v) for s, v in original.items()}
+    assert not (new["train"] & new["val"] or new["train"] & new["test"] or new["val"] & new["test"])
+    assert new != original
+    for row, row_before in zip(reassigned, metadata):
+        assert row["identity_id"] == row_before["identity_id"]
+        same_identity = [r["split"] for r in reassigned if r["identity_id"] == row["identity_id"]]
+        assert len(set(same_identity)) == 1

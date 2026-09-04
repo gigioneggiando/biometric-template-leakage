@@ -50,6 +50,21 @@ def load_embeddings(directory: Path) -> tuple[np.ndarray, list[dict], dict]:
     return embeddings, metadata, manifest
 
 
+def reassign_identity_splits(metadata: list[dict], seed: int) -> list[dict]:
+    """Permute identities across splits while preserving per-split identity counts."""
+    identity_split = {}
+    for row in metadata:
+        identity_split.setdefault(str(row["identity_id"]), row["split"])
+    identities = sorted(identity_split)
+    ordered_splits = [identity_split[identity] for identity in identities]
+    permuted = np.random.default_rng(generate_key(seed, "split_reassignment", 0)).permutation(len(identities))
+    new_split = {identities[source]: ordered_splits[position] for position, source in enumerate(permuted)}
+    reassigned = copy.deepcopy(metadata)
+    for row in reassigned:
+        row["split"] = new_split[str(row["identity_id"])]
+    return reassigned
+
+
 def protect_embeddings(
     embeddings: np.ndarray,
     metadata: list[dict],
@@ -244,13 +259,18 @@ def evaluate_primary_evidence(condition_results: dict, metadata: list[dict], con
         for condition in config["conditions"]:
             if not condition.startswith(("system_key_pool_", "random_key_pool_")):
                 continue
-            model = condition_results[condition]["exposures"]["10"]["models"]["mean_mlp"]
+            exposures = condition_results[condition]["exposures"]
+            model = exposures["10"]["models"]["mean_mlp"]
             boundary[condition] = {
                 "top1_mean": model["summary"]["top1_linkage"]["mean"],
                 "all_clustered_intervals_exclude_chance": all(
                     run["top1_identity_clustered_interval"]["lower"] > chance for run in model["runs"]
                 ),
             }
+            if "1" in exposures:
+                one_record = exposures["1"]["models"]["single_mlp"]["summary"]["top1_linkage"]["mean"]
+                boundary[condition]["one_record_top1_mean"] = one_record
+                boundary[condition]["multiplicity_amplification"] = boundary[condition]["top1_mean"] - one_record
         fresh_top1 = fresh["summary"]["top1_linkage"]["mean"]
         minimum_effect = float(config["amplification_threshold"])
         return {
@@ -288,6 +308,8 @@ def run(config: dict) -> dict:
         raise ValueError("The real multi-exposure classification must remain explicit")
     started = time.time()
     embeddings, metadata, embedding_manifest = load_embeddings(Path(config["embedding_dir"]))
+    if config.get("split_reassignment_seed") is not None:
+        metadata = reassign_identity_splits(metadata, int(config["split_reassignment_seed"]))
     condition_results = {}
     for condition in config["conditions"]:
         protected, key_audit = protect_embeddings(
@@ -333,6 +355,11 @@ def run(config: dict) -> dict:
         "classification": config["classification"],
         "dataset": config["dataset"],
         "protection": config.get("protection", {"scheme": "biohash"}),
+        "split_reassignment_seed": config.get("split_reassignment_seed"),
+        "split_identity_counts": {
+            split: len({str(row["identity_id"]) for row in metadata if row["split"] == split})
+            for split in ("train", "val", "test")
+        },
         "embedding_manifest": embedding_manifest,
         "conditions": condition_results,
         "primary_evidence": evidence,
