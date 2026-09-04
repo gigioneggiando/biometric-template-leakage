@@ -4,14 +4,14 @@ This document separates tasks that need human authorization, licenses, hardware,
 
 ## Priority 0: MOBIO dataset
 
-- [ ] A project member opens the official dataset page: <https://www.idiap.ch/en/scientific-research/data/mobio>.
-- [ ] Complete registration, access request, and Idiap license acceptance using an authorized academic identity.
-- [ ] Download MOBIO only from the authorized source. Do not use mirrors, shared credentials, or access-control workarounds.
-- [ ] Store the dataset outside this repository, for example `D:\ResearchData\MOBIO`.
-- [ ] Create the local manifest from the authorized root:
+- [x] A project member opens the official dataset page: <https://www.idiap.ch/en/scientific-research/data/mobio>.
+- [x] Complete registration, access request, and Idiap license acceptance using an authorized academic identity.
+- [x] Download MOBIO face components only from the authorized source. Do not use mirrors, shared credentials, or access-control workarounds.
+- [x] Store the dataset outside this repository under `%USERPROFILE%\ResearchData\MOBIO`.
+- [x] Create the local manifest from the authorized root:
 
 ```powershell
-$env:MOBIO_ROOT = "D:\ResearchData\MOBIO"
+$env:MOBIO_ROOT = "$env:USERPROFILE\ResearchData\MOBIO"
 python scripts\data\prepare_mobio.py --root $env:MOBIO_ROOT
 ```
 
@@ -101,7 +101,8 @@ python scripts\diagnostics\system_info.py
 - [x] Cross three identity assignments, three key seeds, and three model seeds on larger LFW and CFP frontal.
 - [x] Add identity-clustered bootstrap intervals and preserve cell-first descriptive summaries.
 - [x] Document protocol, hashes, commands, aggregate results, limitations, and novelty implications.
-- [ ] Start the real-data 1/2/5/10 comparison only after explicit authorization to enter Month 2.
+- [x] Receive explicit authorization to begin the MOBIO experimentation phase (2026-09-04).
+- [ ] Run and analyze the real-data 1/2/5/10 comparison after preregistering its construction and uncertainty analysis.
 
 ## Priority 5: benchmark_cb reproduction
 

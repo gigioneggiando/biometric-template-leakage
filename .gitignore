@@ -15,6 +15,7 @@ models/*
 !models/README.md
 results/*
 !results/.gitkeep
+MOBIO_datasets/
 external/benchmark_cb/
 external/gafar/
 *.onnx

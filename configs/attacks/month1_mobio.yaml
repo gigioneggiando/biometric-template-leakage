@@ -1,0 +1,17 @@
+classification: engineering validation, not benchmark_cb reproduction
+dataset: MOBIO selected still images, 150 identities x 12 sessions, YuNet alignment
+embedding_dir: data/processed/embeddings/mobio/buffalo_l_yunet
+results_dir: results/month1_mobio
+template_dim: 128
+key_seed: 20260904
+conditions:
+  - shared_key_calibration
+  - independent_unseen_keys
+training:
+  seeds: [7, 17, 27]
+  epochs: 400
+  patience: 60
+  hidden_dim: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  mse_weight: 0.1
