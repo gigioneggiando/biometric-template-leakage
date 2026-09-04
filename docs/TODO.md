@@ -15,9 +15,9 @@ $env:MOBIO_ROOT = "$env:USERPROFILE\ResearchData\MOBIO"
 python scripts\data\prepare_mobio.py --root $env:MOBIO_ROOT
 ```
 
-- [ ] Share the local path and any command error with the technical lead. Do not send or commit images, video, embeddings, or manifests containing personal paths.
+- [x] Document the local path, exact archive list, checksums, extracted layout, and commands for Luigi in `docs/setup/MOBIO_LOCAL_DATA.md`. Do not send or commit images, video, embeddings, or manifests containing personal paths.
 
-**Done when:** access is authorized, the local structure is valid, and `data/manifest.json` is created locally. This is not yet a MOBIO reproduction: the exact `benchmark_cb` protocol is still required.
+**Completed 2026-09-04:** access is authorized, the external structure and 118,362-file inventory are valid, `data/manifest.json` was created locally, and the reproducible handoff is documented. This is not yet a MOBIO reproduction: the exact `benchmark_cb` protocol is still required.
 
 ## Priority 1: official benchmark_cb source
 

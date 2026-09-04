@@ -76,15 +76,15 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 
 **Proposal period:** Weeks 9-12
 
-**Status checked:** 2026-08-26
+**Status checked:** 2026-09-04
 
-- [ ] Run cross-scheme tests and required ablations.
+- [ ] Run cross-scheme tests and required ablations. A paper-specified MLP-Hash confirmation was preregistered and started on 2026-09-04; results are not yet claimed.
 - [ ] Complete confidence intervals, significance tests, and failure analysis.
 - [ ] Run revisions and final experiments.
 - [ ] Produce final figures, reproducible commands, and paper draft.
 - [ ] Submit the paper.
 
-**Results:** Not started. No cross-scheme or final multi-exposure evidence exists.
+**Results:** Cross-scheme implementation and focused tests are complete; the confirmation run is in progress. No cross-scheme result is claimed until the run completes.
 
 **Proposal deliverable:** Reproducible attack framework, results, and paper.
 
@@ -98,7 +98,7 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 | LFW funneled         | [x] Used     | Detector, sample-size, dimension, and crossed-seed sensitivity checks | Preserve as Month 1 evidence                        |
 | Olivetti faces       | [x] Used     | Full 40-identity protocol and dimension sweep                         | Preserve as cross-dataset evidence                  |
 | CFP                  | [x] Used     | Full frontal/profile protocols and crossed-seed sensitivity checks    | Preserve as large-scale/view evidence               |
-| MOBIO                | [x] Used     | 150-identity single/multi-exposure study; data remains local          | Confirm across protocol/key seeds and another scheme |
+| MOBIO                | [x] Used     | 150-identity single/multi-exposure study; exact local setup documented | Complete cross-scheme and new-seed confirmation      |
 | CASIA-WebFace        | [ ] Not used | Reviewed as a possible FaceLinkGen training source                    | Use only after license and protocol verification    |
 | TPDNE                | [ ] Not used | Reviewed as optional FaceLinkGen evaluation data                      | Defer until core identity linkage works             |
 
@@ -146,6 +146,6 @@ make smoke-test
 
 Run the completed studies through the Month 1 targets in the `Makefile` after following the [real-dataset protocol](docs/protocols/real_datasets_month1.md). Results are written under gitignored `results/`. On Windows systems without GNU Make, run the listed Python commands directly.
 
-MOBIO must be obtained through the [official access procedure](docs/setup/MOBIO.md). The repository does not bypass dataset or model access controls.
+MOBIO must be obtained through the [official access procedure](docs/setup/MOBIO.md). Luigi's exact eight-file acquisition list, checksums, external layout, experiment input directory, and preparation commands are in the [local MOBIO handoff](docs/setup/MOBIO_LOCAL_DATA.md). The repository does not bypass dataset or model access controls.
 
 See [reports/final_research_status.md](reports/final_research_status.md) for the current scientific interpretation and limitations.

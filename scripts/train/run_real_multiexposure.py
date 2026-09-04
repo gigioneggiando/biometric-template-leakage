@@ -21,7 +21,15 @@ from torch.nn import functional as F
 from biometrics_ai.aggregation.models import DeepSetsExtractor, PooledTemplateMLP, SingleTemplateMLP
 from biometrics_ai.data.multiexposure import ExposureSetConfig, build_real_exposure_sets
 from biometrics_ai.evaluation.metrics import gallery_probe_metrics, identity_clustered_top1_interval
-from biometrics_ai.protection import BioHashConfig, biohash, biohash_batch, generate_key
+from biometrics_ai.protection import (
+    BioHashConfig,
+    MLPHashConfig,
+    biohash,
+    biohash_batch,
+    generate_key,
+    mlphash,
+    mlphash_batch,
+)
 from biometrics_ai.utils.seeding import seed_record_dict
 
 
@@ -48,11 +56,27 @@ def protect_embeddings(
     condition: str,
     key_seed: int,
     template_dim: int,
+    protection: dict | None = None,
 ) -> tuple[np.ndarray, dict]:
-    scheme = BioHashConfig(input_dim=embeddings.shape[1], output_dim=template_dim)
+    protection = protection or {"scheme": "biohash"}
+    scheme_name = str(protection["scheme"])
+    if scheme_name == "biohash":
+        scheme = BioHashConfig(input_dim=embeddings.shape[1], output_dim=template_dim)
+        protect_one, protect_batch = biohash, biohash_batch
+    elif scheme_name == "mlphash_paper_specified":
+        scheme = MLPHashConfig(
+            input_dim=embeddings.shape[1],
+            output_dim=template_dim,
+            hidden_dim=int(protection.get("hidden_dim", embeddings.shape[1] * 2)),
+            hidden_layers=int(protection.get("hidden_layers", 3)),
+        )
+        protect_one, protect_batch = mlphash, mlphash_batch
+    else:
+        raise ValueError(f"Unknown protection scheme: {scheme_name}")
     if condition == "shared_key_calibration":
         key = generate_key(key_seed, "shared", 0)
-        return biohash_batch(embeddings, key, scheme), {"unique_keys": 1, "split_key_disjoint": False}
+        templates = protect_batch(embeddings, key, scheme)
+        return templates, {"scheme": scheme_name, "unique_keys": 1, "split_key_disjoint": False}
     if condition != "independent_unseen_keys":
         raise ValueError(f"Unknown condition: {condition}")
 
@@ -65,8 +89,8 @@ def protect_embeddings(
     }
     if split_keys["train"] & split_keys["val"] or split_keys["train"] & split_keys["test"] or split_keys["val"] & split_keys["test"]:
         raise RuntimeError("Independent key generation produced overlapping split key pools")
-    templates = np.stack([biohash(embedding, key, scheme) for embedding, key in zip(embeddings, keys)])
-    return templates, {"unique_keys": len(keys), "split_key_disjoint": True}
+    templates = np.stack([protect_one(embedding, key, scheme) for embedding, key in zip(embeddings, keys)])
+    return templates, {"scheme": scheme_name, "unique_keys": len(keys), "split_key_disjoint": True}
 
 
 def make_model(model_name: str, input_dim: int, output_dim: int, hidden_dim: int):
@@ -203,6 +227,7 @@ def run(config: dict) -> dict:
             condition,
             int(config["key_seed"]),
             int(config["template_dim"]),
+            config.get("protection"),
         )
         exposure_results = {}
         for exposures in config["exposures"]:
@@ -252,6 +277,7 @@ def run(config: dict) -> dict:
     return {
         "classification": config["classification"],
         "dataset": config["dataset"],
+        "protection": config.get("protection", {"scheme": "biohash"}),
         "embedding_manifest": embedding_manifest,
         "conditions": condition_results,
         "primary_evidence": evidence,
