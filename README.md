@@ -83,7 +83,9 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 - [x] Run a preregistered paper-specified MLP-Hash cross-scheme test with new key/set/model seeds.
 - [x] Run session-aligned and sample-randomized key-reuse boundary ablations (pools 1/2/5/10 versus fresh keys).
 - [x] Replicate the key-pool boundary on a new identity partition, a dense 3-9 pool sweep, and paper-specified MLP-Hash.
+- [x] Resolve the boundary over three partitions, add a Haar sign-corrected variant, and replicate on public LFW.
 - [x] Write the fresh-key multiplicity-invariance theorem with explicit assumptions and implementation caveats.
+- [x] Start the paper draft with every number traced to a tracked summary ([reports/paper_draft.md](reports/paper_draft.md)).
 - [ ] Run key-correlation, norm-leakage, same-image, and shuffled-record boundary ablations.
 - [ ] Complete confidence intervals, significance tests, and failure analysis.
 - [ ] Run revisions and final experiments.
@@ -102,6 +104,8 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 
 **Multiplicity amplification is gated by transform diversity.** For pools 4-7 (BioHash) and pool 5 (new partition), a single record is at chance (`3.5%-4.3%`) while 10 records recover `34%-54%` of identities. Under fresh keys the 1-record and 10-record rates coincide (`3.2%` vs `5.6%`; `4.0%` vs `3.6%`), as the invariance theorem in [docs/theory/multiplicity_invariance.md](docs/theory/multiplicity_invariance.md) requires.
 
+**Boundary resolution and second dataset.** Across three MOBIO identity partitions, pools 3-4 leak in every partition (pooled `56.7% / 51.5%`), pools 5-7 are partition-dependent, and pools >= 8 are null (pooled fresh `3.8%`). A Haar sign-corrected BioHash behaves identically (`74.6 / 48.1 / 2.6%` for pools 1/5/fresh). MLP-Hash pools 3/4 leak `54.3% / 37.8%`. On public LFW (125 identities x 12 images, chance `4.0%`), fresh keys give exactly `4.0%` with zero seed variance while pools 1/2/3/4/5/7/10 give `73.2 / 63.2 / 62.5 / 42.5 / 41.0 / 32.0 / 25.3%`; see [experiments/lfw_multiexposure/README.md](experiments/lfw_multiexposure/README.md).
+
 **Proposal deliverable:** Reproducible attack framework, results, and paper.
 
 **[ ] Not met as of 2026-09-04.** The framework, MOBIO evidence, cross-scheme confirmation, and first boundary result exist; the paper draft, remaining ablations, and additional seeds/datasets are pending.
@@ -111,7 +115,7 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 | Dataset              | Status       | Work completed                                                        | Next action                                         |
 | -------------------- | ------------ | --------------------------------------------------------------------- | --------------------------------------------------- |
 | Synthetic identities | [x] Plumbing | CPU smoke pipeline only; excluded from scientific evidence            | Keep as test data only                              |
-| LFW funneled         | [x] Used     | Detector, sample-size, dimension, and crossed-seed sensitivity checks | Preserve as Month 1 evidence                        |
+| LFW funneled         | [x] Used     | Month 1 checks; 125 x 12 key-pool replication of the MOBIO protocol   | Preserve as second-dataset evidence                 |
 | Olivetti faces       | [x] Used     | Full 40-identity protocol and dimension sweep                         | Preserve as cross-dataset evidence                  |
 | CFP                  | [x] Used     | Full frontal/profile protocols and crossed-seed sensitivity checks    | Preserve as large-scale/view evidence               |
 | MOBIO                | [x] Used     | BioHash/MLP-Hash multi-exposure, key-pool boundary, dense sweep, new partition | Two more partitions on the 3-9 sweep; controls |
@@ -130,10 +134,10 @@ Data, embeddings, keys, model weights, and detailed run artifacts are gitignored
 
 ## Next work
 
-1. Independent review of the theorem in [docs/theory/multiplicity_invariance.md](docs/theory/multiplicity_invariance.md); add a preregistered Haar sign-corrected projection variant so the theorem covers the exact code.
-2. Repeat the 3-9 pool sweep on two more identity partitions to resolve the noisy 6-9 boundary; add MLP-Hash pools 3/4.
-3. Run norm-leakage, same-image/different-key, and shuffled-record controls.
-4. Recover a source-exact published transform and add a second dataset before making a general claim.
+1. Independent human review of the theorem in [docs/theory/multiplicity_invariance.md](docs/theory/multiplicity_invariance.md).
+2. Key-aware (slot-label-known) attacker and same-image/different-key, shuffled-record, and norm-leakage controls.
+3. Equivalence testing for the fresh-key null; novelty recheck on IEEE Xplore and Google Scholar.
+4. Recover a source-exact published transform (`benchmark_cb` still unavailable) before making a source-exact claim.
 
 Full task details and human-only blockers are in [docs/TODO.md](docs/TODO.md).
 

@@ -141,7 +141,7 @@ python scripts\diagnostics\system_info.py
 - [x] Confirm the fresh-key null with paper-specified MLP-Hash and new key/set/model seeds.
 - [x] Run the preregistered system-key-pool boundary and its sample-randomized confirmation.
 - [x] Confirm with new protocol seeds (three partitions on the 3-9 sweep), MLP-Hash pools 1-5 and 10, and a Haar sign-corrected variant.
-- [ ] Report the LFW second-dataset key-pool run (preregistered; embeddings extracted).
+- [x] Report the LFW second-dataset key-pool run (`experiments/lfw_multiexposure/`).
 - [ ] Add same-image/different-key, shuffled-record, and norm-leakage controls.
 - [ ] Add a key-aware (slot-label-known) attacker to separate information loss from mixture identification near the boundary.
 - [ ] Recheck the novelty claim against IEEE Xplore and Google Scholar before submission.
