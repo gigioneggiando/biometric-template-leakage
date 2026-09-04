@@ -54,3 +54,12 @@
 - Interpretation: the negative single-template result is robust to the tested identity assignment, key randomness, and optimizer randomness. Cells share fixed datasets, so this is descriptive sensitivity evidence, not 27 independent replications per condition, an equivalence test, or proof of irreversibility. Run-level interval checks were not multiplicity-adjusted.
 - Artifacts: detailed 108-run outputs remain gitignored; four study summaries and all 36 split/key cell aggregates are tracked under `experiments/month1_real_datasets/`.
 - Validation: 15 tests passed; dependencies, Python compilation, YAML/CSV/link parsing, editor diagnostics, detailed-to-tracked aggregate equality, all 18 key audits, and `git diff --check` passed. The refactored runner reproduced every prior LFW YuNet scientific metric exactly across all six attacker runs.
+
+## 2026-09-04 (MOBIO acquisition and exploratory multi-exposure run)
+
+- Data: authorized face-only MOBIO components were moved outside Git to `%USERPROFILE%\ResearchData\MOBIO`; 118,362 files include 28,800 selected still images from all 150 identities. Local data, manifests, embeddings, models, and detailed results remain ignored.
+- Protocol: selected one image from each of 12 sessions per identity, assigned 90/30/30 train/validation/test identities, and extracted 1,799/1,800 YuNet-aligned ArcFace embeddings. The unprotected single-template baseline reached `100%` top-1 on 30 test identities.
+- Preregistration: fixed nested 1/2/5/10 sets, eight repeats per identity, one held-out gallery image, per-image split-disjoint BioHash keys, model seeds 7/17/27, mean/max/DeepSets baselines, clustered intervals, and a five-point minimum amplification threshold before running.
+- Result: independent unseen-key top-1 ranged `2.64-4.17%` against `3.33%` chance. All 10-exposure models reached `3.33%`; DeepSets AUROC was `0.4988`, EER `49.81%`, and its change from one exposure was `-0.83` points. Every run-level clustered interval included chance, so the amplification criterion failed.
+- Controls: the unprotected 10-exposure oracle reached `100%` top-1. Shared-key mean pooling increased from `73.47%` at one exposure to `87.36%` at five, showing that the pipeline can exploit reusable-transform leakage.
+- Interpretation: no multi-exposure identity amplification was detected for independently keyed local BioHash templates. This strengthens a negative result but is not irreversibility proof or a positive breakthrough. Confirm with new protocol/key seeds and another transform before publication-level claims.

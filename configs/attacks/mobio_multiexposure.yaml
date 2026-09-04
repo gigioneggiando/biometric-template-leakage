@@ -1,0 +1,27 @@
+classification: exploratory independent study, not benchmark_cb reproduction
+dataset: MOBIO selected still images, identity-disjoint 12-session protocol
+embedding_dir: data/processed/embeddings/mobio/buffalo_l_yunet
+results_dir: results/mobio_multiexposure
+template_dim: 128
+key_seed: 20260904
+set_seed: 20260904
+repeats_per_identity: 8
+exposures: [1, 2, 5, 10]
+conditions:
+  - independent_unseen_keys
+  - shared_key_calibration
+models:
+  - mean_mlp
+  - max_mlp
+  - deepsets
+amplification_threshold: 0.05
+training:
+  seeds: [7, 17, 27]
+  epochs: 400
+  patience: 60
+  hidden_dim: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  mse_weight: 0.1
+  bootstrap_resamples: 2000
+  bootstrap_confidence: 0.95

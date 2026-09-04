@@ -1,0 +1,290 @@
+"""Run the preregistered real-data multi-exposure protected-template study."""
+from __future__ import annotations
+
+import argparse
+import copy
+import csv
+import json
+import subprocess
+import sys
+import time
+from importlib.metadata import version
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+
+import numpy as np
+import torch
+import yaml
+from torch.nn import functional as F
+
+from biometrics_ai.aggregation.models import DeepSetsExtractor, PooledTemplateMLP, SingleTemplateMLP
+from biometrics_ai.data.multiexposure import ExposureSetConfig, build_real_exposure_sets
+from biometrics_ai.evaluation.metrics import gallery_probe_metrics, identity_clustered_top1_interval
+from biometrics_ai.protection import BioHashConfig, biohash, biohash_batch, generate_key
+from biometrics_ai.utils.seeding import seed_record_dict
+
+
+def load_embeddings(directory: Path) -> tuple[np.ndarray, list[dict], dict]:
+    embeddings = np.load(directory / "embeddings.npy").astype(np.float32)
+    metadata = json.loads((directory / "metadata.json").read_text(encoding="utf-8"))
+    manifest = json.loads((directory / "embedding_manifest.json").read_text(encoding="utf-8"))
+    if len(embeddings) != len(metadata):
+        raise ValueError("Embedding and metadata counts differ")
+    if embeddings.ndim != 2 or embeddings.shape[1] != 512:
+        raise ValueError(f"Expected 512-D embeddings, got {embeddings.shape}")
+    split_ids = {
+        split: {str(row["identity_id"]) for row in metadata if row["split"] == split}
+        for split in ("train", "val", "test")
+    }
+    if not all(split_ids.values()) or split_ids["train"] & split_ids["val"] or split_ids["train"] & split_ids["test"] or split_ids["val"] & split_ids["test"]:
+        raise ValueError("Embedding metadata must contain non-empty identity-disjoint splits")
+    return embeddings, metadata, manifest
+
+
+def protect_embeddings(
+    embeddings: np.ndarray,
+    metadata: list[dict],
+    condition: str,
+    key_seed: int,
+    template_dim: int,
+) -> tuple[np.ndarray, dict]:
+    scheme = BioHashConfig(input_dim=embeddings.shape[1], output_dim=template_dim)
+    if condition == "shared_key_calibration":
+        key = generate_key(key_seed, "shared", 0)
+        return biohash_batch(embeddings, key, scheme), {"unique_keys": 1, "split_key_disjoint": False}
+    if condition != "independent_unseen_keys":
+        raise ValueError(f"Unknown condition: {condition}")
+
+    keys = [generate_key(key_seed, str(row["split"]), str(row["sample_id"])) for row in metadata]
+    if len(set(keys)) != len(keys):
+        raise RuntimeError("Independent key generation produced duplicate keys")
+    split_keys = {
+        split: {key for key, row in zip(keys, metadata) if row["split"] == split}
+        for split in ("train", "val", "test")
+    }
+    if split_keys["train"] & split_keys["val"] or split_keys["train"] & split_keys["test"] or split_keys["val"] & split_keys["test"]:
+        raise RuntimeError("Independent key generation produced overlapping split key pools")
+    templates = np.stack([biohash(embedding, key, scheme) for embedding, key in zip(embeddings, keys)])
+    return templates, {"unique_keys": len(keys), "split_key_disjoint": True}
+
+
+def make_model(model_name: str, input_dim: int, output_dim: int, hidden_dim: int):
+    if model_name == "single_mlp":
+        return SingleTemplateMLP(input_dim, output_dim, hidden_dim)
+    if model_name == "mean_mlp":
+        return PooledTemplateMLP(input_dim, output_dim, hidden_dim, "mean")
+    if model_name == "max_mlp":
+        return PooledTemplateMLP(input_dim, output_dim, hidden_dim, "max")
+    if model_name == "deepsets":
+        return DeepSetsExtractor(input_dim, output_dim, hidden_dim)
+    raise ValueError(f"Unknown model: {model_name}")
+
+
+def train_model(
+    model_name: str,
+    train_set: dict[str, np.ndarray],
+    validation_set: dict[str, np.ndarray],
+    test_set: dict[str, np.ndarray],
+    training: dict,
+    seed: int,
+) -> dict:
+    started = time.time()
+    seed_record = seed_record_dict(seed)
+    model = make_model(
+        model_name,
+        train_set["templates"].shape[-1],
+        train_set["targets"].shape[-1],
+        int(training["hidden_dim"]),
+    )
+    optimizer = torch.optim.Adam(
+        model.parameters(),
+        lr=float(training["learning_rate"]),
+        weight_decay=float(training["weight_decay"]),
+    )
+    train_inputs = torch.tensor(train_set["templates"], dtype=torch.float32)
+    train_targets = torch.tensor(train_set["targets"], dtype=torch.float32)
+    validation_inputs = torch.tensor(validation_set["templates"], dtype=torch.float32)
+    validation_targets = torch.tensor(validation_set["targets"], dtype=torch.float32)
+    best_state = copy.deepcopy(model.state_dict())
+    best_validation_loss = float("inf")
+    best_epoch = 0
+    stale_epochs = 0
+    for epoch in range(1, int(training["epochs"]) + 1):
+        model.train()
+        optimizer.zero_grad()
+        predictions = model(train_inputs)
+        loss = (1 - F.cosine_similarity(predictions, train_targets, dim=-1)).mean()
+        loss = loss + float(training["mse_weight"]) * F.mse_loss(predictions, train_targets)
+        loss.backward()
+        optimizer.step()
+
+        model.eval()
+        with torch.no_grad():
+            validation_predictions = model(validation_inputs)
+            validation_loss = (1 - F.cosine_similarity(validation_predictions, validation_targets, dim=-1)).mean()
+            validation_loss = validation_loss + float(training["mse_weight"]) * F.mse_loss(
+                validation_predictions, validation_targets
+            )
+        if float(validation_loss) < best_validation_loss - 1e-6:
+            best_validation_loss = float(validation_loss)
+            best_epoch = epoch
+            best_state = copy.deepcopy(model.state_dict())
+            stale_epochs = 0
+        else:
+            stale_epochs += 1
+            if stale_epochs >= int(training["patience"]):
+                break
+
+    model.load_state_dict(best_state)
+    model.eval()
+    with torch.no_grad():
+        predictions = model(torch.tensor(test_set["templates"], dtype=torch.float32)).numpy()
+    target_cosines = np.sum(predictions * test_set["targets"], axis=1)
+    clustered_interval = identity_clustered_top1_interval(
+        predictions,
+        test_set["gallery"],
+        test_set["identity_ids"],
+        test_set["gallery_identity_ids"],
+        seed=seed,
+        n_resamples=int(training["bootstrap_resamples"]),
+        confidence=float(training["bootstrap_confidence"]),
+    )
+    return {
+        "seed": seed,
+        "seed_record": seed_record,
+        "best_epoch": best_epoch,
+        "best_validation_loss": best_validation_loss,
+        "mean_target_cosine": float(target_cosines.mean()),
+        "normalized_l2": float(np.linalg.norm(predictions - test_set["targets"], axis=1).mean()),
+        "top1_identity_clustered_interval": clustered_interval,
+        "elapsed_seconds": time.time() - started,
+        **gallery_probe_metrics(
+            predictions,
+            test_set["gallery"],
+            test_set["identity_ids"],
+            test_set["gallery_identity_ids"],
+        ),
+    }
+
+
+def aggregate_runs(runs: list[dict]) -> dict[str, dict[str, float]]:
+    metrics = (
+        "mean_target_cosine",
+        "normalized_l2",
+        "mean_genuine_cosine",
+        "mean_impostor_cosine",
+        "top1_linkage",
+        "top5_linkage",
+        "auroc",
+        "eer",
+        "tar_at_far_1e-2",
+        "tar_at_far_1e-3",
+    )
+    return {
+        metric: {
+            "mean": float(np.mean([run[metric] for run in runs])),
+            "std": float(np.std([run[metric] for run in runs], ddof=1)) if len(runs) > 1 else 0.0,
+        }
+        for metric in metrics
+    }
+
+
+def run(config: dict) -> dict:
+    if config.get("classification") != "exploratory independent study, not benchmark_cb reproduction":
+        raise ValueError("The real multi-exposure classification must remain explicit")
+    started = time.time()
+    embeddings, metadata, embedding_manifest = load_embeddings(Path(config["embedding_dir"]))
+    condition_results = {}
+    for condition in config["conditions"]:
+        protected, key_audit = protect_embeddings(
+            embeddings,
+            metadata,
+            condition,
+            int(config["key_seed"]),
+            int(config["template_dim"]),
+        )
+        exposure_results = {}
+        for exposures in config["exposures"]:
+            set_config = ExposureSetConfig(int(exposures), int(config["repeats_per_identity"]), int(config["set_seed"]))
+            train_set = build_real_exposure_sets(embeddings, protected, metadata, "train", set_config)
+            validation_set = build_real_exposure_sets(embeddings, protected, metadata, "val", set_config)
+            test_set = build_real_exposure_sets(embeddings, protected, metadata, "test", set_config)
+            model_names = ["single_mlp"] if int(exposures) == 1 else list(config["models"])
+            models = {}
+            for model_name in model_names:
+                runs = [
+                    train_model(model_name, train_set, validation_set, test_set, config["training"], int(seed))
+                    for seed in config["training"]["seeds"]
+                ]
+                models[model_name] = {"runs": runs, "summary": aggregate_runs(runs)}
+            exposure_results[str(exposures)] = {
+                "set_counts": {
+                    "train": len(train_set["templates"]),
+                    "val": len(validation_set["templates"]),
+                    "test": len(test_set["templates"]),
+                },
+                "unprotected_oracle": gallery_probe_metrics(
+                    test_set["targets"],
+                    test_set["gallery"],
+                    test_set["identity_ids"],
+                    test_set["gallery_identity_ids"],
+                ),
+                "models": models,
+            }
+        condition_results[condition] = {"key_audit": key_audit, "exposures": exposure_results}
+
+    primary = condition_results["independent_unseen_keys"]["exposures"]
+    level_one = primary["1"]["models"]["single_mlp"]
+    level_ten = primary["10"]["models"]["deepsets"]
+    chance = 1.0 / len({str(row["identity_id"]) for row in metadata if row["split"] == "test"})
+    increase = level_ten["summary"]["top1_linkage"]["mean"] - level_one["summary"]["top1_linkage"]["mean"]
+    all_intervals_exclude_chance = all(run["top1_identity_clustered_interval"]["lower"] > chance for run in level_ten["runs"])
+    evidence = {
+        "chance_top1": chance,
+        "level_1_top1_mean": level_one["summary"]["top1_linkage"]["mean"],
+        "level_10_deepsets_top1_mean": level_ten["summary"]["top1_linkage"]["mean"],
+        "absolute_increase": increase,
+        "all_level_10_clustered_intervals_exclude_chance": all_intervals_exclude_chance,
+        "minimum_effect_met": increase >= float(config["amplification_threshold"]),
+        "exposure_amplification_detected": all_intervals_exclude_chance and increase >= float(config["amplification_threshold"]),
+    }
+    return {
+        "classification": config["classification"],
+        "dataset": config["dataset"],
+        "embedding_manifest": embedding_manifest,
+        "conditions": condition_results,
+        "primary_evidence": evidence,
+        "software": {"numpy": version("numpy"), "torch": version("torch"), "scikit-learn": version("scikit-learn")},
+        "git_commit": subprocess.run(["git", "rev-parse", "HEAD"], text=True, capture_output=True).stdout.strip(),
+        "elapsed_seconds": time.time() - started,
+    }
+
+
+def write_results(config: dict, result: dict) -> None:
+    output = Path(config["results_dir"])
+    output.mkdir(parents=True, exist_ok=True)
+    (output / "run_config.yaml").write_text(yaml.safe_dump(config, sort_keys=True), encoding="utf-8")
+    (output / "metrics.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
+    with (output / "summary.csv").open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["condition", "exposures", "model", "metric", "mean", "std"])
+        for condition, condition_result in result["conditions"].items():
+            for exposures, exposure_result in condition_result["exposures"].items():
+                for model_name, model_result in exposure_result["models"].items():
+                    for metric, statistics in model_result["summary"].items():
+                        writer.writerow([condition, exposures, model_name, metric, statistics["mean"], statistics["std"]])
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", required=True, type=Path)
+    args = parser.parse_args()
+    config = yaml.safe_load(args.config.read_text(encoding="utf-8"))
+    result = run(config)
+    write_results(config, result)
+    print(json.dumps({"results_dir": config["results_dir"], "primary_evidence": result["primary_evidence"]}, indent=2))
+
+
+if __name__ == "__main__":
+    main()

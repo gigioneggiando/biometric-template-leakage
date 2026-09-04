@@ -102,7 +102,7 @@ python scripts\diagnostics\system_info.py
 - [x] Add identity-clustered bootstrap intervals and preserve cell-first descriptive summaries.
 - [x] Document protocol, hashes, commands, aggregate results, limitations, and novelty implications.
 - [x] Receive explicit authorization to begin the MOBIO experimentation phase (2026-09-04).
-- [ ] Run and analyze the real-data 1/2/5/10 comparison after preregistering its construction and uncertainty analysis.
+- [x] Run and analyze the preregistered exploratory MOBIO 1/2/5/10 comparison.
 
 ## Priority 5: benchmark_cb reproduction
 
@@ -127,17 +127,18 @@ python scripts\diagnostics\system_info.py
 
 ## Priority 7: proposed multi-exposure experiment
 
-**Status:** paused at the Month 1 boundary pending explicit approval.
+**Status:** first exploratory MOBIO run complete; confirmation pending.
 
-- [ ] Create identity-disjoint train/validation/test splits on authorized data.
-- [ ] Generate disjoint train/validation/test key pools.
-- [ ] Confirm the absence of critical collisions with `scripts/diagnostics/check_leakage.py`.
-- [ ] Run 1, 2, 5, and 10 independent exposures.
-- [ ] Keep separate: same image with different keys, and different images of the same identity with different keys.
-- [ ] Evaluate linear/MLP, mean/max pooling, and DeepSets first; add attention/Set Transformer only after baseline validation.
-- [ ] Report cosine similarity, normalized L2, AUROC, EER, TAR@FAR, top-1/top-5, and seen-key versus unseen-key results.
-- [ ] Run multiple seeds and report mean, standard deviation, and confidence/bootstrap intervals.
-- [ ] Do not use seen identities or seen keys as evidence of generalization. The primary condition is unseen identities plus unseen keys.
+- [x] Create identity-disjoint train/validation/test splits on authorized MOBIO data.
+- [x] Generate disjoint train/validation/test key pools.
+- [x] Confirm the absence of critical identity/sample collisions and audit all 1,799 keys.
+- [x] Run 1, 2, 5, and 10 independent exposures.
+- [x] Keep the first run restricted to different images with different keys; defer same-image controls explicitly.
+- [x] Evaluate MLP, mean/max pooling, and DeepSets baselines.
+- [x] Report cosine similarity, normalized L2, AUROC, EER, TAR@FAR, top-1/top-5, and unseen-key results.
+- [x] Run three model seeds and report mean, standard deviation, and identity-clustered intervals.
+- [x] Use unseen identities plus unseen keys as the primary condition.
+- [ ] Confirm with new protocol/key seeds and another cancelable transform.
 
 **Done when:** 1/2/5/10 exposure plots and tables are reproducible from configuration, seed, code, and protocol with no identity, key, or metadata leakage.
 

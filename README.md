@@ -1,17 +1,17 @@
 # Key-agnostic multi-exposure biometric template leakage
 
-**Last status update:** 2026-08-26
+**Last status update:** 2026-09-04
 
 **Research question:** Can a key-agnostic attacker recover identity information from multiple independently protected face templates without their secret keys?
 
 **Overall status:**
 
 - [x] Month 1 engineering milestone completed on 2026-08-26.
-- [ ] Month 2 main novel experiment completed.
+- [x] Month 2 exploratory main experiment completed on 2026-09-04; confirmation pending.
 - [ ] Month 3 validation, paper, and submission completed.
 - [ ] Published `benchmark_cb` or FaceLinkGen result reproduced.
 
-LFW, Olivetti, and CFP results are **engineering validation, not paper reproduction**. Synthetic runs validate plumbing only and are excluded from the scientific evidence. No published result has been reproduced yet.
+LFW, Olivetti, CFP, and MOBIO results are **independent engineering studies, not paper reproduction**. Synthetic runs validate plumbing only and are excluded from the scientific evidence. No published result has been reproduced yet.
 
 ## [x] Month 1 - Foundation and baselines
 
@@ -29,7 +29,7 @@ LFW, Olivetti, and CFP results are **engineering validation, not paper reproduct
 - [x] Crossed identity-assignment/key/model sensitivity study on larger LFW and CFP frontal.
 - [x] Identity-clustered bootstrap intervals for correlated probes.
 - [x] Cross-dataset leakage result documented and reproducible.
-- [ ] Exact ArcFace + BioHash + MOBIO `benchmark_cb` reproduction. Blocked by MOBIO access and the missing official source.
+- [ ] Exact ArcFace + BioHash + MOBIO `benchmark_cb` reproduction. Blocked by the missing official source and exact protocol.
 
 **Data:** Funneled LFW (small SCRFD/YuNet and 150-identity YuNet protocols), all 40 Olivetti identities, and all 500 CFP identities in separate frontal/profile protocols. The largest run used 4,999 CFP frontal embeddings, 100 gallery identities, and 900 probes.
 
@@ -50,27 +50,27 @@ LFW, Olivetti, and CFP results are **engineering validation, not paper reproduct
 
 Evidence: [cross-dataset protocol](docs/protocols/real_datasets_month1.md), [aggregate results](experiments/month1_real_datasets/results_summary.csv), [dimension sweep](experiments/month1_real_datasets/dimension_sweep.csv), [seed-robustness summary](experiments/month1_real_datasets/seed_robustness_summary.csv), [cell aggregates](experiments/month1_real_datasets/seed_robustness_cells.csv), and [research log](docs/research_log.md).
 
-## [ ] Month 2 - Main novel contribution
+## [x] Month 2 - Exploratory main experiment
 
 **Proposal period:** Weeks 5-8
 
-**Status checked:** 2026-08-26
-
-**Project hold:** Do not start Month 2 until the Month 1 evidence is reviewed and an explicit decision is made to proceed.
+**Completed:** 2026-09-04 for the first preregistered MOBIO protocol; confirmation remains open.
 
 - [x] Masked permutation-invariant DeepSets model implemented and tested on synthetic data.
 - [x] Synthetic 1/2/5/10 exposure smoke runs available for pipeline validation only.
-- [ ] Build real LFW sets for 1/2/5/10 independently keyed exposures.
+- [x] Build real MOBIO sets for 1/2/5/10 independently keyed exposures.
 - [ ] Separate same-image/new-key from different-image/new-key experiments.
-- [ ] Run held-out identities with unseen test keys over multiple seeds.
-- [ ] Compare mean pooling, max pooling, DeepSets, attention, and Set Transformer.
-- [ ] Statistically compare one exposure with 2/5/10 exposures.
+- [x] Run held-out identities with unseen test keys over three model seeds.
+- [x] Compare MLP, mean pooling, max pooling, and DeepSets baselines.
+- [x] Compare one exposure with 2/5/10 exposures using identity-clustered intervals and a preregistered threshold.
 
-**Results:** No real-data multi-exposure result yet.
+**Results:** Independent-key top-1 stayed at chance across 1/2/5/10 exposures and all aggregation models. Ten-exposure DeepSets achieved `3.33%` top-1 versus `3.33%` chance, AUROC `0.4988`, and EER `49.81%`. Shared-key and unprotected controls were strongly positive.
 
 **Milestone question:** Does multi-exposure create significantly greater identity leakage?
 
-**[ ] Not answered as of 2026-08-26.** The Month 1 result covers one template only; synthetic runs cannot answer the research question.
+**[x] Exploratorily answered on 2026-09-04:** No greater identity leakage was detected up to 10 independently keyed exposures. This is a scoped negative result requiring confirmation, not proof of irreversibility.
+
+Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO multi-exposure results](experiments/mobio_multiexposure/README.md).
 
 ## [ ] Month 3 - Validation and paper
 
@@ -98,7 +98,7 @@ Evidence: [cross-dataset protocol](docs/protocols/real_datasets_month1.md), [agg
 | LFW funneled         | [x] Used     | Detector, sample-size, dimension, and crossed-seed sensitivity checks | Preserve as Month 1 evidence                        |
 | Olivetti faces       | [x] Used     | Full 40-identity protocol and dimension sweep                         | Preserve as cross-dataset evidence                  |
 | CFP                  | [x] Used     | Full frontal/profile protocols and crossed-seed sensitivity checks    | Preserve as large-scale/view evidence               |
-| MOBIO                | [ ] Blocked  | Setup and validation script prepared; data not acquired               | Obtain authorized Idiap access and set `MOBIO_ROOT` |
+| MOBIO                | [x] Used     | 150-identity single/multi-exposure study; data remains local          | Confirm across protocol/key seeds and another scheme |
 | CASIA-WebFace        | [ ] Not used | Reviewed as a possible FaceLinkGen training source                    | Use only after license and protocol verification    |
 | TPDNE                | [ ] Not used | Reviewed as optional FaceLinkGen evaluation data                      | Defer until core identity linkage works             |
 
@@ -109,15 +109,15 @@ Data, embeddings, keys, model weights, and detailed run artifacts are gitignored
 - [x] InsightFace `buffalo_l` archive and model hashes verified on 2026-08-26.
 - [x] OpenCV SCRFD/ArcFace and hash-pinned OpenCV Zoo YuNet/ArcFace backends validated because ONNX Runtime cannot initialize on this host.
 - [x] Local BioHash and single-template attack path validated.
-- [ ] `benchmark_cb`: paper targets verified, but the official repository is unavailable and MOBIO is pending.
+- [ ] `benchmark_cb`: paper targets and MOBIO data are available, but the official repository and exact configuration are unavailable.
 - [ ] FaceLinkGen: no verified official implementation or local reproduction.
 
 ## Next work
 
-1. Review the Month 1 cross-dataset protocol, exact aggregate CSVs, and limitations.
-2. Obtain authorized MOBIO access and request the corrected official `benchmark_cb` source; do not substitute unofficial data or code.
-3. Keep Month 2 paused until an explicit project decision authorizes multi-exposure work.
-4. When authorized, preregister the 1/2/5/10 comparison and clustered statistical analysis before running it.
+1. Confirm the exploratory MOBIO null result across new protocol and key seeds.
+2. Add at least one substantially different cancelable transform before making a cross-scheme claim.
+3. Run the same-image/different-key control separately from the completed different-image/different-key condition.
+4. Request the corrected official `benchmark_cb` source; do not substitute unofficial code.
 
 Full task details and human-only blockers are in [docs/TODO.md](docs/TODO.md).
 

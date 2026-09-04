@@ -28,13 +28,15 @@ The first MOBIO engineering run adds all 150 identities with one selected image 
 
 A crossed `3 identity assignments x 3 key seeds x 3 model seeds` sensitivity study strengthened the larger LFW and CFP frontal results. Independent-key split/key cell means ranged `2.59-3.58%` versus `3.33%` chance on LFW and `0.81-1.11%` versus `1.00%` chance on CFP. All 54 run-level identity-clustered 95% intervals included chance. Fixed-transform cell means remained `66.54-77.41%` on LFW and `91.70-94.74%` on CFP. The convergent control/null pattern is the main Month 1 finding: no useful identity recovery from one independently keyed template was detected across the tested real-data protocols.
 
-This is a stronger negative baseline, not a universal irreversibility result and not the proposed breakthrough. It does not test whether 2/5/10 observations amplify leakage. Synthetic runs are excluded from this scientific conclusion.
+The preregistered exploratory MOBIO multi-exposure run tested 1/2/5/10 records with mean pooling, max pooling, and DeepSets. Independent unseen-key top-1 stayed between `2.64%` and `4.17%` against `3.33%` chance; all three 10-exposure models were exactly at chance, AUROC remained near `0.5`, and every run-level identity-clustered interval included chance. DeepSets changed by `-0.83` percentage points from 1 to 10 exposures, so the preregistered amplification criterion failed. The unprotected 10-exposure oracle reached `100%`, while shared-key mean pooling reached `87.36%` at five exposures, supporting pipeline sensitivity.
+
+This is a stronger negative result, not a universal irreversibility result or the proposed positive breakthrough. Synthetic runs are excluded from this scientific conclusion.
 
 ## Limitations and next work
 
 These studies use one ArcFace checkpoint and a local BioHash reference not cross-checked against unavailable official code. The primary cross-dataset table uses one identity assignment, while larger LFW and CFP add three identity assignments, three key seeds, and three model seeds. Those cells share fixed datasets and pipeline components, so they are dependent sensitivity checks rather than independent replications. Identity-clustered percentile intervals are descriptive, can under-cover, and were inspected without familywise error correction. Chance inclusion does not prove equivalence or irreversibility. None of the protocols is comparable to the paper's MOBIO protocol or official implementation.
 
-Continue requesting a corrected `benchmark_cb` source; keep the reproduction blocked until then. Authorization to begin the MOBIO experiment was given on 2026-09-04. Before interpreting any 1/2/5/10 result as the proposed contribution, preregister exposure construction, protocol seeds, and identity-clustered uncertainty analysis.
+Continue requesting a corrected `benchmark_cb` source; keep the reproduction blocked until then. Confirm the exploratory MOBIO result with new protocol, key, and model seeds and at least one additional cancelable transform. Repeated exposure sets share source records, and the local BioHash reference remains unverified against the unavailable upstream implementation.
 
 ## Commands
 
