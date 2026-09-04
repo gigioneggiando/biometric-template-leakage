@@ -1,0 +1,34 @@
+classification: exploratory independent study, not benchmark_cb reproduction
+dataset: LFW funneled, 125 identities x 12 images, identity-disjoint 75/25/25 protocol
+embedding_dir: data/processed/embeddings/lfw_multiexposure/buffalo_l_yunet
+results_dir: results/lfw_key_pool_boundary
+template_dim: 128
+protection:
+  scheme: biohash
+primary_analysis: key_pool_boundary
+key_seed: 90679
+set_seed: 90683
+repeats_per_identity: 8
+exposures: [1, 10]
+conditions:
+  - random_key_pool_1
+  - random_key_pool_2
+  - random_key_pool_3
+  - random_key_pool_4
+  - random_key_pool_5
+  - random_key_pool_7
+  - random_key_pool_10
+  - independent_unseen_keys
+models:
+  - mean_mlp
+amplification_threshold: 0.05
+training:
+  seeds: [337, 347, 357]
+  epochs: 400
+  patience: 60
+  hidden_dim: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  mse_weight: 0.1
+  bootstrap_resamples: 2000
+  bootstrap_confidence: 0.95

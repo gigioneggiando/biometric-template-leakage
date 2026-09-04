@@ -140,9 +140,10 @@ python scripts\diagnostics\system_info.py
 - [x] Use unseen identities plus unseen keys as the primary condition.
 - [x] Confirm the fresh-key null with paper-specified MLP-Hash and new key/set/model seeds.
 - [x] Run the preregistered system-key-pool boundary and its sample-randomized confirmation.
-- [ ] Confirm with new protocol seeds, a denser key-pool sweep (6-9 keys), and MLP-Hash key pools.
+- [x] Confirm with new protocol seeds (three partitions on the 3-9 sweep), MLP-Hash pools 1-5 and 10, and a Haar sign-corrected variant.
+- [ ] Report the LFW second-dataset key-pool run (preregistered; embeddings extracted).
 - [ ] Add same-image/different-key, shuffled-record, and norm-leakage controls.
-- [ ] Add a preregistered Haar sign-corrected projection variant (`Q * sign(diag R)`); the current QR output is not exactly Haar, so the theorem in `docs/theory/multiplicity_invariance.md` covers the idealized construction only.
+- [ ] Add a key-aware (slot-label-known) attacker to separate information loss from mixture identification near the boundary.
 - [ ] Recheck the novelty claim against IEEE Xplore and Google Scholar before submission.
 
 **Done when:** 1/2/5/10 exposure plots and tables are reproducible from configuration, seed, code, and protocol with no identity, key, or metadata leakage.

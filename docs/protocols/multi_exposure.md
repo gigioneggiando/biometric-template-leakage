@@ -43,3 +43,18 @@ Three follow-up runs were fixed before inspecting any of their results. All use 
 3. Protocol replication: BioHash, pools 1/2/5/10 plus fresh keys, identities re-permuted across the 90/30/30 splits with split reassignment seed 90551, key seed 90557, set seed 90563, model seeds 187/197/207. Purpose: test the boundary on a new identity partition.
 
 Success for each run is judged per pool by the existing criterion (all clustered intervals above chance and at least five points over the fresh endpoint). A pool that fails is reported as failing. No threshold, model, or seed is changed after inspection.
+
+## Boundary resolution preregistration (2026-09-04, second batch)
+
+Fixed before inspection. All use randomized pool assignment, exposures 1 and 10 only (the 2/5 levels add no primary information), mean-pool MLP, unchanged training, and the key-pool-boundary evidence block.
+
+1. Dense sweep, partition 2: BioHash pools 3-9 plus fresh, split seed 90583, key seed 90587, set seed 90593, models 217/227/237.
+2. Dense sweep, partition 3: BioHash pools 3-9 plus fresh, split seed 90599, key seed 90617, set seed 90619, models 247/257/267.
+3. Haar sign-corrected BioHash (`haar_sign_corrected: true`, Q scaled by sign(diag R)): pools 1 and 5 plus fresh, key seed 90631, set seed 90641, models 277/287/297. Purpose: verify that the exactly-Haar construction covered by Theorem 1 behaves like the default code; expected fresh-key top-1 at chance and pool 1/5 leakage of the same order as before.
+4. MLP-Hash pools 3 and 4 plus fresh, key seed 90647, set seed 90659, models 307/317/327. Purpose: locate the MLP-Hash boundary between the passing pool 2 and the failing pool 5.
+
+Analysis plan: the three dense sweeps (original, partition 2, partition 3) are pooled per pool size as a mean of run means with the range reported; the boundary is the largest pool size whose pooled 10-record top-1 exceeds fresh by five points and whose per-run intervals exclude chance in at least two of three partitions.
+
+## LFW second-dataset preregistration (2026-09-04)
+
+Fixed before inspection. Funneled LFW (public, UMass source via scikit-learn), 125 of the 127 identities with at least 12 images, 12 images each, seed 20260904, identity-disjoint 75/25/25 split, 1,500/1,500 embeddings extracted with the same hash-pinned YuNet and ArcFace models as MOBIO. Chance top-1 is `1/25 = 4.00%`. BioHash 128-bit, randomized pools 1/2/3/4/5/7/10 plus fresh keys, key seed 90679, set seed 90683, model seeds 337/347/357, exposures 1 and 10, mean-pool MLP, unchanged training and criteria. Purpose: test whether the fresh-key null and the reuse amplification transfer from a controlled mobile-capture dataset to in-the-wild images. Per-pool pass/fail is reported as designed; the LFW boundary location is expected to differ because the training set is smaller (900 versus 1,080 records).

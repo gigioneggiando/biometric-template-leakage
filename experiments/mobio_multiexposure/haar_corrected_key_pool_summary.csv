@@ -1,0 +1,4 @@
+﻿condition,unique_keys,one_record_top1_mean,top1_mean,top1_std,auroc_mean,eer_mean,minimum_clustered_lower,maximum_clustered_upper
+random_key_pool_1,1,0.750000,0.745833,0.026021,0.984901,0.058238,0.554167,0.900000
+random_key_pool_5,5,0.034722,0.480556,0.076414,0.930149,0.147917,0.274896,0.725000
+independent_unseen_keys,1799,0.030556,0.026389,0.008674,0.492609,0.495330,0.000000,0.100000

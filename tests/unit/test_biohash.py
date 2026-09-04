@@ -19,3 +19,20 @@ def test_biohash_batch_matches_individual_templates():
     config = BioHashConfig(4, 2)
     expected = np.stack([biohash(embedding, 11, config) for embedding in embeddings])
     assert np.array_equal(biohash_batch(embeddings, 11, config), expected)
+
+
+def test_haar_sign_correction_is_orthonormal_and_direction_invariant():
+    from biometrics_ai.protection.biohash import _orthonormal_projection
+
+    projection = _orthonormal_projection(64, 16, "k", haar_sign_corrected=True)
+    assert np.allclose(projection.T @ projection, np.eye(16), atol=1e-5)
+    default = _orthonormal_projection(64, 16, "k", haar_sign_corrected=False)
+    assert np.allclose(np.abs(default), np.abs(projection), atol=1e-6)
+
+    # Empirical Lemma 1: the projected law of any fixed unit vector is the same up to Monte Carlo error.
+    rng = np.random.default_rng(0)
+    x, y = rng.normal(size=64), rng.normal(size=64)
+    x, y = x / np.linalg.norm(x), y / np.linalg.norm(y)
+    first = np.array([(x @ _orthonormal_projection(64, 16, f"a{i}", True) >= 0).mean() for i in range(400)])
+    second = np.array([(y @ _orthonormal_projection(64, 16, f"a{i}", True) >= 0).mean() for i in range(400)])
+    assert abs(first.mean() - 0.5) < 0.03 and abs(second.mean() - 0.5) < 0.03

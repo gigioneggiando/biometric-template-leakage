@@ -1,0 +1,9 @@
+﻿pool_size,partitions,pooled_10_record_top1,min_10_record_top1,max_10_record_top1,pooled_1_record_top1,partitions_intervals_exclude_chance,exceeds_fresh_by_5,boundary_rule_pass
+3,3,0.5667,0.4861,0.6500,0.1856,3,True,True
+4,3,0.5153,0.4861,0.5403,0.0551,3,True,True
+5,2,0.2417,0.0806,0.4028,0.0563,1,True,False
+6,3,0.2079,0.0861,0.3639,0.0481,1,True,False
+7,3,0.2458,0.0889,0.3444,0.0495,2,True,True
+8,3,0.0949,0.0389,0.1417,0.0343,0,True,False
+9,3,0.0565,0.0389,0.0667,0.0347,0,False,False
+fresh,3,0.0384,0.0153,0.0556,0.0310,0,False,False

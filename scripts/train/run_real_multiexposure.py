@@ -76,7 +76,11 @@ def protect_embeddings(
     protection = protection or {"scheme": "biohash"}
     scheme_name = str(protection["scheme"])
     if scheme_name == "biohash":
-        scheme = BioHashConfig(input_dim=embeddings.shape[1], output_dim=template_dim)
+        scheme = BioHashConfig(
+            input_dim=embeddings.shape[1],
+            output_dim=template_dim,
+            haar_sign_corrected=bool(protection.get("haar_sign_corrected", False)),
+        )
         protect_one, protect_batch = biohash, biohash_batch
     elif scheme_name == "mlphash_paper_specified":
         scheme = MLPHashConfig(

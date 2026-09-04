@@ -46,6 +46,23 @@ Per-pool pass (all clustered intervals above chance and at least five points ove
 
 The robust pattern is multiplicity amplification gated by transform diversity: wherever the pool is small enough, single records at chance become `34-54%` linkable with ten records, while fresh keys show no amplification in any run. The boundary location is protocol-specific and noisy near 6-9 (pool 6 scored below pool 7 with a seed std of `18.2` points), so it must be reported as a range, not a point.
 
+## Boundary resolution across three partitions
+
+The 3-9 sweep was repeated on two new identity partitions (split seeds 90583 and 90599). Pooled per pool size under the preregistered rule (`dense_key_pool_pooled_analysis.csv`):
+
+| pool | partition A | partition 2 | partition 3 | pooled | partitions with intervals above chance | rule |
+|---|---|---|---|---|---|---|
+| 3 | 65.00 | 48.61 | 56.39 | 56.67 | 3/3 | pass |
+| 4 | 54.03 | 48.61 | 51.94 | 51.53 | 3/3 | pass |
+| 5 | - | 40.28 | 8.06 | 24.17 | 1/2 | fail |
+| 6 | 17.36 | 36.39 | 8.61 | 20.79 | 1/3 | fail |
+| 7 | 34.44 | 30.42 | 8.89 | 24.58 | 2/3 | pass |
+| 8 | 10.42 | 14.17 | 3.89 | 9.49 | 0/3 | fail |
+| 9 | 3.89 | 6.39 | 6.67 | 5.65 | 0/3 | fail |
+| fresh | 5.56 | 1.53 | 4.44 | 3.84 | 0/3 | - |
+
+Partition 3 collapses at pool 5 while partitions A and 2 hold to pool 7. The defensible statement is: leakage is robust for k <= 4 recurring transforms, partition-dependent for k = 5-7, and absent for k >= 8 under this protocol. Additional controls: the Haar sign-corrected BioHash gave `74.58 / 48.06 / 2.64%` for pools 1/5/fresh (identical behaviour to the default code); MLP-Hash pools 3/4 gave `54.31 / 37.78%` with 1-record rates at chance, so the MLP-Hash boundary lies between 4 and 5.
+
 Full metrics remain local under `results/mobio_multiexposure/`, `results/mobio_multiexposure_mlphash/`, `results/mobio_key_pool_boundary/`, `results/mobio_random_key_pool_confirmation/`, `results/mobio_dense_key_pool_sweep/`, `results/mobio_mlphash_key_pool/`, and `results/mobio_key_pool_split_replication/`. Compact tracked summaries are stored beside this file. Reproduce with:
 
 ```powershell
