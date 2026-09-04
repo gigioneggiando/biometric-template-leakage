@@ -127,7 +127,7 @@ python scripts\diagnostics\system_info.py
 
 ## Priority 7: proposed multi-exposure experiment
 
-**Status:** first exploratory MOBIO run complete; confirmation pending.
+**Status (2026-09-04):** BioHash and MLP-Hash fresh-key runs complete and null; session-aligned and randomized key-pool boundary runs complete. Randomized pools 1/2/5 leak strongly, pool 10 does not; new protocol seeds still pending.
 
 - [x] Create identity-disjoint train/validation/test splits on authorized MOBIO data.
 - [x] Generate disjoint train/validation/test key pools.
@@ -138,7 +138,10 @@ python scripts\diagnostics\system_info.py
 - [x] Report cosine similarity, normalized L2, AUROC, EER, TAR@FAR, top-1/top-5, and unseen-key results.
 - [x] Run three model seeds and report mean, standard deviation, and identity-clustered intervals.
 - [x] Use unseen identities plus unseen keys as the primary condition.
-- [ ] Confirm with new protocol/key seeds and another cancelable transform.
+- [x] Confirm the fresh-key null with paper-specified MLP-Hash and new key/set/model seeds.
+- [x] Run the preregistered system-key-pool boundary and its sample-randomized confirmation.
+- [ ] Confirm with new protocol seeds, a denser key-pool sweep (6-9 keys), and MLP-Hash key pools.
+- [ ] Add same-image/different-key, shuffled-record, and norm-leakage controls.
 
 **Done when:** 1/2/5/10 exposure plots and tables are reproducible from configuration, seed, code, and protocol with no identity, key, or metadata leakage.
 

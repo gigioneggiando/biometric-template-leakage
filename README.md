@@ -7,8 +7,8 @@
 **Overall status:**
 
 - [x] Month 1 engineering milestone completed on 2026-08-26.
-- [x] Month 2 exploratory main experiment completed on 2026-09-04; confirmation pending.
-- [ ] Month 3 validation, paper, and submission completed.
+- [x] Month 2 exploratory main experiment completed on 2026-09-04; MLP-Hash cross-scheme confirmation completed the same day.
+- [ ] Month 3 validation, paper, and submission completed. Key-reuse boundary ablations started 2026-09-04.
 - [ ] Published `benchmark_cb` or FaceLinkGen result reproduced.
 
 LFW, Olivetti, CFP, and MOBIO results are **independent engineering studies, not paper reproduction**. Synthetic runs validate plumbing only and are excluded from the scientific evidence. No published result has been reproduced yet.
@@ -81,7 +81,8 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 **Status checked:** 2026-09-04
 
 - [x] Run a preregistered paper-specified MLP-Hash cross-scheme test with new key/set/model seeds.
-- [ ] Run key-reuse/correlation, norm-leakage, same-image, and shuffled-record boundary ablations.
+- [x] Run session-aligned and sample-randomized key-reuse boundary ablations (pools 1/2/5/10 versus fresh keys).
+- [ ] Run key-correlation, norm-leakage, same-image, and shuffled-record boundary ablations.
 - [ ] Complete confidence intervals, significance tests, and failure analysis.
 - [ ] Run revisions and final experiments.
 - [ ] Produce final figures, reproducible commands, and paper draft.
@@ -93,7 +94,7 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 
 **Proposal deliverable:** Reproducible attack framework, results, and paper.
 
-**[ ] Not met as of 2026-08-26.** The framework is partially implemented, but the main Month 2 evidence and paper are pending.
+**[ ] Not met as of 2026-09-04.** The framework, MOBIO evidence, cross-scheme confirmation, and first boundary result exist; the paper draft, remaining ablations, and additional seeds/datasets are pending.
 
 ## Dataset status
 
@@ -103,7 +104,7 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 | LFW funneled         | [x] Used     | Detector, sample-size, dimension, and crossed-seed sensitivity checks | Preserve as Month 1 evidence                        |
 | Olivetti faces       | [x] Used     | Full 40-identity protocol and dimension sweep                         | Preserve as cross-dataset evidence                  |
 | CFP                  | [x] Used     | Full frontal/profile protocols and crossed-seed sensitivity checks    | Preserve as large-scale/view evidence               |
-| MOBIO                | [x] Used     | 150-identity single/multi-exposure study; exact local setup documented | Complete cross-scheme and new-seed confirmation      |
+| MOBIO                | [x] Used     | 150-identity BioHash/MLP-Hash multi-exposure and key-pool boundary studies | Add new protocol seeds and dense key-pool threshold |
 | CASIA-WebFace        | [ ] Not used | Reviewed as a possible FaceLinkGen training source                    | Use only after license and protocol verification    |
 | TPDNE                | [ ] Not used | Reviewed as optional FaceLinkGen evaluation data                      | Defer until core identity linkage works             |
 
