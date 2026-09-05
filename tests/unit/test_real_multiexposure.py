@@ -5,7 +5,7 @@ import pytest
 import torch
 
 from biometrics_ai.aggregation.models import PooledTemplateMLP
-from biometrics_ai.data.multiexposure import ExposureSetConfig, build_real_exposure_sets
+from biometrics_ai.data.multiexposure import ExposureSetConfig, build_real_exposure_sets, shuffle_non_anchor_records
 from scripts.train import run_real_multiexposure
 
 
@@ -148,6 +148,58 @@ def test_random_key_pool_assignment_is_stable_and_not_session_bound(monkeypatch:
     ]
     assert np.array_equal(first[:, 0], expected_slots)
     assert len(set(first[::4, 0])) == 2
+
+
+def test_key_slot_known_appends_one_hot_slot(monkeypatch: pytest.MonkeyPatch):
+    embeddings = np.ones((12, 8), dtype=np.float32)
+    metadata = [
+        {"sample_id": f"sample_{index}", "sample_index": index, "split": "train"}
+        for index in range(12)
+    ]
+    monkeypatch.setattr(
+        run_real_multiexposure,
+        "biohash",
+        lambda embedding, key, config: np.zeros(config.output_dim, dtype=np.uint8),
+    )
+
+    templates, audit = run_real_multiexposure.protect_embeddings(
+        embeddings,
+        metadata,
+        "random_key_pool_3",
+        key_seed=43,
+        template_dim=4,
+        protection={"scheme": "biohash", "include_key_slot": True},
+    )
+
+    expected_slots = [
+        run_real_multiexposure.generate_key(43, "pool_assignment", row["sample_id"]) % 3
+        for row in metadata
+    ]
+    assert templates.shape == (12, 7)
+    assert np.array_equal(templates[:, 4:], np.eye(3, dtype=np.float32)[expected_slots])
+    assert audit["attacker_key_slot_known"] is True
+
+
+def test_shuffle_non_anchor_preserves_anchor_and_uses_other_identities():
+    identities = np.repeat(np.asarray(["a", "b", "c"]), 2)
+    templates = np.zeros((6, 4, 1), dtype=np.float32)
+    for row, identity in enumerate(identities):
+        templates[row, :, 0] = ord(identity)
+    exposure_set = {
+        "templates": templates,
+        "identity_ids": identities,
+        "targets": np.zeros((6, 2)),
+        "set_ids": np.arange(6),
+        "gallery": np.zeros((3, 2)),
+        "gallery_identity_ids": np.asarray(["a", "b", "c"]),
+    }
+
+    shuffled = shuffle_non_anchor_records(exposure_set, seed=47)
+
+    assert np.array_equal(shuffled["templates"][:, 0], templates[:, 0])
+    for row, identity in enumerate(identities):
+        assert np.all(shuffled["templates"][row, 1:, 0] != ord(identity))
+    assert sorted(shuffled["templates"][:, 1, 0]) == sorted(templates[:, 1, 0])
 
 
 def test_reassign_identity_splits_preserves_counts_and_disjointness(tmp_path: Path):

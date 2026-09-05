@@ -19,7 +19,7 @@ import yaml
 from torch.nn import functional as F
 
 from biometrics_ai.aggregation.models import DeepSetsExtractor, PooledTemplateMLP, SingleTemplateMLP
-from biometrics_ai.data.multiexposure import ExposureSetConfig, build_real_exposure_sets
+from biometrics_ai.data.multiexposure import ExposureSetConfig, build_real_exposure_sets, shuffle_non_anchor_records
 from biometrics_ai.evaluation.metrics import gallery_probe_metrics, identity_clustered_top1_interval
 from biometrics_ai.protection import (
     BioHashConfig,
@@ -104,20 +104,32 @@ def protect_embeddings(
             raise ValueError("System key pool size must be positive")
         key_pool = [generate_key(key_seed, "system_pool", index) for index in range(key_pool_size)]
         if random_assignment:
-            keys = [
-                key_pool[generate_key(key_seed, "pool_assignment", str(row["sample_id"])) % key_pool_size]
+            key_slots = [
+                generate_key(key_seed, "pool_assignment", str(row["sample_id"])) % key_pool_size
                 for row in metadata
             ]
         else:
-            keys = [key_pool[int(row["sample_index"]) % key_pool_size] for row in metadata]
+            key_slots = [int(row["sample_index"]) % key_pool_size for row in metadata]
+        keys = [key_pool[slot] for slot in key_slots]
         templates = np.stack([protect_one(embedding, key, scheme) for embedding, key in zip(embeddings, keys)])
-        return templates, {
+        slot_known = bool(protection.get("include_key_slot", False))
+        if slot_known:
+            templates = np.concatenate(
+                [templates.astype(np.float32), np.eye(key_pool_size, dtype=np.float32)[key_slots]],
+                axis=1,
+            )
+        audit = {
             "scheme": scheme_name,
             "unique_keys": len(set(keys)),
             "split_key_disjoint": False,
             "key_scope": "system-wide recurring randomized" if random_assignment else "system-wide recurring",
             "key_pool_size": key_pool_size,
         }
+        if slot_known:
+            audit["attacker_key_slot_known"] = True
+        return templates, audit
+    if protection.get("include_key_slot", False):
+        raise ValueError("include_key_slot is valid only for recurring key-pool conditions")
     if condition != "independent_unseen_keys":
         raise ValueError(f"Unknown condition: {condition}")
 
@@ -259,6 +271,23 @@ def aggregate_runs(runs: list[dict]) -> dict[str, dict[str, float]]:
 
 def evaluate_primary_evidence(condition_results: dict, metadata: list[dict], config: dict) -> dict:
     chance = 1.0 / len({str(row["identity_id"]) for row in metadata if row["split"] == "test"})
+    if config.get("primary_analysis") == "descriptive_control":
+        conditions = {}
+        for condition, condition_result in condition_results.items():
+            exposures = condition_result["exposures"]
+            ten = exposures["10"]["models"]["mean_mlp"]
+            row = {"ten_record_top1_mean": ten["summary"]["top1_linkage"]["mean"]}
+            if "1" in exposures:
+                one = exposures["1"]["models"]["single_mlp"]
+                row["one_record_top1_mean"] = one["summary"]["top1_linkage"]["mean"]
+                row["multiplicity_amplification"] = row["ten_record_top1_mean"] - row["one_record_top1_mean"]
+            conditions[condition] = row
+        return {
+            "analysis": "descriptive_control",
+            "control": config.get("control_name", "unspecified"),
+            "chance_top1": chance,
+            "conditions": conditions,
+        }
     if config.get("primary_analysis") == "key_pool_boundary":
         fresh = condition_results["independent_unseen_keys"]["exposures"]["10"]["models"]["mean_mlp"]
         boundary = {}
@@ -332,6 +361,18 @@ def run(config: dict) -> dict:
             train_set = build_real_exposure_sets(embeddings, protected, metadata, "train", set_config)
             validation_set = build_real_exposure_sets(embeddings, protected, metadata, "val", set_config)
             test_set = build_real_exposure_sets(embeddings, protected, metadata, "test", set_config)
+            if config.get("record_control") == "shuffle_non_anchor":
+                train_set = shuffle_non_anchor_records(
+                    train_set, generate_key(int(config["set_seed"]), "shuffle", f"{condition}:train:{exposures}")
+                )
+                validation_set = shuffle_non_anchor_records(
+                    validation_set, generate_key(int(config["set_seed"]), "shuffle", f"{condition}:val:{exposures}")
+                )
+                test_set = shuffle_non_anchor_records(
+                    test_set, generate_key(int(config["set_seed"]), "shuffle", f"{condition}:test:{exposures}")
+                )
+            elif config.get("record_control") not in (None, "none"):
+                raise ValueError(f"Unknown record_control: {config['record_control']}")
             model_names = ["single_mlp"] if int(exposures) == 1 else list(config["models"])
             models = {}
             for model_name in model_names:
@@ -361,6 +402,7 @@ def run(config: dict) -> dict:
         "classification": config["classification"],
         "dataset": config["dataset"],
         "protection": config.get("protection", {"scheme": "biohash"}),
+        "record_control": config.get("record_control", "none"),
         "split_reassignment_seed": config.get("split_reassignment_seed"),
         "split_identity_counts": {
             split: len({str(row["identity_id"]) for row in metadata if row["split"] == split})

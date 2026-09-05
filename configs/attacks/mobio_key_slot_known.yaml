@@ -1,0 +1,33 @@
+classification: exploratory independent study, not benchmark_cb reproduction
+dataset: MOBIO selected still images, identity-disjoint 12-session protocol
+embedding_dir: data/processed/embeddings/mobio/buffalo_l_yunet
+results_dir: results/mobio_key_slot_known
+template_dim: 128
+protection:
+  scheme: biohash
+  include_key_slot: true
+primary_analysis: descriptive_control
+control_name: recurring key slot labels known to attacker
+split_reassignment_seed: 90703
+key_seed: 90709
+set_seed: 90731
+repeats_per_identity: 8
+exposures: [1, 10]
+conditions:
+  - random_key_pool_3
+  - random_key_pool_4
+  - random_key_pool_5
+  - random_key_pool_7
+models:
+  - mean_mlp
+amplification_threshold: 0.05
+training:
+  seeds: [367, 379, 389]
+  epochs: 400
+  patience: 60
+  hidden_dim: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  mse_weight: 0.1
+  bootstrap_resamples: 2000
+  bootstrap_confidence: 0.95
