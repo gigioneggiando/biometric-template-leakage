@@ -97,13 +97,20 @@ def protect_embeddings(
         key = generate_key(key_seed, "shared", 0)
         templates = protect_batch(embeddings, key, scheme)
         return templates, {"scheme": scheme_name, "unique_keys": 1, "split_key_disjoint": False}
-    if condition.startswith("correlated_key_"):
+    if condition.startswith(("correlated_key_", "correlated_dims_")):
         if scheme_name != "biohash":
             raise ValueError("Correlated-key controls currently support BioHash only")
-        shared_percent = int(condition.removeprefix("correlated_key_"))
-        if shared_percent not in {0, 25, 50, 75, 100}:
-            raise ValueError("Correlated-key percentage must be one of 0, 25, 50, 75, or 100")
-        shared_dimensions = template_dim * shared_percent // 100
+        if condition.startswith("correlated_dims_"):
+            shared_dimensions = int(condition.removeprefix("correlated_dims_"))
+            if not 0 <= shared_dimensions <= template_dim:
+                raise ValueError("Correlated dimensions must be between zero and template_dim")
+            shared_fraction = shared_dimensions / template_dim
+        else:
+            shared_percent = int(condition.removeprefix("correlated_key_"))
+            if shared_percent not in {0, 25, 50, 75, 100}:
+                raise ValueError("Correlated-key percentage must be one of 0, 25, 50, 75, or 100")
+            shared_dimensions = template_dim * shared_percent // 100
+            shared_fraction = shared_percent / 100
         shared_key = generate_key(key_seed, "correlated_shared_projection", 0)
         private_keys = [
             generate_key(key_seed, str(row["split"]), f"correlated:{row['sample_id']}")
@@ -120,7 +127,7 @@ def protect_embeddings(
             "private_keys": len(set(private_keys)),
             "split_private_keys_disjoint": True,
             "shared_projection_dimensions": shared_dimensions,
-            "shared_projection_fraction": shared_percent / 100,
+            "shared_projection_fraction": shared_fraction,
             "key_scope": "partially correlated per-record keys",
         }
     if condition.startswith(("system_key_pool_", "random_key_pool_")):

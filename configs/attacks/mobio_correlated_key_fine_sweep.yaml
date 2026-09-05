@@ -1,0 +1,38 @@
+classification: exploratory independent study, not benchmark_cb reproduction
+dataset: MOBIO selected still images, identity-disjoint 12-session protocol
+embedding_dir: data/processed/embeddings/mobio/buffalo_l_yunet
+results_dir: results/mobio_correlated_key_fine_sweep
+template_dim: 128
+protection:
+  scheme: biohash
+  haar_sign_corrected: true
+primary_analysis: descriptive_control
+control_name: fine partial-correlation sweep on a new identity partition
+control_model: deepsets
+split_reassignment_seed: 90881
+key_seed: 90887
+set_seed: 90901
+repeats_per_identity: 8
+exposures: [1, 10]
+conditions:
+  - correlated_dims_0
+  - correlated_dims_16
+  - correlated_dims_24
+  - correlated_dims_32
+  - correlated_dims_40
+  - correlated_dims_48
+  - correlated_dims_56
+  - correlated_dims_64
+models:
+  - deepsets
+amplification_threshold: 0.05
+training:
+  seeds: [467, 479, 487]
+  epochs: 400
+  patience: 60
+  hidden_dim: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  mse_weight: 0.1
+  bootstrap_resamples: 2000
+  bootstrap_confidence: 0.95
