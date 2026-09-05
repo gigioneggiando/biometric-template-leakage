@@ -272,10 +272,11 @@ def aggregate_runs(runs: list[dict]) -> dict[str, dict[str, float]]:
 def evaluate_primary_evidence(condition_results: dict, metadata: list[dict], config: dict) -> dict:
     chance = 1.0 / len({str(row["identity_id"]) for row in metadata if row["split"] == "test"})
     if config.get("primary_analysis") == "descriptive_control":
+        control_model = str(config.get("control_model", "mean_mlp"))
         conditions = {}
         for condition, condition_result in condition_results.items():
             exposures = condition_result["exposures"]
-            ten = exposures["10"]["models"]["mean_mlp"]
+            ten = exposures["10"]["models"][control_model]
             row = {"ten_record_top1_mean": ten["summary"]["top1_linkage"]["mean"]}
             if "1" in exposures:
                 one = exposures["1"]["models"]["single_mlp"]
@@ -285,6 +286,7 @@ def evaluate_primary_evidence(condition_results: dict, metadata: list[dict], con
         return {
             "analysis": "descriptive_control",
             "control": config.get("control_name", "unspecified"),
+            "control_model": control_model,
             "chance_top1": chance,
             "conditions": conditions,
         }

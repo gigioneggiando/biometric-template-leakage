@@ -1,16 +1,16 @@
 classification: exploratory independent study, not benchmark_cb reproduction
 dataset: MOBIO selected still images, identity-disjoint 12-session protocol
 embedding_dir: data/processed/embeddings/mobio/buffalo_l_yunet
-results_dir: results/mobio_key_slot_baseline
+results_dir: results/mobio_key_slot_deepsets_baseline
 template_dim: 128
 protection:
   scheme: biohash
 primary_analysis: descriptive_control
-control_name: hidden recurring key slots, paired baseline
-status: invalid control design; mean pooling removed template-to-slot association before the MLP
-split_reassignment_seed: 90703
-key_seed: 90709
-set_seed: 90731
+control_name: hidden recurring key slots, paired DeepSets baseline
+control_model: deepsets
+split_reassignment_seed: 90767
+key_seed: 90779
+set_seed: 90787
 repeats_per_identity: 8
 exposures: [1, 10]
 conditions:
@@ -20,10 +20,10 @@ conditions:
   - random_key_pool_7
   - independent_unseen_keys
 models:
-  - mean_mlp
+  - deepsets
 amplification_threshold: 0.05
 training:
-  seeds: [367, 379, 389]
+  seeds: [419, 421, 431]
   epochs: 400
   patience: 60
   hidden_dim: 256

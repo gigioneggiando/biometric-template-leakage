@@ -8,6 +8,7 @@ protection:
   include_key_slot: true
 primary_analysis: descriptive_control
 control_name: recurring key slot labels known to attacker
+status: invalid control design; mean pooling removed template-to-slot association before the MLP
 split_reassignment_seed: 90703
 key_seed: 90709
 set_seed: 90731

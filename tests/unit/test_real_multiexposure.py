@@ -111,6 +111,30 @@ def test_key_pool_evidence_compares_recurring_pools_with_fresh_keys():
     assert evidence["all_recurring_pools_meet_minimum_effect"]
 
 
+def test_descriptive_control_uses_configured_model():
+    model = {
+        "summary": {"top1_linkage": {"mean": 0.4}},
+        "runs": [{"top1_identity_clustered_interval": {"lower": 0.2}}],
+    }
+    conditions = {
+        "random_key_pool_3": {
+            "exposures": {
+                "10": {"models": {"deepsets": model}},
+            }
+        }
+    }
+    metadata = [{"identity_id": str(index), "split": "test"} for index in range(30)]
+
+    evidence = run_real_multiexposure.evaluate_primary_evidence(
+        conditions,
+        metadata,
+        {"primary_analysis": "descriptive_control", "control_model": "deepsets"},
+    )
+
+    assert evidence["control_model"] == "deepsets"
+    assert evidence["conditions"]["random_key_pool_3"]["ten_record_top1_mean"] == 0.4
+
+
 def test_random_key_pool_assignment_is_stable_and_not_session_bound(monkeypatch: pytest.MonkeyPatch):
     embeddings = np.ones((40, 8), dtype=np.float32)
     metadata = [
