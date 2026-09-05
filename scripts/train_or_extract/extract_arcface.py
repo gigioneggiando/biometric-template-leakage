@@ -25,6 +25,7 @@ def main() -> None:
     parser.add_argument("--detection-model", type=Path)
     parser.add_argument("--detection-threshold", type=float, default=0.5)
     parser.add_argument("--skip-errors", action="store_true")
+    parser.add_argument("--progress-every", type=int, default=100)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     rows = list(csv.DictReader(args.input_csv.open(encoding="utf-8", newline="")))
@@ -37,6 +38,10 @@ def main() -> None:
     else:
         if args.recognition_model is None or args.detection_model is None:
             parser.error("--recognition-model and --detection-model are required for the opencv backend")
+        if args.model_name == "antelopev2":
+            # The OpenCV backend receives a checkpoint directly rather than an
+            # InsightFace model pack, so record the actual checkpoint filename.
+            args.model_name = args.recognition_model.stem
         if args.backend == "opencv":
             extractor = OpenCvArcFaceExtractor(
                 args.recognition_model,
@@ -57,7 +62,7 @@ def main() -> None:
         }
 
     vectors, metadata, failures = [], [], []
-    for row in rows:
+    for index, row in enumerate(rows, start=1):
         try:
             vector = extractor.extract(row["source_image"])
         except Exception as error:
@@ -67,6 +72,8 @@ def main() -> None:
             continue
         vectors.append(vector)
         metadata.append({**row, "embedding_model": args.model_name, "dimension": len(vector), "preprocessing_version": preprocessing_version})
+        if args.progress_every > 0 and index % args.progress_every == 0:
+            print(f"Processed {index}/{len(rows)} images; failures={len(failures)}", flush=True)
     if not vectors:
         raise SystemExit("No embeddings were extracted")
     args.output.mkdir(parents=True, exist_ok=True)

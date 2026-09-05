@@ -32,10 +32,10 @@ On Windows, keep the complete extracted tree here:
 Do not place it inside the repository. Extract each archive into its own directory and preserve the internal folder names. The selected-image root used by the experiment is:
 
 ```text
-%USERPROFILE%\ResearchData\MOBIO\selected-still-images\selected-images
+%USERPROFILE%\ResearchData\MOBIO\selected-images
 ```
 
-Only that `selected-images` directory is read by `prepare_mobio_protocol.py`. The local protocol does not claim to reproduce the unavailable `benchmark_cb` configuration: it parses identity and session from the selected-still filenames, chooses one image from each of 12 sessions for each of 150 identities, and makes an identity-disjoint 90/30/30 split.
+Only the directory containing identity folders such as `m001/` is read by `prepare_mobio_protocol.py`. Some extraction tools preserve an additional `selected-still-images/` directory; pass the actual extracted image root rather than inferring it from the archive filename. The local protocol does not claim to reproduce the unavailable `benchmark_cb` configuration: it parses identity and session from the selected-still filenames, chooses one image from each of 12 sessions for each of 150 identities, and makes an identity-disjoint 90/30/30 split.
 
 ## Luigi setup and verification
 
@@ -47,7 +47,7 @@ From the repository root:
 $env:MOBIO_ROOT = "$env:USERPROFILE\ResearchData\MOBIO"
 .\.venv\Scripts\python.exe scripts\data\prepare_mobio.py --root $env:MOBIO_ROOT
 .\.venv\Scripts\python.exe scripts\data\prepare_mobio_protocol.py `
-  --image-root "$env:MOBIO_ROOT\selected-still-images\selected-images"
+  --image-root "$env:MOBIO_ROOT\selected-images"
 .\.venv\Scripts\python.exe scripts\diagnostics\check_leakage.py `
   --manifest data\interim\mobio_multiexposure_protocol.csv
 ```

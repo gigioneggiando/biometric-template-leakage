@@ -156,21 +156,22 @@ def train_model(
 ) -> dict:
     started = time.time()
     seed_record = seed_record_dict(seed)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = make_model(
         model_name,
         train_set["templates"].shape[-1],
         train_set["targets"].shape[-1],
         int(training["hidden_dim"]),
-    )
+    ).to(device)
     optimizer = torch.optim.Adam(
         model.parameters(),
         lr=float(training["learning_rate"]),
         weight_decay=float(training["weight_decay"]),
     )
-    train_inputs = torch.tensor(train_set["templates"], dtype=torch.float32)
-    train_targets = torch.tensor(train_set["targets"], dtype=torch.float32)
-    validation_inputs = torch.tensor(validation_set["templates"], dtype=torch.float32)
-    validation_targets = torch.tensor(validation_set["targets"], dtype=torch.float32)
+    train_inputs = torch.tensor(train_set["templates"], dtype=torch.float32, device=device)
+    train_targets = torch.tensor(train_set["targets"], dtype=torch.float32, device=device)
+    validation_inputs = torch.tensor(validation_set["templates"], dtype=torch.float32, device=device)
+    validation_targets = torch.tensor(validation_set["targets"], dtype=torch.float32, device=device)
     best_state = copy.deepcopy(model.state_dict())
     best_validation_loss = float("inf")
     best_epoch = 0
@@ -204,7 +205,7 @@ def train_model(
     model.load_state_dict(best_state)
     model.eval()
     with torch.no_grad():
-        predictions = model(torch.tensor(test_set["templates"], dtype=torch.float32)).numpy()
+        predictions = model(torch.tensor(test_set["templates"], dtype=torch.float32, device=device)).cpu().numpy()
     target_cosines = np.sum(predictions * test_set["targets"], axis=1)
     clustered_interval = identity_clustered_top1_interval(
         predictions,
@@ -218,6 +219,7 @@ def train_model(
     return {
         "seed": seed,
         "seed_record": seed_record,
+        "device": str(device),
         "best_epoch": best_epoch,
         "best_validation_loss": best_validation_loss,
         "mean_target_cosine": float(target_cosines.mean()),

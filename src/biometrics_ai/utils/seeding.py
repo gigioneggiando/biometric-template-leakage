@@ -16,6 +16,10 @@ class SeedRecord:
 
 
 def seed_everything(seed: int, deterministic: bool = True) -> SeedRecord:
+    if deterministic:
+        # CUDA 10.2+ needs this workspace setting for deterministic CuBLAS kernels.
+        # Set it before CUDA is initialized by manual seeding or model execution.
+        os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)

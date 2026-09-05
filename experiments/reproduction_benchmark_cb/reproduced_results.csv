@@ -1,6 +1,6 @@
 scheme,scenario,metric,our_value,unit,reproduction_level,notes
 Unprotected,normal,EER,TODO / not run,percent,NOT REPRODUCIBLE YET,MOBIO and official source unavailable
-BioHash,normal,EER,TODO / not run,percent,NOT REPRODUCIBLE YET,MOBIO and official source unavailable
-BioHash,stolen-token,EER,TODO / not run,percent,NOT REPRODUCIBLE YET,MOBIO and official source unavailable
-BioHash,normal,mutual_information,TODO / not run,paper MI estimate,NOT REPRODUCIBLE YET,MOBIO and official source unavailable
-BioHash,stolen-token,mutual_information,TODO / not run,paper MI estimate,NOT REPRODUCIBLE YET,MOBIO and official source unavailable
+BioHash,normal,EER,TODO / not run,percent,NOT REPRODUCIBLE YET,official source and exact configuration unavailable; MOBIO is authorized locally
+BioHash,stolen-token,EER,TODO / not run,percent,NOT REPRODUCIBLE YET,official source and exact configuration unavailable; MOBIO is authorized locally
+BioHash,normal,mutual_information,TODO / not run,paper MI estimate,NOT REPRODUCIBLE YET,official source and exact configuration unavailable; MOBIO is authorized locally
+BioHash,stolen-token,mutual_information,TODO / not run,paper MI estimate,NOT REPRODUCIBLE YET,official source and exact configuration unavailable; MOBIO is authorized locally
