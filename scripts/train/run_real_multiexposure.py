@@ -26,6 +26,7 @@ from biometrics_ai.protection import (
     MLPHashConfig,
     biohash,
     biohash_batch,
+    correlated_biohash,
     generate_key,
     mlphash,
     mlphash_batch,
@@ -96,6 +97,32 @@ def protect_embeddings(
         key = generate_key(key_seed, "shared", 0)
         templates = protect_batch(embeddings, key, scheme)
         return templates, {"scheme": scheme_name, "unique_keys": 1, "split_key_disjoint": False}
+    if condition.startswith("correlated_key_"):
+        if scheme_name != "biohash":
+            raise ValueError("Correlated-key controls currently support BioHash only")
+        shared_percent = int(condition.removeprefix("correlated_key_"))
+        if shared_percent not in {0, 25, 50, 75, 100}:
+            raise ValueError("Correlated-key percentage must be one of 0, 25, 50, 75, or 100")
+        shared_dimensions = template_dim * shared_percent // 100
+        shared_key = generate_key(key_seed, "correlated_shared_projection", 0)
+        private_keys = [
+            generate_key(key_seed, str(row["split"]), f"correlated:{row['sample_id']}")
+            for row in metadata
+        ]
+        templates = np.stack(
+            [
+                correlated_biohash(embedding, shared_key, private_key, shared_dimensions, scheme)
+                for embedding, private_key in zip(embeddings, private_keys)
+            ]
+        )
+        return templates, {
+            "scheme": scheme_name,
+            "private_keys": len(set(private_keys)),
+            "split_private_keys_disjoint": True,
+            "shared_projection_dimensions": shared_dimensions,
+            "shared_projection_fraction": shared_percent / 100,
+            "key_scope": "partially correlated per-record keys",
+        }
     if condition.startswith(("system_key_pool_", "random_key_pool_")):
         random_assignment = condition.startswith("random_key_pool_")
         prefix = "random_key_pool_" if random_assignment else "system_key_pool_"
@@ -144,6 +171,64 @@ def protect_embeddings(
         raise RuntimeError("Independent key generation produced overlapping split key pools")
     templates = np.stack([protect_one(embedding, key, scheme) for embedding, key in zip(embeddings, keys)])
     return templates, {"scheme": scheme_name, "unique_keys": len(keys), "split_key_disjoint": True}
+
+
+def build_same_image_different_key_sets(
+    embeddings: np.ndarray,
+    metadata: list[dict],
+    split: str,
+    set_config: ExposureSetConfig,
+    key_seed: int,
+    template_dim: int,
+    protection: dict | None = None,
+) -> tuple[dict[str, np.ndarray], dict]:
+    """Build sets that repeat one source image under nested fresh keys."""
+    grouped: dict[str, list[int]] = {}
+    for index, row in enumerate(metadata):
+        if row["split"] == split:
+            grouped.setdefault(str(row["identity_id"]), []).append(index)
+    if not grouped:
+        raise ValueError(f"No identities found for split {split!r}")
+
+    flat_embeddings: list[np.ndarray] = []
+    virtual_metadata: list[dict] = []
+    targets, identity_ids, set_ids = [], [], []
+    gallery, gallery_identity_ids = [], []
+    for identity_id in sorted(grouped):
+        indices = sorted(grouped[identity_id], key=lambda index: int(metadata[index]["sample_index"]))
+        gallery_index, exposure_indices = indices[0], np.asarray(indices[1:])
+        gallery.append(embeddings[gallery_index])
+        gallery_identity_ids.append(identity_id)
+        for repeat in range(set_config.repeats_per_identity):
+            plan_seed = generate_key(set_config.seed, split, f"{identity_id}:{repeat}")
+            source_index = int(np.random.default_rng(plan_seed).permutation(exposure_indices)[0])
+            source = embeddings[source_index]
+            targets.append(source)
+            identity_ids.append(identity_id)
+            set_ids.append(f"{split}:{identity_id}:{repeat}")
+            for slot in range(set_config.exposures):
+                flat_embeddings.append(source)
+                virtual_metadata.append(
+                    {"sample_id": f"same-image:{identity_id}:{repeat}:{slot}", "split": split}
+                )
+
+    protected, audit = protect_embeddings(
+        np.asarray(flat_embeddings, dtype=np.float32),
+        virtual_metadata,
+        "independent_unseen_keys",
+        key_seed,
+        template_dim,
+        protection,
+    )
+    set_count = len(targets)
+    return {
+        "templates": protected.reshape(set_count, set_config.exposures, -1),
+        "targets": np.asarray(targets, dtype=np.float32),
+        "identity_ids": np.asarray(identity_ids),
+        "set_ids": np.asarray(set_ids),
+        "gallery": np.asarray(gallery, dtype=np.float32),
+        "gallery_identity_ids": np.asarray(gallery_identity_ids),
+    }, audit
 
 
 def make_model(model_name: str, input_dim: int, output_dim: int, hidden_dim: int):
@@ -349,20 +434,46 @@ def run(config: dict) -> dict:
         metadata = reassign_identity_splits(metadata, int(config["split_reassignment_seed"]))
     condition_results = {}
     for condition in config["conditions"]:
-        protected, key_audit = protect_embeddings(
-            embeddings,
-            metadata,
-            condition,
-            int(config["key_seed"]),
-            int(config["template_dim"]),
-            config.get("protection"),
-        )
+        same_image_mode = config.get("exposure_mode") == "same_image_different_keys"
+        if same_image_mode and condition != "independent_unseen_keys":
+            raise ValueError("same_image_different_keys supports only independent_unseen_keys")
+        if not same_image_mode:
+            protected, key_audit = protect_embeddings(
+                embeddings,
+                metadata,
+                condition,
+                int(config["key_seed"]),
+                int(config["template_dim"]),
+                config.get("protection"),
+            )
         exposure_results = {}
         for exposures in config["exposures"]:
             set_config = ExposureSetConfig(int(exposures), int(config["repeats_per_identity"]), int(config["set_seed"]))
-            train_set = build_real_exposure_sets(embeddings, protected, metadata, "train", set_config)
-            validation_set = build_real_exposure_sets(embeddings, protected, metadata, "val", set_config)
-            test_set = build_real_exposure_sets(embeddings, protected, metadata, "test", set_config)
+            if same_image_mode:
+                train_set, train_audit = build_same_image_different_key_sets(
+                    embeddings, metadata, "train", set_config, int(config["key_seed"]),
+                    int(config["template_dim"]), config.get("protection")
+                )
+                validation_set, validation_audit = build_same_image_different_key_sets(
+                    embeddings, metadata, "val", set_config, int(config["key_seed"]),
+                    int(config["template_dim"]), config.get("protection")
+                )
+                test_set, test_audit = build_same_image_different_key_sets(
+                    embeddings, metadata, "test", set_config, int(config["key_seed"]),
+                    int(config["template_dim"]), config.get("protection")
+                )
+                key_audit = {
+                    "scheme": train_audit["scheme"],
+                    "unique_keys_at_level": (
+                        train_audit["unique_keys"] + validation_audit["unique_keys"] + test_audit["unique_keys"]
+                    ),
+                    "split_key_disjoint": True,
+                    "exposure_mode": "same image with different fresh keys",
+                }
+            else:
+                train_set = build_real_exposure_sets(embeddings, protected, metadata, "train", set_config)
+                validation_set = build_real_exposure_sets(embeddings, protected, metadata, "val", set_config)
+                test_set = build_real_exposure_sets(embeddings, protected, metadata, "test", set_config)
             if config.get("record_control") == "shuffle_non_anchor":
                 train_set = shuffle_non_anchor_records(
                     train_set, generate_key(int(config["set_seed"]), "shuffle", f"{condition}:train:{exposures}")
@@ -405,6 +516,7 @@ def run(config: dict) -> dict:
         "dataset": config["dataset"],
         "protection": config.get("protection", {"scheme": "biohash"}),
         "record_control": config.get("record_control", "none"),
+        "exposure_mode": config.get("exposure_mode", "different_images"),
         "split_reassignment_seed": config.get("split_reassignment_seed"),
         "split_identity_counts": {
             split: len({str(row["identity_id"]) for row in metadata if row["split"] == split})

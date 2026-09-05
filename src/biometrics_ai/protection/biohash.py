@@ -58,3 +58,54 @@ def biohash_batch(embeddings: np.ndarray, key: int | str | bytes, config: BioHas
         raise ValueError(f"Expected embedding shape (n, {config.input_dim}), got {embeddings.shape}")
     projection = _orthonormal_projection(config.input_dim, config.output_dim, key, config.haar_sign_corrected)
     return (embeddings @ projection >= config.threshold).astype(np.uint8)
+
+
+def _correlated_orthonormal_projection(
+    input_dim: int,
+    output_dim: int,
+    shared_key: int | str | bytes,
+    private_key: int | str | bytes,
+    shared_dimensions: int,
+    haar_sign_corrected: bool = True,
+) -> np.ndarray:
+    """Build an orthonormal projection with an exact shared column prefix."""
+    if not 0 <= shared_dimensions <= output_dim:
+        raise ValueError("shared_dimensions must be between zero and output_dim")
+    shared_projection = _orthonormal_projection(input_dim, output_dim, shared_key, haar_sign_corrected)
+    if shared_dimensions == output_dim:
+        return shared_projection
+
+    shared_basis = shared_projection[:, :shared_dimensions]
+    private_dimensions = output_dim - shared_dimensions
+    rng = np.random.default_rng(_seed_from_key(private_key))
+    candidates = rng.standard_normal((input_dim, private_dimensions), dtype=np.float64)
+    if shared_dimensions:
+        candidates -= shared_basis @ (shared_basis.T @ candidates)
+    private_basis, private_r = np.linalg.qr(candidates, mode="reduced")
+    if haar_sign_corrected:
+        private_basis = private_basis * np.sign(np.diag(private_r))
+    return np.concatenate(
+        [shared_basis, private_basis[:, :private_dimensions].astype(np.float32)], axis=1
+    )
+
+
+def correlated_biohash(
+    embedding: np.ndarray,
+    shared_key: int | str | bytes,
+    private_key: int | str | bytes,
+    shared_dimensions: int,
+    config: BioHashConfig = BioHashConfig(),
+) -> np.ndarray:
+    """BioHash with controlled partial projection reuse across record keys."""
+    embedding = np.asarray(embedding, dtype=np.float32)
+    if embedding.shape != (config.input_dim,):
+        raise ValueError(f"Expected embedding shape {(config.input_dim,)}, got {embedding.shape}")
+    projection = _correlated_orthonormal_projection(
+        config.input_dim,
+        config.output_dim,
+        shared_key,
+        private_key,
+        shared_dimensions,
+        config.haar_sign_corrected,
+    )
+    return (embedding @ projection >= config.threshold).astype(np.uint8)

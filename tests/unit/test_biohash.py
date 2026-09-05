@@ -1,5 +1,5 @@
 import numpy as np
-from biometrics_ai.protection import BioHashConfig, biohash, biohash_batch, generate_key
+from biometrics_ai.protection import BioHashConfig, biohash, biohash_batch, correlated_biohash, generate_key
 
 
 def test_key_generation_is_deterministic_and_scoped():
@@ -36,3 +36,22 @@ def test_haar_sign_correction_is_orthonormal_and_direction_invariant():
     first = np.array([(x @ _orthonormal_projection(64, 16, f"a{i}", True) >= 0).mean() for i in range(400)])
     second = np.array([(y @ _orthonormal_projection(64, 16, f"a{i}", True) >= 0).mean() for i in range(400)])
     assert abs(first.mean() - 0.5) < 0.03 and abs(second.mean() - 0.5) < 0.03
+
+
+def test_correlated_projection_shares_exact_prefix_and_remains_orthonormal():
+    from biometrics_ai.protection.biohash import _correlated_orthonormal_projection
+
+    first = _correlated_orthonormal_projection(32, 12, "shared", "private-a", 4)
+    second = _correlated_orthonormal_projection(32, 12, "shared", "private-b", 4)
+
+    assert np.array_equal(first[:, :4], second[:, :4])
+    assert not np.array_equal(first[:, 4:], second[:, 4:])
+    assert np.allclose(first.T @ first, np.eye(12), atol=1e-5)
+    assert np.allclose(second.T @ second, np.eye(12), atol=1e-5)
+
+    embedding = np.arange(32, dtype=np.float32)
+    embedding /= np.linalg.norm(embedding)
+    config = BioHashConfig(32, 12, haar_sign_corrected=True)
+    one = correlated_biohash(embedding, "shared", "private-a", 4, config)
+    two = correlated_biohash(embedding, "shared", "private-b", 4, config)
+    assert np.array_equal(one[:4], two[:4])

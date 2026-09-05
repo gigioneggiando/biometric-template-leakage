@@ -226,6 +226,29 @@ def test_shuffle_non_anchor_preserves_anchor_and_uses_other_identities():
     assert sorted(shuffled["templates"][:, 1, 0]) == sorted(templates[:, 1, 0])
 
 
+def test_same_image_sets_repeat_source_with_distinct_nested_keys(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+    embeddings, _, metadata = _inputs(tmp_path)
+
+    monkeypatch.setattr(
+        run_real_multiexposure,
+        "biohash",
+        lambda embedding, key, config: np.full(config.output_dim, key % 251, dtype=np.uint8),
+    )
+    two, _ = run_real_multiexposure.build_same_image_different_key_sets(
+        embeddings, metadata, "test", ExposureSetConfig(2, 2, 53), 59, 4
+    )
+    five, _ = run_real_multiexposure.build_same_image_different_key_sets(
+        embeddings, metadata, "test", ExposureSetConfig(5, 2, 53), 59, 4
+    )
+
+    assert two["templates"].shape == (4, 2, 4)
+    assert np.array_equal(two["templates"], five["templates"][:, :2])
+    assert np.array_equal(two["targets"], five["targets"])
+    assert np.allclose(np.linalg.norm(two["targets"], axis=1), 1.0)
+    for template_set in five["templates"]:
+        assert len({tuple(row) for row in template_set}) == 5
+
+
 def test_reassign_identity_splits_preserves_counts_and_disjointness(tmp_path: Path):
     _, _, metadata = _inputs(tmp_path)
     original = {split: {r["identity_id"] for r in metadata if r["split"] == split} for split in ("train", "val", "test")}
