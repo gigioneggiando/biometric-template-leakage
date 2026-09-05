@@ -44,11 +44,13 @@ Three further preregistered runs generalized this. On a new identity partition, 
 
 Boundary resolution over three MOBIO partitions placed the robust reuse regime at k <= 4 (pooled `56.7% / 51.5%`), a partition-dependent transition at k = 5-7, and a null regime at k >= 8 (pooled fresh `3.8%`). A Haar sign-corrected BioHash, the exactly-Haar construction covered by the theorem, gave `74.6 / 48.1 / 2.6%` for pools 1/5/fresh. MLP-Hash pools 3/4 gave `54.3 / 37.8%`. On public LFW (125 x 12, chance `4.0%`) fresh keys gave exactly `4.0%` with zero seed variance and recurring pools 1-10 gave `73.2%` down to `25.3%`, so the structure transfers across datasets while the boundary location does not.
 
+Two preregistered mechanism controls strengthen the interpretation. On a new paired MOBIO partition, hidden-slot DeepSets gave `55.3/46.3/32.9/23.8%` for pools 3/4/5/7 and `3.33%` fresh; providing the correct transform-slot label changed these by only `+1.8/+4.4/+0.7/-0.8` points. In the shuffled-non-anchor control, retaining one correct record but replacing the other nine with other identities collapsed pools 3/4 and fresh keys to exactly `3.33%` for every seed. The gain therefore requires multiple same-identity records and is not primarily a set-size, transform-frequency, or hidden-slot-identification artefact.
+
 ## Limitations and next work
 
 These studies use one ArcFace checkpoint and a local BioHash reference not cross-checked against unavailable official code. The primary cross-dataset table uses one identity assignment, while larger LFW and CFP add three identity assignments, three key seeds, and three model seeds. Those cells share fixed datasets and pipeline components, so they are dependent sensitivity checks rather than independent replications. Identity-clustered percentile intervals are descriptive, can under-cover, and were inspected without familywise error correction. Chance inclusion does not prove equivalence or irreversibility. None of the protocols is comparable to the paper's MOBIO protocol or official implementation.
 
-Continue requesting a corrected `benchmark_cb` source; keep the reproduction blocked until then. Add a key-aware attacker and non-normalized, same-image/different-key, and shuffled-record controls. A high-tier claim still requires independent proof review, at least one source-exact published transform, a literature recheck on IEEE Xplore and Google Scholar, and statistical equivalence rather than failure-to-reject significance tests.
+Continue requesting a corrected `benchmark_cb` source; keep the reproduction blocked until then. Add non-normalized, key-correlation, and same-image/different-key controls. A high-tier claim still requires independent proof review, at least one source-exact published transform, a literature recheck on IEEE Xplore and Google Scholar, and statistical equivalence rather than failure-to-reject significance tests.
 
 ## Commands
 

@@ -77,8 +77,8 @@ python scripts\data\download_lfw.py
 nvidia-smi
 ```
 
-- [ ] Create a separate environment with a CUDA-compatible PyTorch build selected from the official PyTorch site. Do not replace the working CPU environment until GPU validation succeeds.
-- [x] Verify CUDA through Python (result: Torch CPU build, CUDA unavailable):
+- [x] Install and validate CUDA-compatible PyTorch `2.8.0+cu128` in the isolated environment.
+- [x] Verify CUDA through Python (RTX 2060 detected and used by the experiment runner):
 
 ```powershell
 python -c "import torch; print(torch.__version__); print(torch.cuda.is_available()); print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'no CUDA device')"
@@ -87,7 +87,7 @@ python scripts\diagnostics\system_info.py
 
 - [ ] Share `results/system_info.json` internally without committing it if it contains sensitive host details.
 
-**Done when:** PyTorch reports CUDA available and records GPU model/VRAM. CPU is sufficient for smoke tests but not extended reproductions.
+**Completed 2026-09-05:** PyTorch reports CUDA available; the MOBIO runner records `device: cuda` per trained model. Host-specific system information remains local.
 
 ## Month 1 real-dataset baseline
 
@@ -127,7 +127,7 @@ python scripts\diagnostics\system_info.py
 
 ## Priority 7: proposed multi-exposure experiment
 
-**Status (2026-09-04):** BioHash and MLP-Hash fresh-key runs complete and null; session-aligned and randomized key-pool boundary runs complete. Randomized pools 1/2/5 leak strongly, pool 10 does not; new protocol seeds still pending.
+**Status (2026-09-05):** BioHash and MLP-Hash fresh-key runs, key-pool boundary replications, LFW replication, and key-slot/shuffled mechanism controls are complete.
 
 - [x] Create identity-disjoint train/validation/test splits on authorized MOBIO data.
 - [x] Generate disjoint train/validation/test key pools.
@@ -142,8 +142,9 @@ python scripts\diagnostics\system_info.py
 - [x] Run the preregistered system-key-pool boundary and its sample-randomized confirmation.
 - [x] Confirm with new protocol seeds (three partitions on the 3-9 sweep), MLP-Hash pools 1-5 and 10, and a Haar sign-corrected variant.
 - [x] Report the LFW second-dataset key-pool run (`experiments/lfw_multiexposure/`).
-- [ ] Add same-image/different-key, shuffled-record, and norm-leakage controls.
-- [ ] Add a key-aware (slot-label-known) attacker to separate information loss from mixture identification near the boundary.
+- [x] Add a shuffled-non-anchor control; all 10-record conditions collapsed to exact chance.
+- [x] Add a corrected key-aware (slot-label-known) DeepSets attacker paired with a hidden-slot baseline.
+- [ ] Add same-image/different-key, norm-leakage, and key-correlation controls.
 - [ ] Recheck the novelty claim against IEEE Xplore and Google Scholar before submission.
 
 **Done when:** 1/2/5/10 exposure plots and tables are reproducible from configuration, seed, code, and protocol with no identity, key, or metadata leakage.

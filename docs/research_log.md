@@ -107,3 +107,10 @@
 - Result (10-record mean-pool top-1, chance `4.00%`): pools 1/2/3/4/5/7/10 gave `73.17 / 63.17 / 62.50 / 42.50 / 41.00 / 32.00 / 25.33%`; fresh keys `4.00%` with zero seed variance, AUROC `0.505`; 1-record fresh `4.67%`. Oracle `100%`. Runtime 5.66 minutes.
 - Criteria: pools 1-7 passed; pool 10 exceeded fresh by `21.3` points but one clustered lower bound equalled chance, so it fails the interval criterion.
 - Interpretation: the fresh-key null and reuse amplification transfer to public in-the-wild images. The decay with pool size is slower than on MOBIO (pool 10 `25.3%` versus `5.6%`) and single-record leakage persists to pool 7 (`11.7%`), so the boundary is dataset-dependent. This is the first cross-dataset confirmation of the central claim.
+
+## 2026-09-05 (key-slot and shuffled-record mechanism controls)
+
+- Preregistration: committed configs and implementation before execution. The first key-slot pair was then found invalid for its intended interpretation because mean pooling discarded each template-to-slot association before the MLP. The invalid configs were retained and marked; a corrected DeepSets pair with new split/key/set seeds `90767/90779/90787` and model seeds `419/421/431` was committed before inspecting corrected results.
+- Corrected key-slot result: hidden-slot 10-record top-1 for pools 3/4/5/7 was `55.28/46.25/32.92/23.75%`, fresh `3.33%`; slot-known was `57.08/50.69/33.61/22.92%`. Differences `+1.81/+4.44/+0.69/-0.83` points. Runtimes 2.81 and 2.29 minutes on CUDA.
+- Shuffled control: every set retained one correct anchor and received nine non-anchor records from other identities. Pool 3, pool 4, and fresh-key 10-record top-1 were all exactly `3.33%` for every seed; AUROC `0.4994/0.5029/0.5001`. Runtime 1.67 minutes on CUDA.
+- Interpretation: the new hidden-slot baseline independently replicates the reuse curve. Explicit slot labels do not materially shift its boundary. Shuffling eliminates the gain, so multiplicity amplification requires multiple same-identity records rather than set size, global transform frequencies, or the runner alone. Same-image, norm, and key-correlation controls remain open.

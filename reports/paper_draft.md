@@ -4,7 +4,7 @@ Working draft, 2026-09-04. Every number below is traceable to a tracked summary 
 
 ## Abstract
 
-Cancelable biometric schemes such as BioHashing and MLP-Hash protect a face embedding by a secret, key-seeded random projection. A natural fear is that an attacker who collects many protected records of the same person, from different services with different keys, can pool them to recover identity even without any key. We show that this fear is unfounded under one precise condition and fully justified under another. First, we prove that for unit-norm embeddings and independently drawn rotationally invariant projections, the joint law of any number of protected records is independent of the source: $I(Y; T_1, \dots, T_n) = 0$ for every $n$, so no attacker, with any training data or compute, exceeds chance. Second, we show empirically on MOBIO (150 identities, 12 sessions) and public LFW (125 identities, 12 images) with ArcFace embeddings that this guarantee collapses as soon as hidden transforms recur. With a pool of 4 to 7 recurring hidden BioHash transforms, a single protected record is at chance (3.5-4.3% top-1 over 30 identities) yet ten records pooled by a permutation-invariant attacker recover 34-54% of identities. The effect vanishes near 8-10 transforms and is absent under fresh keys in every run. The pattern replicates across identity partitions and for paper-specified MLP-Hash. Record multiplicity is therefore not a privacy risk per se; it is an amplifier whose gain is set by the diversity of the deployed transforms.
+Cancelable biometric schemes such as BioHashing and MLP-Hash protect a face embedding by a secret, key-seeded random projection. A natural fear is that an attacker who collects many protected records of the same person, from different services with different keys, can pool them to recover identity even without any key. We show that this fear is unfounded under one precise condition and fully justified under another. First, we prove that for unit-norm embeddings and independently drawn rotationally invariant projections, the joint law of any number of protected records is independent of the source: $I(Y; T_1, \dots, T_n) = 0$ for every $n$, so no attacker, with any training data or compute, exceeds chance. Second, we show empirically on MOBIO (150 identities, 12 sessions) and public LFW (125 identities, 12 images) with ArcFace embeddings that this guarantee collapses as soon as hidden transforms recur. With a pool of 4 to 7 recurring hidden BioHash transforms, a single protected record is at chance (3.5-4.3% top-1 over 30 identities) yet ten records pooled by a permutation-invariant attacker recover 34-54% of identities. The effect vanishes near 8-10 transforms and is absent under fresh keys in every run. The pattern replicates across identity partitions and for paper-specified MLP-Hash. A shuffled-record control collapses the recurring-pool result to chance, while true slot labels improve a paired DeepSets attacker by at most 4.44 points. Record multiplicity is therefore not a privacy risk per se; it is an amplifier whose gain is set by the diversity of the deployed transforms.
 
 ## 1. Introduction
 
@@ -16,6 +16,7 @@ Contributions:
 2. A key-blind attacker for sets of protected records (single-template MLP, mean/max pooling, DeepSets) and an identity-disjoint, key-disjoint evaluation protocol on MOBIO with preregistered endpoints.
 3. The first measurement, to our knowledge, of leakage as a function of the number of hidden recurring transforms, showing a sharp regime change and multiplicity amplification that exists only under reuse.
 4. Cross-scheme (BioHash, MLP-Hash), cross-partition (three MOBIO partitions), and cross-dataset (MOBIO, LFW) replication, with all preregistered failures reported.
+5. Mechanism controls showing that the gain requires multiple records from the same identity and is not primarily limited by hidden transform-slot identification.
 
 ## 2. Threat model
 
@@ -81,15 +82,21 @@ The first boundary run assigned keys by session index and gave 33.89% at pool 10
 
 Public funneled LFW, 125 identities x 12 images, 75/25/25 identity-disjoint split, chance 4.00% (`experiments/lfw_multiexposure/key_pool_boundary_summary.csv`). Fresh keys: 10-record top-1 exactly 4.00% with zero seed variance (1-record 4.67%), AUROC 0.505. Recurring pools 1/2/3/4/5/7/10: 73.17 / 63.17 / 62.50 / 42.50 / 41.00 / 32.00 / 25.33% (1-record 70.67 / 37.33 / 23.83 / 16.83 / 11.50 / 11.67 / 4.33%). Pools 1-7 pass; pool 10 fails only the interval criterion. The qualitative structure transfers; the boundary is later than on MOBIO (pool 10 still 25.3%), so its location is dataset-specific.
 
+### 5.6 Mechanism controls
+
+On a new paired MOBIO partition, hidden-slot DeepSets gave 10-record top-1 `55.28 / 46.25 / 32.92 / 23.75%` for pools 3/4/5/7 and `3.33%` for fresh keys. Supplying the true recurring-transform slot to the per-record encoder gave `57.08 / 50.69 / 33.61 / 22.92%`, differences of only `+1.81 / +4.44 / +0.69 / -0.83` points. Hidden-slot mixture identification is therefore not the main limitation in this range.
+
+In a separate shuffled-non-anchor control, each 10-record set retained one target-identity record and received nine records from other identities while preserving record count and position-wise marginals. Pools 3/4 and fresh keys all produced exactly `3.33%` top-1 for every seed with AUROC `0.499/0.503/0.500`. Thus the recurring-pool gain requires multiple same-identity records and is not a set-size or global transform-frequency artefact. The negative pool-3 change from its `18.19%` one-record baseline reflects dilution of the sole informative record under mean pooling.
+
 ## 6. Discussion
 
 - Deployment implication: per-record fresh salts make record multiplicity harmless in the idealized model; application-wide or device-wide keys make multiplicity a strong amplifier even when the key is never exposed.
 - Boundary location is protocol- and partition-specific and must be reported as a range: partition 3 collapsed at $k = 5$ while partitions A and 2 held to $k = 7$; pool 6 vs 7 non-monotonicity within partition A (seed std 18 points) shows that single-seed points near the boundary are unreliable.
-- Why the collapse: with $k$ hidden transforms and hidden slot labels, the key-blind attacker must implicitly identify the mixture; the number of training records per transform falls as $1080/k$. TODO: key-aware (slot-label-known) control to separate information loss from mixture identification.
+- Why the collapse: as $k$ grows, the number of training records per transform falls as $1080/k$ and fewer same-transform relations recur within a set. The paired key-slot control changes top-1 by at most 4.44 points, so explicit mixture labels do not remove the boundary; loss of repeated cross-record structure is the stronger explanation under this attacker.
 
 ## 7. Limitations
 
-Two datasets (MOBIO restricted, LFW public), each with a single embedding model; 30 or 25 test identities per partition; three model seeds; MLP-Hash is paper-specified, not source-exact; `benchmark_cb` unavailable (404); equivalence rather than significance testing for the fresh-key null is still to be added; novelty recheck on IEEE Xplore / Google Scholar pending.
+Two datasets (MOBIO restricted, LFW public), each with a single embedding model; 30 or 25 test identities per partition; three model seeds; MLP-Hash is paper-specified, not source-exact; `benchmark_cb` unavailable (404); the key-slot control exposes transform identifiers but not transform values; equivalence rather than significance testing for the fresh-key null is still to be added; novelty recheck on IEEE Xplore / Google Scholar pending.
 
 ## 8. Reproducibility
 
