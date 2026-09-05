@@ -16,6 +16,7 @@ models/*
 results/*
 !results/.gitkeep
 MOBIO_datasets/
+MOBIO/
 external/benchmark_cb/
 external/gafar/
 *.onnx
