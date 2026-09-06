@@ -24,3 +24,4 @@ external/gafar/
 *.pt
 *.pth
 *.safetensors
+reports/sani_results_update_email.md
