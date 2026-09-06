@@ -127,7 +127,7 @@ python scripts\diagnostics\system_info.py
 
 ## Priority 7: proposed multi-exposure experiment
 
-**Status (2026-09-05):** BioHash and MLP-Hash fresh-key runs, key-pool boundary replications, LFW replication, and key-slot/shuffled mechanism controls are complete.
+**Status (2026-09-06):** BioHash and MLP-Hash fresh-key runs, key-pool boundary replications, LFW replication, mechanism controls, same-image fresh-key control, and coarse/fine key-correlation sweeps are complete.
 
 - [x] Create identity-disjoint train/validation/test splits on authorized MOBIO data.
 - [x] Generate disjoint train/validation/test key pools.
@@ -144,7 +144,9 @@ python scripts\diagnostics\system_info.py
 - [x] Report the LFW second-dataset key-pool run (`experiments/lfw_multiexposure/`).
 - [x] Add a shuffled-non-anchor control; all 10-record conditions collapsed to exact chance.
 - [x] Add a corrected key-aware (slot-label-known) DeepSets attacker paired with a hidden-slot baseline.
-- [ ] Add same-image/different-key, norm-leakage, and key-correlation controls.
+- [x] Add a paired same-image/different-fresh-key control.
+- [x] Add coarse and independent-partition fine key-correlation controls.
+- [ ] Add the non-normalized/norm-leakage control.
 - [ ] Recheck the novelty claim against IEEE Xplore and Google Scholar before submission.
 
 **Done when:** 1/2/5/10 exposure plots and tables are reproducible from configuration, seed, code, and protocol with no identity, key, or metadata leakage.

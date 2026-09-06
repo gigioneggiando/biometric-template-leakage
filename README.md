@@ -1,6 +1,6 @@
 # Key-agnostic multi-exposure biometric template leakage
 
-**Last status update:** 2026-09-05
+**Last status update:** 2026-09-06
 
 **Research question:** Can a key-agnostic attacker recover identity information from multiple independently protected face templates without their secret keys?
 
@@ -59,7 +59,7 @@ Evidence: [cross-dataset protocol](docs/protocols/real_datasets_month1.md), [agg
 - [x] Masked permutation-invariant DeepSets model implemented and tested on synthetic data.
 - [x] Synthetic 1/2/5/10 exposure smoke runs available for pipeline validation only.
 - [x] Build real MOBIO sets for 1/2/5/10 independently keyed exposures.
-- [ ] Separate same-image/new-key from different-image/new-key experiments.
+- [x] Separate same-image/new-key from different-image/new-key experiments.
 - [x] Run held-out identities with unseen test keys over three model seeds.
 - [x] Compare MLP, mean pooling, max pooling, and DeepSets baselines.
 - [x] Compare one exposure with 2/5/10 exposures using identity-clustered intervals and a preregistered threshold.
@@ -78,7 +78,7 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 
 **Proposal period:** Weeks 9-12
 
-**Status checked:** 2026-09-05
+**Status checked:** 2026-09-06
 
 - [x] Run a preregistered paper-specified MLP-Hash cross-scheme test with new key/set/model seeds.
 - [x] Run session-aligned and sample-randomized key-reuse boundary ablations (pools 1/2/5/10 versus fresh keys).
@@ -87,7 +87,8 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 - [x] Write the fresh-key multiplicity-invariance theorem with explicit assumptions and implementation caveats.
 - [x] Start the paper draft with every number traced to a tracked summary ([reports/paper_draft.md](reports/paper_draft.md)).
 - [x] Run corrected key-slot-known and shuffled-non-anchor mechanism controls.
-- [ ] Run key-correlation, norm-leakage, and same-image/different-key ablations.
+- [x] Run key-correlation and same-image/different-key ablations.
+- [ ] Run the non-normalized/norm-leakage ablation.
 - [ ] Complete confidence intervals, significance tests, and failure analysis.
 - [ ] Run revisions and final experiments.
 - [ ] Produce final figures, reproducible commands, and paper draft.
@@ -109,9 +110,11 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 
 **Mechanism controls.** On a new MOBIO partition, the hidden-slot DeepSets baseline gave `55.3 / 46.3 / 32.9 / 23.8%` for pools 3/4/5/7 and `3.33%` for fresh keys. Giving DeepSets the true recurring-transform slot changed these by only `+1.8 / +4.4 / +0.7 / -0.8` points, so implicit slot identification is not the main boundary mechanism. Replacing nine of ten records with records from other identities collapsed pools 3/4 and fresh keys to exactly `3.33%` for every seed. The reuse gain therefore requires multiple records from the same identity rather than set size or transform frequencies alone; see [experiments/mobio_mechanism_controls/README.md](experiments/mobio_mechanism_controls/README.md).
 
+**Fresh-key and correlation controls.** Repeating the identical normalized image embedding under ten distinct fresh keys remained exactly at chance (`3.33%`, AUROC `0.4997`), matching the different-image fresh-key baseline. In a controlled partial-projection-reuse model, a new-partition fine sweep remained near chance through `12.5%` shared dimensions, was weak and seed-sensitive at `18.75-31.25%`, and gave `35.8 / 49.3 / 42.6%` ten-record top-1 at `37.5 / 43.75 / 50%` shared dimensions. This supports a graded correlation-to-leakage relationship, not a universal transition threshold; see [experiments/mobio_correlation_controls/README.md](experiments/mobio_correlation_controls/README.md).
+
 **Proposal deliverable:** Reproducible attack framework, results, and paper.
 
-**[ ] Not met as of 2026-09-04.** The framework, MOBIO evidence, cross-scheme confirmation, and first boundary result exist; the paper draft, remaining ablations, and additional seeds/datasets are pending.
+**[ ] Not met as of 2026-09-06.** The framework, MOBIO/LFW evidence, cross-scheme confirmation, mechanism controls, and a paper draft exist. Norm leakage, equivalence testing, independent literature/proof review, final figures, and source-exact reproduction remain open.
 
 ## Dataset status
 
@@ -121,7 +124,7 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 | LFW funneled         | [x] Used     | Month 1 checks; 125 x 12 key-pool replication of the MOBIO protocol   | Preserve as second-dataset evidence                 |
 | Olivetti faces       | [x] Used     | Full 40-identity protocol and dimension sweep                         | Preserve as cross-dataset evidence                  |
 | CFP                  | [x] Used     | Full frontal/profile protocols and crossed-seed sensitivity checks    | Preserve as large-scale/view evidence               |
-| MOBIO                | [x] Used     | BioHash/MLP-Hash boundary, three partitions, key-slot and shuffled controls | Same-image, norm, key-correlation controls |
+| MOBIO                | [x] Used     | BioHash/MLP-Hash boundary, three partitions, mechanism and correlation controls | Norm-leakage and equivalence controls |
 | CASIA-WebFace        | [ ] Not used | Reviewed as a possible FaceLinkGen training source                    | Use only after license and protocol verification    |
 | TPDNE                | [ ] Not used | Reviewed as optional FaceLinkGen evaluation data                      | Defer until core identity linkage works             |
 
@@ -138,8 +141,8 @@ Data, embeddings, keys, model weights, and detailed run artifacts are gitignored
 ## Next work
 
 1. Independent human review of the theorem in [docs/theory/multiplicity_invariance.md](docs/theory/multiplicity_invariance.md).
-2. Same-image/different-key, norm-leakage, and key-correlation controls.
-3. Equivalence testing for the fresh-key null; novelty recheck on IEEE Xplore and Google Scholar.
+2. Non-normalized/norm-leakage control and equivalence testing for the fresh-key null.
+3. Novelty recheck on IEEE Xplore and Google Scholar; convert tracked summaries into final figures.
 4. Recover a source-exact published transform (`benchmark_cb` still unavailable) before making a source-exact claim.
 
 Full task details and human-only blockers are in [docs/TODO.md](docs/TODO.md).

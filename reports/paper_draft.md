@@ -1,10 +1,10 @@
 # Record Multiplicity Does Not Break Fresh-Key Template Protection, But Transform Reuse Does
 
-Working draft, 2026-09-04. Every number below is traceable to a tracked summary in `experiments/mobio_multiexposure/` and a preregistration entry in `docs/protocols/multi_exposure.md`. Items marked TODO are not yet supported by evidence and must not be filled in from memory.
+Working draft, updated 2026-09-06. Every number below is traceable to a tracked summary under `experiments/` and a preregistration entry in `docs/protocols/multi_exposure.md`. Items marked TODO are not yet supported by evidence and must not be filled in from memory.
 
 ## Abstract
 
-Cancelable biometric schemes such as BioHashing and MLP-Hash protect a face embedding by a secret, key-seeded random projection. A natural fear is that an attacker who collects many protected records of the same person, from different services with different keys, can pool them to recover identity even without any key. We show that this fear is unfounded under one precise condition and fully justified under another. First, we prove that for unit-norm embeddings and independently drawn rotationally invariant projections, the joint law of any number of protected records is independent of the source: $I(Y; T_1, \dots, T_n) = 0$ for every $n$, so no attacker, with any training data or compute, exceeds chance. Second, we show empirically on MOBIO (150 identities, 12 sessions) and public LFW (125 identities, 12 images) with ArcFace embeddings that this guarantee collapses as soon as hidden transforms recur. With a pool of 4 to 7 recurring hidden BioHash transforms, a single protected record is at chance (3.5-4.3% top-1 over 30 identities) yet ten records pooled by a permutation-invariant attacker recover 34-54% of identities. The effect vanishes near 8-10 transforms and is absent under fresh keys in every run. The pattern replicates across identity partitions and for paper-specified MLP-Hash. A shuffled-record control collapses the recurring-pool result to chance, while true slot labels improve a paired DeepSets attacker by at most 4.44 points. Record multiplicity is therefore not a privacy risk per se; it is an amplifier whose gain is set by the diversity of the deployed transforms.
+Cancelable biometric schemes such as BioHashing and MLP-Hash protect a face embedding by a secret, key-seeded random projection. A natural fear is that an attacker who collects many protected records of the same person, from different services with different keys, can pool them to recover identity even without any key. We show that this fear is unfounded under one precise condition and justified under controlled violations of it. First, we prove that for unit-norm embeddings and independently drawn rotationally invariant projections, the joint law of any number of protected records is independent of the source: $I(Y; T_1, \dots, T_n) = 0$ for every $n$, so no attacker exceeds chance. Second, on MOBIO and public LFW with ArcFace embeddings, we show that hidden transform reuse creates large multiplicity amplification: with pools of 4 to 7 transforms, a single record can remain at chance while ten records recover 34-54% of identities. Shuffling same-identity records removes the gain, revealing transform slots adds at most 4.44 points, and repeating an identical image under fresh keys remains at chance. Finally, controlled partial projection reuse produces a graded leakage curve: on an independent MOBIO split, ten-record top-1 rises from 3.33% at zero shared dimensions to 35.83-49.31% at 37.5-43.75% shared dimensions. Record multiplicity is therefore an amplifier whose gain is governed by transform reuse and correlation, not record count alone.
 
 ## 1. Introduction
 
@@ -17,6 +17,7 @@ Contributions:
 3. The first measurement, to our knowledge, of leakage as a function of the number of hidden recurring transforms, showing a sharp regime change and multiplicity amplification that exists only under reuse.
 4. Cross-scheme (BioHash, MLP-Hash), cross-partition (three MOBIO partitions), and cross-dataset (MOBIO, LFW) replication, with all preregistered failures reported.
 5. Mechanism controls showing that the gain requires multiple records from the same identity and is not primarily limited by hidden transform-slot identification.
+6. Same-image and partial-key-correlation controls that isolate key independence as the governing boundary.
 
 ## 2. Threat model
 
@@ -88,16 +89,23 @@ On a new paired MOBIO partition, hidden-slot DeepSets gave 10-record top-1 `55.2
 
 In a separate shuffled-non-anchor control, each 10-record set retained one target-identity record and received nine records from other identities while preserving record count and position-wise marginals. Pools 3/4 and fresh keys all produced exactly `3.33%` top-1 for every seed with AUROC `0.499/0.503/0.500`. Thus the recurring-pool gain requires multiple same-identity records and is not a set-size or global transform-frequency artefact. The negative pool-3 change from its `18.19%` one-record baseline reflects dilution of the sole informative record under mean pooling.
 
+### 5.7 Same-image and correlated-key controls
+
+Repeating the exact same normalized ArcFace embedding under ten distinct fresh, split-disjoint keys gave `3.33%` top-1 for all three seeds and AUROC `0.4997`, matching the different-image fresh-key baseline. The fresh-key null is therefore not an artefact of within-person session or image variation.
+
+For a controlled correlation test, each BioHash projection shared an exact prefix of system-wide projection columns and used orthonormal private columns for the remainder. A coarse `0/25/50/75/100%` sweep gave 10-record top-1 `3.33/9.44/46.39/61.11/71.67%`. Because the 25% result was unstable, an independently preregistered fine sweep on a new partition tested `0/12.5/18.75/25/31.25/37.5/43.75/50%` and gave `3.33/3.75/6.94/7.64/14.17/35.83/49.31/42.64%`. All three seeds were strongly above chance from 37.5% onward; lower transition points were seed-sensitive. This supports correlation-dependent leakage but neither a sharp universal threshold nor strict empirical monotonicity.
+
 ## 6. Discussion
 
 - Deployment implication: per-record fresh salts make record multiplicity harmless in the idealized model; application-wide or device-wide keys make multiplicity a strong amplifier even when the key is never exposed.
 - Boundary location is protocol- and partition-specific and must be reported as a range: partition 3 collapsed at $k = 5$ while partitions A and 2 held to $k = 7$; pool 6 vs 7 non-monotonicity within partition A (seed std 18 points) shows that single-seed points near the boundary are unreliable.
 - Why the collapse: as $k$ grows, the number of training records per transform falls as $1080/k$ and fewer same-transform relations recur within a set. The paired key-slot control changes top-1 by at most 4.44 points, so explicit mixture labels do not remove the boundary; loss of repeated cross-record structure is the stronger explanation under this attacker.
+- Correlated transforms weaken the fresh-key symmetry continuously. They create single-record leakage at high shared fractions and additional multiplicity amplification, connecting the theorem's independent-key endpoint to the recurring-pool endpoint.
 
 ## 7. Limitations
 
-Two datasets (MOBIO restricted, LFW public), each with a single embedding model; 30 or 25 test identities per partition; three model seeds; MLP-Hash is paper-specified, not source-exact; `benchmark_cb` unavailable (404); the key-slot control exposes transform identifiers but not transform values; equivalence rather than significance testing for the fresh-key null is still to be added; novelty recheck on IEEE Xplore / Google Scholar pending.
+Two datasets (MOBIO restricted, LFW public), each with a single embedding model; 30 or 25 test identities per partition; three model seeds; MLP-Hash is paper-specified, not source-exact; `benchmark_cb` unavailable (404); the key-slot control exposes transform identifiers but not transform values; the correlated-key construction is a controlled mechanism probe rather than a standard key-derivation scheme; the correlation transition is imprecise; norm leakage and equivalence testing remain open; novelty recheck on IEEE Xplore / Google Scholar pending.
 
 ## 8. Reproducibility
 
-All configurations, preregistrations, compact summaries, and hashes are in the repository. Restricted MOBIO data, embeddings, keys, and full metrics remain local. Commands: `experiments/mobio_multiexposure/README.md`.
+All configurations, preregistrations, compact summaries, and hashes are in the repository. Restricted MOBIO data, embeddings, keys, and full metrics remain local. Commands: `experiments/mobio_multiexposure/README.md`, `experiments/mobio_mechanism_controls/README.md`, and `experiments/mobio_correlation_controls/README.md`.

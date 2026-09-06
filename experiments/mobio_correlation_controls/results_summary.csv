@@ -1,0 +1,16 @@
+study,condition,shared_dimensions,shared_fraction_percent,one_record_top1_percent,ten_record_top1_percent,ten_record_std_percent,ten_record_seed_top1_percent,min_clustered_lower_percent,ten_record_auroc,multiplicity_amplification_pp
+same_image,different_images_fresh_keys,0,0.00,3.3333,3.3333,0.0000,3.33|3.33|3.33,0.00,0.496408,0.0000
+same_image,same_image_different_fresh_keys,0,0.00,3.1944,3.3333,0.0000,3.33|3.33|3.33,0.00,0.499688,0.1389
+coarse,correlated_dims_0,0,0.00,3.3333,3.3333,0.0000,3.33|3.33|3.33,0.00,0.500774,0.0000
+coarse,correlated_dims_32,32,25.00,3.3333,9.4444,4.8113,6.67|15.00|6.67,0.00,0.692669,6.1111
+coarse,correlated_dims_64,64,50.00,39.1667,46.3889,6.6840,45.83|53.33|40.00,23.75,0.931235,7.2222
+coarse,correlated_dims_96,96,75.00,50.8333,61.1111,1.5775,62.92|60.00|60.42,43.33,0.955992,10.2778
+coarse,correlated_dims_128,128,100.00,69.1667,71.6667,3.5600,75.42|71.25|68.33,51.67,0.967786,2.5000
+fine,correlated_dims_0,0,0.00,3.0556,3.3333,0.0000,3.33|3.33|3.33,0.00,0.502645,0.2778
+fine,correlated_dims_16,16,12.50,3.1944,3.7500,0.7217,4.58|3.33|3.33,0.00,0.531736,0.5556
+fine,correlated_dims_24,24,18.75,3.4722,6.9444,3.7577,3.33|6.67|10.83,0.00,0.574225,3.4722
+fine,correlated_dims_32,32,25.00,4.1667,7.6389,7.4574,3.33|3.33|16.25,0.00,0.600644,3.4722
+fine,correlated_dims_40,40,31.25,5.1389,14.1667,12.9904,6.67|29.17|6.67,0.00,0.655954,9.0278
+fine,correlated_dims_48,48,37.50,28.1944,35.8333,2.3199,33.75|35.42|38.33,17.92,0.845947,7.6389
+fine,correlated_dims_56,56,43.75,35.4167,49.3056,6.3099,42.08|53.75|52.08,24.99,0.876453,13.8889
+fine,correlated_dims_64,64,50.00,35.0000,42.6389,2.2948,40.00|44.17|43.75,24.58,0.884778,7.6389
