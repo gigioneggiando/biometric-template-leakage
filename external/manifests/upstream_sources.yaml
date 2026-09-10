@@ -61,7 +61,7 @@ sources:
     url: https://ibug.doc.ic.ac.uk/resources/agedb/
     commit: null
     license: non-commercial research only; redistribution restrictions apply
-    purpose: proposed primary age-variation generalization dataset
+    purpose: proposed third/contingency age-variation generalization dataset
     date_retrieved: '2026-09-10'
     status: official page reviewed; archive password and post-download >=10-record audit pending
   - name: scface
@@ -75,6 +75,34 @@ sources:
     url: https://qmul-survface.github.io/
     commit: null
     license: research purposes; image copyright remains with the original source-dataset owners
-    purpose: proposed contingency native-low-resolution surveillance dataset
+    purpose: deferred large-scale native-low-resolution surveillance dataset
     date_retrieved: '2026-09-10'
     status: official page reviewed; terms clarification, provenance audit, and >=10-record audit pending
+  - name: fei_face_database
+    url: https://fei.edu.br/~cet/facedatabase.html
+    commit: null
+    license: research use permitted; redistribution and reproduction prohibited by source notice
+    purpose: proposed primary high-resolution controlled-pose generalization dataset
+    date_retrieved: '2026-09-10'
+    status: four active official archives total about 344 MB; download, hashes, and ArcFace-valid >=10-record audit pending
+  - name: polyprotect_simprints_reference
+    url: https://github.com/Simprints/Biometrics-SimPolyProtect
+    commit: 535bdd2c886af2d02f03ac12296ba01196cfdd34
+    license: GPL-3.0
+    purpose: external behavioral reference for a proposed paper-specified PolyProtect implementation
+    date_retrieved: '2026-09-10'
+    status: source and tests inspected; do not copy into MIT project without resolving license compatibility; test run blocked by missing Android SDK
+  - name: iom_face_cryptanalysis_reference
+    url: https://github.com/Cryptology-Algorithm-Lab/Analysis_LSH
+    commit: 6225f119726bc1c0711a37a5dffccf4325cb7f53
+    license: no license file found
+    purpose: external behavioral reference for paper-specified IoM-GRP; also documents relevant reversibility attacks
+    date_retrieved: '2026-09-10'
+    status: inspect only; do not copy code; implement independently from the primary paper
+  - name: cbef_swg_reference
+    url: https://github.com/shuaichaosong/cbef
+    commit: 686c31f76dc10ff955def2650156684350c6d8ed
+    license: Apache-2.0
+    purpose: backup ArcFace-compatible SWG-MinHash template-protection implementation
+    date_retrieved: '2026-09-10'
+    status: 21 scoped tests passed; full collection has an undeclared cv2 dependency and SWG lacks a dedicated upstream test

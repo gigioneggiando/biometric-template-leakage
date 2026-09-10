@@ -8,11 +8,12 @@
 
 | Role | Dataset | Why it adds evidence | Gate before use |
 |---|---|---|---|
-| Primary A | AgeDB | In-the-wild age variation that is materially different from MOBIO and LFW | Obtain the password from the maintainer; count identities with at least 10 usable images; audit possible celebrity overlap with the ArcFace training population |
+| Primary A | FEI | High-resolution, balanced, controlled images with exactly 14 pose/expression records for each of 200 identities; official downloads are active | Download the four official archives; verify hashes, filenames, and at least 10 ArcFace-valid images per identity |
 | Primary B | SCface | Guaranteed repeated captures under different surveillance cameras, distances, illumination, pose, and visible/IR conditions | Sani or another full-time staff member must submit the institutional request and sign the release agreement |
-| Contingency / third pilot | QMUL-SurvFace | Native low-resolution surveillance faces at substantially larger scale | Confirm acceptable use with the source terms; audit per-identity counts, near-duplicate frames, detector success, and source-dataset provenance |
+| Third dataset / contingency | AgeDB | In-the-wild longitudinal age variation | Obtain the password; count identities with at least 10 usable images; audit possible celebrity overlap with the ArcFace training population |
+| Deferred large-scale option | QMUL-SurvFace | Native low-resolution surveillance faces at substantially larger scale | Use only if a later scale test is needed and its provenance, terms, duplicates, and ArcFace positive control pass |
 
-This combination is recommended because it covers three distinct stressors: longitudinal age change, controlled capture-condition change, and native low-resolution surveillance. It should not be replaced by three similar celebrity datasets merely to increase the dataset count.
+This combination is recommended because it starts with a small, high-resolution, immediately obtainable dataset, adds a rigorously documented surveillance dataset, and retains longitudinal age as a different third stressor. It should not be replaced by three similar celebrity datasets merely to increase the dataset count.
 
 Approval of this shortlist does not approve a paper claim. Each dataset must still pass the repository's dataset gate and unprotected ArcFace positive control.
 
@@ -29,32 +30,32 @@ The existing multi-exposure experiment needs:
 
 The protocol should initially select exactly 12 records per identity, matching the LFW extension, when the source data permit it. Ten records feed the maximum-exposure set and the remaining records support gallery or reserve construction. Dataset-specific alternatives must be written into a preregistered protocol rather than decided after inspecting attack results.
 
-## Candidate A: AgeDB
+## Candidate A: FEI
 
-**Official sources:** [Imperial College iBUG dataset page](https://ibug.doc.ic.ac.uk/resources/agedb/) and [CVPR Workshops paper](https://openaccess.thecvf.com/content_cvpr_2017_workshops/w33/html/Moschoglou_AgeDB_The_First_CVPR_2017_paper.html).
+**Official source:** [Centro Universitario FEI face database](https://fei.edu.br/~cet/facedatabase.html).
 
 ### Verified facts
 
-- 16,488 images of 568 identities, with identity, age, and gender annotations.
-- The images are of public figures collected from the Internet and span large age differences.
-- The dataset is restricted to non-commercial research.
-- The official page prohibits publication or redistribution of the annotations and derived data, except internal copies at one site in the same organization.
-- The archive link is present, but its password must be requested by email from the address on the official page.
+- 2,800 colour images of 200 identities, exactly 14 images per identity.
+- Original resolution is 640 x 480 pixels, with a homogeneous white background, about 10% scale variation, and pose rotation covering approximately 180 degrees.
+- The population comprises FEI students and staff aged 19 to 40, with exactly 100 male and 100 female subjects as described by the source.
+- Four official original-image ZIP archives are currently linked, totalling approximately 344 MB.
+- Use is granted for research purposes; redistribution or reproduction of the database is not permitted.
 
 ### Scientific role
 
-AgeDB tests whether the fresh-key null and recurring-transform leakage survive age-related appearance changes. This variation is not isolated by the current MOBIO and LFW experiments.
+FEI is the best first implementation target. It is small enough for rapid auditing, guarantees more than 10 raw records per identity, has clear labels and controlled high-resolution acquisition, and supports a 120/40/40 identity split with 2.5% test-gallery chance. Its pose sweep tests whether the leakage boundary depends on pose while avoiding Internet-celebrity provenance.
 
 ### Unresolved checks
 
-- The publication reports about 29 images per identity on average, but an average does not establish how many identities have at least 10 usable images. Compute the exact distribution after authorized acquisition.
-- `buffalo_l` uses a ResNet-50 trained on WebFace600K and its official model card reports AgeDB-30 benchmark accuracy. An identity-level training-overlap audit is not currently available. Treat possible celebrity overlap as a limitation and do not describe AgeDB as training-independent.
-- Record whether the downloaded archive contains the full identity annotations needed for the proposed identity-disjoint split.
-- Estimate extracted size, detector failure rate, and runtime from a small authorized pilot.
+- Extreme profiles may fail face detection. Confirm that enough identities retain at least 10 valid ArcFace embeddings before freezing the split.
+- The images appear to be from one acquisition protocol rather than longitudinal sessions. Treat FEI as a controlled pose/expression test, not a session-generalization dataset.
+- Exact archive hashes are not published on the page and must be calculated locally after download.
+- No identity-level audit against WebFace600K is possible. Institutional volunteers make overlap less likely than celebrity datasets, but absence is not proven.
 
 ### Acquisition action
 
-One project member should email the AgeDB maintainer from an academic address, state the university affiliation and non-commercial research purpose, request the archive password, and retain the response privately. Do not commit the password, archive, annotations, images, embeddings, or a manifest containing personal paths.
+Download the four `originalimages_part*.zip` archives only from the official FEI page, store them outside Git, calculate SHA-256 hashes, and retain the official research-use notice. Do not use the two-image aligned frontal subset because it cannot support the 10-record protocol.
 
 ## Candidate B: SCface
 
@@ -85,7 +86,34 @@ SCface provides a clean multi-exposure design in which every identity exceeds th
 
 Ask Sani to prepare the institutional cover letter, review and sign the official agreement, and submit both documents to the official contact. The team must store the approval and data privately and follow the image-publication restriction when preparing slides.
 
-## Candidate C: QMUL-SurvFace
+## Candidate C: AgeDB
+
+**Official sources:** [Imperial College iBUG dataset page](https://ibug.doc.ic.ac.uk/resources/agedb/) and [CVPR Workshops paper](https://openaccess.thecvf.com/content_cvpr_2017_workshops/w33/html/Moschoglou_AgeDB_The_First_CVPR_2017_paper.html).
+
+### Verified facts
+
+- 16,488 images of 568 identities, with identity, age, and gender annotations.
+- The images are of public figures collected from the Internet and span large age differences.
+- The dataset is restricted to non-commercial research.
+- The official page prohibits publication or redistribution of the annotations and derived data, except internal copies at one site in the same organization.
+- The archive link is present, but its password must be requested by email from the address on the official page.
+
+### Scientific role
+
+AgeDB tests whether the fresh-key null and recurring-transform leakage survive age-related appearance changes. This variation is not isolated by the current MOBIO and LFW experiments.
+
+### Unresolved checks
+
+- The publication reports about 29 images per identity on average, but an average does not establish how many identities have at least 10 usable images. Compute the exact distribution after authorized acquisition.
+- `buffalo_l` uses a ResNet-50 trained on WebFace600K and its official model card reports AgeDB-30 benchmark accuracy. An identity-level training-overlap audit is not currently available. Treat possible celebrity overlap as a limitation and do not describe AgeDB as training-independent.
+- Record whether the downloaded archive contains the full identity annotations needed for the proposed identity-disjoint split.
+- Estimate extracted size, detector failure rate, and runtime from a small authorized pilot.
+
+### Acquisition action
+
+One project member should email the AgeDB maintainer from an academic address, state the university affiliation and non-commercial research purpose, request the archive password, and retain the response privately. Do not commit the password, archive, annotations, images, embeddings, or a manifest containing personal paths.
+
+## Deferred large-scale option: QMUL-SurvFace
 
 **Official source:** [Queen Mary University of London project page](https://qmul-survface.github.io/).
 
@@ -129,9 +157,10 @@ Scores are planning estimates, not experimental results. `3` is favourable and `
 
 | Candidate | >=10 protocol fit | Complementary variation | Current access path | RTX 2060 pilot feasibility | Model-overlap confidence | Total / 15 |
 |---|---:|---:|---:|---:|---:|---:|
+| FEI | 3 | 2 | 3 | 3 | 2 | 13 |
 | SCface | 3 | 3 | 2 | 3 | 2 | 13 |
 | AgeDB | 2 | 3 | 2 | 3 | 1 | 11 |
-| QMUL-SurvFace | 2 | 3 | 2 | 2 | 2 | 11 |
+| QMUL-SurvFace | 2 | 3 | 1 | 2 | 2 | 10 |
 | CelebA | 2 | 2 | 2 | 2 | 0 | 8 |
 | CMU Multi-PIE | 3 | 3 | 0 | 0 | 2 | 8 |
 | VGGFace2 | 3 | 3 | 0 | 0 | 0 | 6 |
@@ -143,15 +172,15 @@ Scores are planning estimates, not experimental results. `3` is favourable and `
 
 Request approval for:
 
-1. **AgeDB and SCface as the two primary datasets**, conditional on access and the post-download eligibility audit.
-2. **QMUL-SurvFace as the contingency/third pilot**, conditional on terms clarification and a successful low-resolution ArcFace positive control.
-3. **CelebA only as a fallback** if AgeDB does not provide enough eligible identities or access is delayed.
+1. **FEI and SCface as the two primary datasets**, conditional on the ArcFace eligibility audit and SCface approval.
+2. **AgeDB as the third dataset/contingency**, conditional on access, eligible-identity counts, and explicit reporting of possible model overlap.
+3. **QMUL-SurvFace only as a later large-scale stress test**, not as a primary quality-controlled dataset.
 4. Excluding IJB-C and VGGFace2 because no current official distribution is available.
 
 ## Actions after approval
 
-1. Submit the AgeDB email and SCface institutional request in parallel.
-2. Clarify QMUL-SurvFace terms before acquisition.
+1. Download and audit FEI from the active official links.
+2. Submit the SCface institutional request and AgeDB email in parallel.
 3. Store each authorized dataset outside Git and record archive hashes locally.
 4. Implement metadata-only audit scripts before extracting all embeddings.
 5. Record identity counts at thresholds 1, 2, 5, 10, and 12; duplicate statistics; and capture-condition coverage.
@@ -167,6 +196,7 @@ All sources were checked on 2026-09-10:
 - AgeDB paper: <https://openaccess.thecvf.com/content_cvpr_2017_workshops/w33/html/Moschoglou_AgeDB_The_First_CVPR_2017_paper.html>
 - SCface: <https://www.scface.org/>
 - SCface agreement: <https://www.scface.org/SCface_release_agreement.pdf>
+- FEI: <https://fei.edu.br/~cet/facedatabase.html>
 - QMUL-SurvFace: <https://qmul-survface.github.io/>
 - CMU Multi-PIE: <https://www.cs.cmu.edu/afs/cs/project/PIE/MultiPie/Multi-Pie/Home.html>
 - CelebA: <https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html>

@@ -138,3 +138,11 @@
 - Proposed QMUL-SurvFace as a contingency/third pilot for native low-resolution surveillance and scale. Its per-identity distribution, near-duplicate rate, source-dataset terms, and ArcFace positive control remain gating checks.
 - Excluded IJB-A/B/C and VGGFace2 from new acquisition because the official distributors state that distribution/downloads are no longer available. Deferred CMU Multi-PIE because its official acquisition link is currently ineffective and the source reports more than 305 GB.
 - Added `docs/datasets/candidate_selection_2026-09-10.md`. No data were downloaded and no experimental result was produced.
+
+## 2026-09-10 (quality/access revision and protection review)
+
+- Tightened the dataset criteria around guaranteed record count, visual/acquisition quality, active official distribution, provenance, and immediate RTX 2060 feasibility. Added FEI as Primary A: 200 identities x 14 colour 640 x 480 images, balanced by source-reported binary sex, with four active official archives totalling about 344 MB.
+- Revised the proposed dataset set to FEI + SCface as primaries and AgeDB as the third/contingency dataset. QMUL-SurvFace was demoted to a later scale test because native low resolution, source-dataset provenance, duplicate structure, and ArcFace utility add avoidable first-stage risk.
+- Audited IoM-GRP, PolyProtect, SWG-MinHash/CBEF, Bloom-filter face BTP, IoM-URP, IronMask, SecureTL, and SecureVector. Proposed paper-specified IoM-GRP and PolyProtect as distinct primary schemes.
+- Verified external heads: PolyProtect Kotlin `535bdd2c886af2d02f03ac12296ba01196cfdd34` (GPL-3.0), face/LSH reference `6225f119726bc1c0711a37a5dffccf4325cb7f53` (no license), and CBEF `686c31f76dc10ff955def2650156684350c6d8ed` (Apache-2.0).
+- CBEF audit: 21 scoped method/verification/metric tests passed; full collection failed on an undeclared `cv2` import, and SWG lacks a dedicated upstream unit test. PolyProtect's external Gradle tests could not start because Android SDK configuration is absent locally. These are source/environment findings, not local scheme implementations or scientific results.

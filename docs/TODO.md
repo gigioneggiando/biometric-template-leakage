@@ -157,15 +157,17 @@ python scripts\diagnostics\system_info.py
 
 ### Freeze scope
 
-- [x] Complete an official-source desk review and propose two primary facial-biometric datasets plus one contingency dataset. See [datasets/candidate_selection_2026-09-10.md](datasets/candidate_selection_2026-09-10.md).
+- [x] Complete an official-source desk review and propose two primary facial-biometric datasets plus one contingency dataset. The quality/access review selects FEI + SCface as primaries and AgeDB as the third candidate; see [datasets/candidate_selection_2026-09-10.md](datasets/candidate_selection_2026-09-10.md).
 - [x] Record official sources, current access paths, published counts, variation, stated terms, acquisition size where published, expected pilot cost, and model-overlap risks for the candidate set.
-- [ ] Ask Sani to approve AgeDB and SCface as primary datasets and QMUL-SurvFace as the contingency/third pilot.
+- [ ] Ask Sani to approve FEI and SCface as primary datasets and AgeDB as the contingency/third dataset.
+- [ ] Download the four official FEI original-image archives, hash them, and audit ArcFace-valid counts without committing data.
 - [ ] Request the AgeDB archive password from the official maintainer using an academic email address.
 - [ ] Ask Sani or another full-time staff member to submit the SCface institutional letter and signed release agreement.
-- [ ] Clarify QMUL-SurvFace collaborator sharing, derived-data, and aggregate-publication terms with the official contact.
+- [ ] If QMUL-SurvFace is activated as a later scale test, clarify collaborator sharing, derived-data, and aggregate-publication terms with the official contact first.
 - [ ] Confirm that each selected dataset supports at least ten valid records per identity and identity-disjoint splits.
-- [ ] Review IoM-GRP, Bloom Filters, IoM-URP, and Rand-Hash source/specification availability.
-- [ ] Select two additional template-protection schemes with distinct transformation families.
+- [x] Review IoM-GRP, PolyProtect, SWG-MinHash, Bloom Filters, IoM-URP, IronMask, SecureTL, and SecureVector for paper, source, license, implementation, and protocol fit. See [protections/candidate_selection_2026-09-10.md](protections/candidate_selection_2026-09-10.md).
+- [x] Propose paper-specified IoM-GRP and PolyProtect as two additional schemes with distinct categorical-ranking and polynomial transformation families.
+- [ ] Extract and freeze primary IoM-GRP and PolyProtect parameters from their papers before implementation.
 - [ ] Obtain Sani's approval of the dataset/scheme decision record before full experiments.
 
 ### Implement datasets
