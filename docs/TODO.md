@@ -151,6 +151,61 @@ python scripts\diagnostics\system_info.py
 
 **Done when:** 1/2/5/10 exposure plots and tables are reproducible from configuration, seed, code, and protocol with no identity, key, or metadata leakage.
 
+## Priority 8: post-meeting generalization and presentation package
+
+**Requested by Sani on 2026-09-10.** The complete execution plan and gates are in [ROADMAP.md](ROADMAP.md).
+
+### Freeze scope
+
+- [ ] Shortlist two primary facial-biometric datasets and one contingency dataset.
+- [ ] For each candidate, record official source, terms, sample/identity counts, variation, storage, compute, and known model-training overlap.
+- [ ] Confirm that each selected dataset supports at least ten valid records per identity and identity-disjoint splits.
+- [ ] Review IoM-GRP, Bloom Filters, IoM-URP, and Rand-Hash source/specification availability.
+- [ ] Select two additional template-protection schemes with distinct transformation families.
+- [ ] Obtain Sani's approval of the dataset/scheme decision record before full experiments.
+
+### Implement datasets
+
+- [ ] Add acquisition documentation and a non-sensitive dataset card for dataset A.
+- [ ] Add deterministic loader, validation, split construction, and tests for dataset A.
+- [ ] Extract embeddings and validate the unprotected ArcFace baseline for dataset A.
+- [ ] Add acquisition documentation and a non-sensitive dataset card for dataset B.
+- [ ] Add deterministic loader, validation, split construction, and tests for dataset B.
+- [ ] Extract embeddings and validate the unprotected ArcFace baseline for dataset B.
+- [ ] Repeat the dataset tasks for contingency dataset C only if approved and feasible.
+
+### Implement protection schemes
+
+- [ ] Record the primary source, code commit/license, algorithm, parameters, and reproduction class for scheme A.
+- [ ] Implement scheme A behind the protection interface with determinism, key-scope, shape, range, and entropy tests.
+- [ ] Validate scheme A with unprotected, shared/reused-transform, and fresh-key controls.
+- [ ] Record the primary source, code commit/license, algorithm, parameters, and reproduction class for scheme B.
+- [ ] Implement scheme B behind the protection interface with determinism, key-scope, shape, range, and entropy tests.
+- [ ] Validate scheme B with unprotected, shared/reused-transform, and fresh-key controls.
+
+### Run evidence matrix
+
+- [ ] Run the Stage A one-seed pilot over each new dataset/scheme combination; label it engineering diagnostics.
+- [ ] Exclude or repair combinations whose positive controls, extraction, or leakage audits fail.
+- [ ] Freeze the confirmatory protocol before inspecting Stage B results.
+- [ ] Run 1/2/5/10 exposures with fresh and recurring transforms over at least three model seeds.
+- [ ] Add multiple identity assignments where dataset size permits.
+- [ ] Complete the non-normalized/norm-leakage control.
+- [ ] Add equivalence analysis for fresh-key results.
+- [ ] Produce the canonical cross-dataset/cross-scheme aggregate table and failure analysis.
+
+### Prepare material for Sani and the paper
+
+- [ ] Create and review the end-to-end architecture diagram.
+- [ ] Generate dataset and protection-scheme comparison tables.
+- [ ] Generate fresh-key, reuse-boundary, amplification, and correlation figures from tracked results.
+- [ ] Prepare a 6-8 slide English deck and matching PDF.
+- [ ] Include threat model, methods, controls, theoretical scope, limitations, and reproduction status.
+- [ ] Verify every headline number against a configuration, commit, and compact result artifact.
+- [ ] Perform a final visual and scientific review with Gigi, Manish, and Sani.
+
+**Done when:** two additional datasets and two additional schemes have passed the confirmatory protocol, the optional third dataset has an explicit use/defer decision, and the reviewed slide/results package traces every claim to reproducible evidence.
+
 ## Git checks before every commit
 
 - [ ] Confirm data, weights, and secrets are ignored:

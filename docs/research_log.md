@@ -122,3 +122,11 @@
 - Coarse correlation sweep (shared dimensions 0/32/64/96/128): 10-record top-1 was `3.33/9.44/46.39/61.11/71.67%`, with one-record `3.33/3.33/39.17/50.83/69.17%`. The 25% point was unstable; 50% and above were large for every seed.
 - Independent fine sweep (0/16/24/32/40/48/56/64 shared dimensions): 10-record top-1 was `3.33/3.75/6.94/7.64/14.17/35.83/49.31/42.64%`; AUROC was `0.503/0.532/0.574/0.601/0.656/0.846/0.877/0.885`. Results were consistently large from 37.5% shared dimensions onward. The 18.75-31.25% region was seed-sensitive, and 43.75% exceeded 50%, so no sharp or monotonic threshold is claimed.
 - Interpretation: the fresh-key null survives removal of image/session variation, while controlled violations of key independence create a graded leakage regime. Correlation increases both single-record leakage and additional multi-record amplification. The construction is a mechanism probe, not a standard key-derivation implementation or `benchmark_cb` reproduction. Norm leakage remains open.
+
+## 2026-09-10 (meeting with Sani: generalization roadmap)
+
+- Decision: validate the central fresh-key versus transform-reuse/correlation finding on two additional facial-biometric datasets; retain a third candidate if access and compute permit.
+- Decision: add two template-protection schemes beyond BioHash and MLP-Hash, chosen only after source, specification, license, and key-semantics review.
+- Decision: prepare a concise English slide/results package covering the architecture, threat model, methods, datasets, protection schemes, metrics, results, controls, limitations, and reproduction status.
+- Planning action: added `docs/ROADMAP.md` with dataset/scheme gates, a staged pilot-to-confirmation matrix, acceptance criteria, milestones, and presentation requirements; expanded `docs/TODO.md` with assignable tasks.
+- No new experiment or scientific result was produced by this planning update.

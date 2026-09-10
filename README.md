@@ -1,6 +1,6 @@
 # Key-agnostic multi-exposure biometric template leakage
 
-**Last status update:** 2026-09-06
+**Last status update:** 2026-09-10
 
 **Research question:** Can a key-agnostic attacker recover identity information from multiple independently protected face templates without their secret keys?
 
@@ -10,6 +10,7 @@
 - [x] Month 2 exploratory main experiment completed on 2026-09-04; MLP-Hash cross-scheme confirmation completed the same day.
 - [ ] Month 3 validation, paper, and submission completed. Key-reuse boundary ablations started 2026-09-04.
 - [ ] Published `benchmark_cb` or FaceLinkGen result reproduced.
+- [ ] Post-meeting generalization completed on 2-3 additional face datasets and 2 additional protection schemes.
 
 LFW, Olivetti, CFP, and MOBIO results are **independent engineering studies, not paper reproduction**. Synthetic runs validate plumbing only and are excluded from the scientific evidence. No published result has been reproduced yet.
 
@@ -140,10 +141,15 @@ Data, embeddings, keys, model weights, and detailed run artifacts are gitignored
 
 ## Next work
 
-1. Independent human review of the theorem in [docs/theory/multiplicity_invariance.md](docs/theory/multiplicity_invariance.md).
-2. Non-normalized/norm-leakage control and equivalence testing for the fresh-key null.
-3. Novelty recheck on IEEE Xplore and Google Scholar; convert tracked summaries into final figures.
-4. Recover a source-exact published transform (`benchmark_cb` still unavailable) before making a source-exact claim.
+Sani requested the next generalization phase during the 2026-09-10 meeting. The full staged plan, selection gates, experiment matrix, and presentation deliverables are in [docs/ROADMAP.md](docs/ROADMAP.md).
+
+1. Select and obtain approval for two primary facial-biometric datasets plus one contingency.
+2. Select two additional template-protection schemes after source, license, and specification review.
+3. Pilot each new dataset/scheme combination before launching confirmatory runs.
+4. Complete the non-normalized/norm-leakage control and equivalence testing for the fresh-key null.
+5. Obtain independent human review of the theorem in [docs/theory/multiplicity_invariance.md](docs/theory/multiplicity_invariance.md).
+6. Produce the shareable architecture/results deck and final figures from tracked aggregate files.
+7. Recover a source-exact published transform (`benchmark_cb` still unavailable) and recheck novelty before a source-exact or publication-level claim.
 
 Full task details and human-only blockers are in [docs/TODO.md](docs/TODO.md).
 
