@@ -42,15 +42,16 @@ Required selection criteria:
 - a defensible identity-disjoint train/validation/test split;
 - enough test identities for a meaningful chance baseline and uncertainty estimate.
 
-Candidate families to investigate, not yet approved:
+The official-source review is recorded in [datasets/candidate_selection_2026-09-10.md](datasets/candidate_selection_2026-09-10.md). The proposed selection is not approved until Sani reviews it and the post-download eligibility gates pass.
 
-| Candidate | Scientific value | Blocking checks |
-|---|---|---|
-| AgeDB | Age variation and multiple images per identity | Official source, license, eligible identities with >=10 samples |
-| CelebA identities | Large in-the-wild collection and acquisition diversity | Terms, identity-frequency filtering, face quality, model-training overlap |
-| IJB-B or IJB-C | Template/media diversity and difficult capture conditions | Official access procedure, terms, protocol adaptation, storage/compute |
-| VGGFace2 | Broad pose/age variation and many samples per identity | Current availability, redistribution terms, model-training overlap |
-| CASIA-WebFace | Scale and many identities | Access, consent/provenance, terms, model-training overlap |
+| Proposed role | Candidate | Scientific value | Blocking checks |
+|---|---|---|---|
+| Primary A | AgeDB | Age variation and multiple in-the-wild images per identity | Archive password; eligible identities with >=10 usable images; celebrity/model-training overlap |
+| Primary B | SCface | Controlled camera, distance, pose, visible/IR, and resolution variation | Institutional letter and full-time staff signature; detector success; agreement scope |
+| Contingency / third pilot | QMUL-SurvFace | Native low-resolution surveillance images at larger scale | Terms/provenance clarification; eligible identity and duplicate audit; ArcFace positive control |
+| Backup only | CelebA identities | Large in-the-wild collection and acquisition diversity | Identity annotations on request; frequency filtering; strong model-training overlap risk |
+
+IJB-A/B/C and VGGFace2 are not acquisition candidates because their official distributors no longer provide downloads. CMU Multi-PIE is deferred because the current acquisition route is broken/unclear and the official site reports more than 305 GB.
 
 Do not treat CALFW/CPLFW as independent-dataset confirmation without documenting their overlap with LFW.
 
@@ -194,8 +195,9 @@ Presentation requirements:
 
 ## Immediate next actions
 
-1. Gigi and Manish shortlist datasets and document access, terms, eligible identities, storage, and expected preprocessing cost.
-2. Review IoM-GRP, Bloom Filters, IoM-URP, and Rand-Hash for source availability and implementation completeness.
-3. Ask Sani to approve two primary datasets, one contingency, and two protection schemes.
-4. Freeze the extension protocol and estimated compute budget.
-5. Implement one dataset and one scheme at a time; do not launch the full Cartesian product before pilots pass.
+1. Ask Sani to approve the proposed AgeDB + SCface primary selection and QMUL-SurvFace contingency in the [dated decision memo](datasets/candidate_selection_2026-09-10.md).
+2. Submit the AgeDB password request and SCface institutional access request; clarify QMUL-SurvFace terms with its official contact.
+3. Review IoM-GRP, Bloom Filters, IoM-URP, and Rand-Hash for source availability and implementation completeness.
+4. Ask Sani to approve two template-protection schemes.
+5. Freeze the extension protocol and estimated compute budget after dataset eligibility audits.
+6. Implement one dataset and one scheme at a time; do not launch the full Cartesian product before pilots pass.

@@ -157,8 +157,12 @@ python scripts\diagnostics\system_info.py
 
 ### Freeze scope
 
-- [ ] Shortlist two primary facial-biometric datasets and one contingency dataset.
-- [ ] For each candidate, record official source, terms, sample/identity counts, variation, storage, compute, and known model-training overlap.
+- [x] Complete an official-source desk review and propose two primary facial-biometric datasets plus one contingency dataset. See [datasets/candidate_selection_2026-09-10.md](datasets/candidate_selection_2026-09-10.md).
+- [x] Record official sources, current access paths, published counts, variation, stated terms, acquisition size where published, expected pilot cost, and model-overlap risks for the candidate set.
+- [ ] Ask Sani to approve AgeDB and SCface as primary datasets and QMUL-SurvFace as the contingency/third pilot.
+- [ ] Request the AgeDB archive password from the official maintainer using an academic email address.
+- [ ] Ask Sani or another full-time staff member to submit the SCface institutional letter and signed release agreement.
+- [ ] Clarify QMUL-SurvFace collaborator sharing, derived-data, and aggregate-publication terms with the official contact.
 - [ ] Confirm that each selected dataset supports at least ten valid records per identity and identity-disjoint splits.
 - [ ] Review IoM-GRP, Bloom Filters, IoM-URP, and Rand-Hash source/specification availability.
 - [ ] Select two additional template-protection schemes with distinct transformation families.

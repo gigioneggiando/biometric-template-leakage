@@ -130,3 +130,11 @@
 - Decision: prepare a concise English slide/results package covering the architecture, threat model, methods, datasets, protection schemes, metrics, results, controls, limitations, and reproduction status.
 - Planning action: added `docs/ROADMAP.md` with dataset/scheme gates, a staged pilot-to-confirmation matrix, acceptance criteria, milestones, and presentation requirements; expanded `docs/TODO.md` with assignable tasks.
 - No new experiment or scientific result was produced by this planning update.
+
+## 2026-09-10 (official-source dataset review)
+
+- Reviewed official dataset pages, terms, access routes, published counts, protocol fit, variation, expected compute, and known or plausible overlap with the `buffalo_l` WebFace600K training population.
+- Proposed AgeDB and SCface as primary datasets: AgeDB adds longitudinal age variation; SCface supplies 32 captures per identity across camera, distance, pose, illumination, and visible/IR conditions.
+- Proposed QMUL-SurvFace as a contingency/third pilot for native low-resolution surveillance and scale. Its per-identity distribution, near-duplicate rate, source-dataset terms, and ArcFace positive control remain gating checks.
+- Excluded IJB-A/B/C and VGGFace2 from new acquisition because the official distributors state that distribution/downloads are no longer available. Deferred CMU Multi-PIE because its official acquisition link is currently ineffective and the source reports more than 305 GB.
+- Added `docs/datasets/candidate_selection_2026-09-10.md`. No data were downloaded and no experimental result was produced.

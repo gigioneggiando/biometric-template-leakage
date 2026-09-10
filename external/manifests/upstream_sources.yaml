@@ -57,3 +57,24 @@ sources:
     license: MIT
     purpose: optional identity-conditioned regeneration
     date_retrieved: '2026-08-25'
+  - name: agedb
+    url: https://ibug.doc.ic.ac.uk/resources/agedb/
+    commit: null
+    license: non-commercial research only; redistribution restrictions apply
+    purpose: proposed primary age-variation generalization dataset
+    date_retrieved: '2026-09-10'
+    status: official page reviewed; archive password and post-download >=10-record audit pending
+  - name: scface
+    url: https://www.scface.org/
+    commit: null
+    license: academic or scientific research only; signed release agreement and strict redistribution/publication restrictions
+    purpose: proposed primary surveillance-camera and distance generalization dataset
+    date_retrieved: '2026-09-10'
+    status: official page and agreement reviewed; institutional letter and full-time staff signature pending
+  - name: qmul_survface
+    url: https://qmul-survface.github.io/
+    commit: null
+    license: research purposes; image copyright remains with the original source-dataset owners
+    purpose: proposed contingency native-low-resolution surveillance dataset
+    date_retrieved: '2026-09-10'
+    status: official page reviewed; terms clarification, provenance audit, and >=10-record audit pending

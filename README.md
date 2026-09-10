@@ -143,7 +143,7 @@ Data, embeddings, keys, model weights, and detailed run artifacts are gitignored
 
 Sani requested the next generalization phase during the 2026-09-10 meeting. The full staged plan, selection gates, experiment matrix, and presentation deliverables are in [docs/ROADMAP.md](docs/ROADMAP.md).
 
-1. Select and obtain approval for two primary facial-biometric datasets plus one contingency.
+1. Obtain Sani's approval for the [proposed dataset shortlist](docs/datasets/candidate_selection_2026-09-10.md): AgeDB and SCface as primary datasets, with QMUL-SurvFace as the contingency/third pilot.
 2. Select two additional template-protection schemes after source, license, and specification review.
 3. Pilot each new dataset/scheme combination before launching confirmatory runs.
 4. Complete the non-normalized/norm-leakage control and equivalence testing for the fresh-key null.
