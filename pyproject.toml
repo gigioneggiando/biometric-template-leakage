@@ -20,6 +20,7 @@ dependencies = [
 dev = ["pytest>=8.0"]
 face = ["insightface>=0.7", "onnxruntime>=1.17", "opencv-python>=4.9"]
 figures = ["matplotlib>=3.8", "pandas>=2.0"]
+presentation = ["matplotlib>=3.8", "pandas>=2.0", "python-pptx>=1.0,<2", "pypdfium2>=4,<6"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

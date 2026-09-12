@@ -1,6 +1,8 @@
 # Key-agnostic multi-exposure biometric template leakage
 
-**Last status update:** 2026-09-10
+**Last status update:** 2026-09-12
+
+**Navigation:** [Research package index](reports/README.md), [current evidence and gates](reports/final_research_status.md), [figure captions](reports/figures/README.md), and [review slides](reports/slides/research_review.pdf).
 
 **Research question:** Can a key-agnostic attacker recover identity information from multiple independently protected face templates without their secret keys?
 

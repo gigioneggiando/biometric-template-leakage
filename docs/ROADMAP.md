@@ -2,6 +2,12 @@
 
 This roadmap records Sani's requested next phase. It does not change the interpretation of existing results and does not authorize unsupported reproduction or SOTA claims.
 
+## Progress update: 2026-09-12
+
+FEI is complete as the first additional dataset beyond MOBIO/LFW: 200 identities, 2,378 successful embeddings, BioHash endpoints 1 and 10, and three model seeds. This does not complete the two-additional-dataset or cross-scheme requirements below. SCface access and approval of IoM-GRP/PolyProtect remain open.
+
+The review package now includes two audited diagrams, a source-separated 65-condition key-pool overview, supporting plots, and [an eight-slide PDF](../reports/slides/research_review.pdf) with an [editable PowerPoint](../reports/slides/research_review.pptx). Text and tables are editable; embedded figures are regenerated from Python source. The study-level comparison table is not yet the per-seed canonical matrix required by Phase 4. G6 remains pending scientific review and completion of its evidence references; no professor approval is implied.
+
 ## Meeting decisions
 
 The next evidence package must:
@@ -197,7 +203,7 @@ Presentation requirements:
 ## Immediate next actions
 
 1. Ask Sani to approve FEI + SCface as primaries and AgeDB as the third/contingency dataset in the [dated dataset memo](datasets/candidate_selection_2026-09-10.md).
-2. Download and audit FEI; submit the SCface institutional access request and AgeDB password request in parallel.
+2. FEI acquisition and the first BioHash endpoint run are complete. Obtain institutional SCface access and authorized AgeDB access before either acquisition; do not rerun FEI simply to regenerate figures.
 3. Ask Sani to approve paper-specified IoM-GRP + PolyProtect using the [dated protection memo](protections/candidate_selection_2026-09-10.md).
 4. Extract and freeze the IoM-GRP and PolyProtect parameter settings before implementation.
 5. Freeze the extension protocol and estimated compute budget after dataset eligibility audits.

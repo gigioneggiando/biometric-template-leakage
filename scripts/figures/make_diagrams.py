@@ -31,6 +31,31 @@ PURPLE = "#CC79A7"
 plt.rcParams.update({"font.family": "serif", "pdf.fonttype": 42})
 
 
+def save_diagram(fig, ax, out: Path, name: str) -> None:
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    texts = [text for text in ax.texts if text.get_text()]
+    bounds = [text.get_window_extent(renderer) for text in texts]
+    for index, (text, bound) in enumerate(zip(texts, bounds)):
+        if any(symbol in text.get_text() for symbol in ("\u2014", "\u2013", "\u2212")):
+            raise ValueError(f"Unsupported dash in {name}: {text.get_text()}")
+        if not ax.bbox.contains(bound.x0, bound.y0) or not ax.bbox.contains(bound.x1, bound.y1):
+            raise ValueError(f"Text outside diagram: {text.get_text()}")
+        for patch in ax.patches:
+            if isinstance(patch, FancyBboxPatch):
+                container = patch.get_window_extent(renderer)
+                if container.contains(*bound.get_points().mean(axis=0)):
+                    inner = container.expanded(0.96, 0.96)
+                    if not inner.contains(bound.x0, bound.y0) or not inner.contains(bound.x1, bound.y1):
+                        raise ValueError(f"Text crosses box padding: {text.get_text()}")
+        for other, other_bound in zip(texts[index + 1:], bounds[index + 1:]):
+            if bound.overlaps(other_bound):
+                raise ValueError(f"Overlapping text: {text.get_text()} / {other.get_text()}")
+    fig.savefig(out / f"{name}.pdf", bbox_inches="tight", pad_inches=0.05)
+    fig.savefig(out / f"{name}.png", bbox_inches="tight", pad_inches=0.05, dpi=220)
+    plt.close(fig)
+
+
 # ---------------------------------------------------------------- primitives
 
 def box(ax, x, y, w, h, title, sub=None, fc="white", ec=INK, lw=1.0, ts=7.6, ss=6.3, radius=0.07):
@@ -105,11 +130,11 @@ def fig_architecture(out: Path) -> None:
     # ---- top row: enrolment / protection pipeline
     y, h, w, gap = 3.95, 0.95, 2.06, 0.33
     stages = [
-        ("Face image", "MOBIO · LFW · FEI"),
+        ("Face image", "MOBIO / LFW / FEI"),
         ("Detect & align", "YuNet, 5 landmarks"),
-        ("ArcFace", "buffalo_l, 512-D, unit norm"),
-        ("Keyed protection", "BioHash · MLP-Hash"),
-        ("Protected record", "binary template"),
+        ("ArcFace", "512-D, unit norm"),
+        ("Protection", "BioHash / MLP-Hash"),
+        ("Template", "protected bits"),
     ]
     xs = [0.2 + i * (w + gap) for i in range(len(stages))]
     for x, (t, s) in zip(xs, stages):
@@ -128,14 +153,14 @@ def fig_architecture(out: Path) -> None:
     ax.text(cx[3], iy + 0.38, "secret key  k", ha="center", fontsize=6.8, color=ORANGE)
     arrow(ax, cx[3], iy - 0.16, cx[3], y + h + 0.02, color=ORANGE)
     icon_bits(ax, cx[4], iy, seed=5)
-    ax.text(cx[4], iy + 0.38, r"$T = g(P_k\,x)$", ha="center", fontsize=7.5, color=INK)
+    ax.text(cx[4], iy + 0.38, r"$T = f_k(x)$", ha="center", fontsize=7.5, color=INK)
 
     # ---- connector: protected records of one person, collected from several services
     ymid = 3.05
     arrow(ax, cx[4], y - 0.02, cx[4], ymid, style="-")
     arrow(ax, cx[4], ymid, 1.20, ymid, style="-")
     arrow(ax, 1.20, ymid, 1.20, 2.35, style="-|>")
-    ax.text(6.0, ymid + 0.13, "n protected records of the same person, each from a different image and a different service",
+    ax.text(6.0, ymid + 0.13, "Collect n records of one identity; vary the hidden-key regime",
             ha="center", fontsize=6.6, color=GREY)
 
     # ---- bottom row: attack
@@ -149,9 +174,9 @@ def fig_architecture(out: Path) -> None:
 
     bx = [2.95, 6.35, 8.75]
     bw = [2.95, 1.95, 2.35]
-    box(ax, bx[0], y2, bw[0], h2, "Key-blind attacker", "MLP · mean / max pool · DeepSets", ts=7.2, ss=6.0)
+    box(ax, bx[0], y2, bw[0], h2, "Key-blind attacker", "MLP / pooling / DeepSets", ts=7.2, ss=6.0)
     box(ax, bx[1], y2, bw[1], h2, "Prediction", "512-D embedding", ts=7.2, ss=6.0)
-    box(ax, bx[2], y2, bw[2], h2, "Gallery", "unprotected, 1 image / identity", ts=7.2, ss=6.0)
+    box(ax, bx[2], y2, bw[2], h2, "Gallery linkage", "held-out embeddings", ts=7.2, ss=6.0)
     icon_net(ax, bx[0] + bw[0] / 2, y2 + h2 + 0.45)
     icon_vector(ax, bx[1] + bw[1] / 2, y2 + h2 + 0.45, w=0.9, seed=8, color=GREEN)
     icon_gallery(ax, bx[2] + bw[2] / 2, y2 + h2 + 0.45)
@@ -159,15 +184,13 @@ def fig_architecture(out: Path) -> None:
     arrow(ax, 2.30, y2 + h2 / 2, bx[0] - 0.02, y2 + h2 / 2)
     arrow(ax, bx[0] + bw[0] + 0.02, y2 + h2 / 2, bx[1] - 0.02, y2 + h2 / 2)
     arrow(ax, bx[1] + bw[1] + 0.02, y2 + h2 / 2, bx[2] - 0.02, y2 + h2 / 2)
-    ax.text((bx[1] + bw[1] + bx[2]) / 2, y2 + h2 / 2 + 0.17, "cosine", ha="center", fontsize=6.3, color=GREY)
+    ax.text((bx[1] + bw[1] + bx[2]) / 2, y2 + h2 + 0.12, "cosine", ha="center", fontsize=6.3, color=GREY)
 
-    ax.text(bx[0], y2 - 0.22, "trained on records of disjoint identities; knows the scheme, never a key",
+    ax.text(bx[0], y2 - 0.22, "Train on separate identities; key values remain hidden",
             fontsize=6.3, color=GREY, va="top")
-    ax.text(bx[2] + bw[2], y2 - 0.46, "top-1 / top-5 · AUROC · EER", fontsize=6.3, color=GREY, va="top", ha="right")
+    ax.text(bx[2] + bw[2], y2 - 0.46, "Top-1 / top-5 / AUROC / EER", fontsize=6.3, color=GREY, va="top", ha="right")
 
-    fig.savefig(out / "fig_architecture.pdf", bbox_inches="tight", pad_inches=0.05)
-    fig.savefig(out / "fig_architecture.png", bbox_inches="tight", pad_inches=0.05, dpi=220)
-    plt.close(fig)
+    save_diagram(fig, ax, out, "fig_architecture")
 
 
 # ------------------------------------------------------ Figure: threat model
@@ -179,9 +202,9 @@ def fig_threat_model(out: Path) -> None:
     ax.axis("off")
 
     panels = [
-        (0.25, "Fresh keys", "a new key for every record", "covered by Theorem 1", GREEN, [ORANGE, BLUE, PURPLE, GREEN, RED]),
-        (3.45, "Recurring pool of k keys", "slot label hidden from attacker", "empirical boundary", ORANGE, [ORANGE, BLUE, ORANGE, PURPLE, BLUE]),
-        (6.65, "Single shared key", "k = 1", "stolen-token analogue", RED, [ORANGE] * 5),
+        (0.25, "Fresh keys", "one key per source record", "no transform reuse", GREEN, [ORANGE, BLUE, PURPLE, GREEN, RED]),
+        (3.45, "Recurring key pool", "k transforms; slot labels hidden", "reuse across train and test", ORANGE, [ORANGE, BLUE, ORANGE, PURPLE, BLUE]),
+        (6.65, "Single shared key", "k = 1; key value still hidden", "shared-transform baseline", RED, [ORANGE] * 5),
     ]
     pw, ph, py = 3.10, 3.15, 1.55
     for x, title, sub, tag, col, key_colors in panels:
@@ -196,12 +219,12 @@ def fig_threat_model(out: Path) -> None:
             arrow(ax, x + 1.44, ry, x + 1.72, ry, lw=0.6, color=GREY)
             icon_bits(ax, x + 2.35, ry, n=10, w=1.05, h=0.12, seed=20 + i)
         ax.text(x + pw / 2, py + 0.30, tag, ha="center", fontsize=7.3, color=col, style="italic")
-    ax.text(3.45 + pw / 2, py + 0.55, "same colour = same hidden transform", ha="center", fontsize=6.2, color=GREY)
+    ax.text(3.45 + pw / 2, py + 0.55, "same colour = same transform", ha="center", fontsize=6.2, color=GREY)
 
     results = [
-        (r"$I(Y;\,T_1,\ldots,T_n)=0$", "top-1 at chance for every n"),
-        ("1 record at chance, 10 records not", "leakage falls as k grows"),
-        ("transform is learnable", "70-80 % top-1"),
+        ("Chance-compatible results", "ideal invariance needs assumptions"),
+        ("Multi-record gains observed", "boundary depends on dataset and split"),
+        ("Strong linkage observed", "hidden does not mean unlearnable"),
     ]
     for (x, *_rest, col, _k), (a, b) in zip(panels, results):
         ax.text(x + pw / 2, 1.12, a, ha="center", fontsize=7.6, color=col, weight="bold")
@@ -209,14 +232,12 @@ def fig_threat_model(out: Path) -> None:
 
     ax.plot([0.25, 9.75], [0.62, 0.62], color=GREY, lw=0.6)
     ax.text(0.25, 0.40, "Protocol", fontsize=7.2, weight="bold", color=INK, va="center")
-    ax.text(1.20, 0.40, "identity-disjoint train / val / test  ·  test keys never seen in training  ·  one held-out gallery image per identity",
+    ax.text(1.45, 0.40, "Disjoint train / validation / test identities; one held-out gallery image per identity",
             fontsize=6.4, color=GREY, va="center")
-    ax.text(1.20, 0.16, "8 nested record sets per identity  ·  3 model seeds  ·  identity-clustered 95 % intervals  ·  preregistered pass / fail per condition",
+    ax.text(1.45, 0.16, "8 nested sets per identity; 3 model seeds; identity-clustered bootstrap intervals",
             fontsize=6.4, color=GREY, va="center")
 
-    fig.savefig(out / "fig_threat_model.pdf", bbox_inches="tight", pad_inches=0.05)
-    fig.savefig(out / "fig_threat_model.png", bbox_inches="tight", pad_inches=0.05, dpi=220)
-    plt.close(fig)
+    save_diagram(fig, ax, out, "fig_threat_model")
 
 
 def main() -> None:

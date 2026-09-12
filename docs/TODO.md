@@ -175,7 +175,7 @@ python scripts\diagnostics\system_info.py
 - [x] Add acquisition documentation and a non-sensitive dataset card for dataset A (FEI: `experiments/fei_multiexposure/README.md`).
 - [x] Add deterministic loader, validation, split construction, and tests for dataset A (`src/biometrics_ai/data/fei.py`, `tests/unit/test_fei.py`).
 - [x] Extract embeddings and validate the unprotected ArcFace baseline for dataset A (oracle `100%`).
-- [x] Run the preregistered FEI BioHash key-pool study (pools 1-7 pass, pool 10 fails, fresh at chance).
+- [x] Run the preregistered FEI BioHash key-pool study (tested pools 1/2/3/4/5/7 pass; pool 10 fails; fresh results are chance-compatible).
 - [ ] Add acquisition documentation and a non-sensitive dataset card for dataset B.
 - [ ] Add deterministic loader, validation, split construction, and tests for dataset B.
 - [ ] Extract embeddings and validate the unprotected ArcFace baseline for dataset B.
@@ -204,11 +204,12 @@ python scripts\diagnostics\system_info.py
 ### Prepare material for Sani and the paper
 
 - [x] Create and review the end-to-end architecture diagram (`reports/figures/fig_architecture.pdf`, `fig_threat_model.pdf`).
-- [ ] Generate dataset and protection-scheme comparison tables.
+- [x] Generate current dataset and protection-scheme comparison tables in the review deck; proposed extensions remain pending.
 - [x] Generate fresh-key, reuse-boundary, amplification, and correlation figures from tracked results (`scripts/figures/make_figures.py`).
-- [x] Produce the canonical cross-dataset aggregate table (`experiments/cross_dataset_key_pool_summary.csv`); cross-scheme rows for new schemes pending.
-- [ ] Prepare a 6-8 slide English deck and matching PDF.
-- [ ] Include threat model, methods, controls, theoretical scope, limitations, and reproduction status.
+- [x] Produce a source-separated study-level table (`experiments/cross_dataset_key_pool_summary.csv`, 65 conditions from 11 studies). The per-seed canonical matrix and new-scheme rows remain pending.
+- [x] Prepare an eight-slide English review deck and matching PDF (`reports/slides/research_review.pptx`, `reports/slides/research_review.pdf`).
+- [x] Include threat model, methods, controls, theoretical scope, limitations, and reproduction status.
+- [x] Check diagram/plot text bounds, box padding, overlaps, and unsupported dashes; validate editable slide content and rendered PDF pages.
 - [ ] Verify every headline number against a configuration, commit, and compact result artifact.
 - [ ] Perform a final visual and scientific review with Gigi, Manish, and Sani.
 
