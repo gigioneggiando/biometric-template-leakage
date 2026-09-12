@@ -1,5 +1,7 @@
 # Verified local baseline (2026-08-25); use pyproject.toml as the source of truth.
 numpy==2.3.3
+matplotlib==3.11.2
+pandas==3.0.5
 torch==2.8.0
 scikit-learn==1.8.0
 PyYAML==6.0.2

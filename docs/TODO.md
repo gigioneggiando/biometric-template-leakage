@@ -160,7 +160,7 @@ python scripts\diagnostics\system_info.py
 - [x] Complete an official-source desk review and propose two primary facial-biometric datasets plus one contingency dataset. The quality/access review selects FEI + SCface as primaries and AgeDB as the third candidate; see [datasets/candidate_selection_2026-09-10.md](datasets/candidate_selection_2026-09-10.md).
 - [x] Record official sources, current access paths, published counts, variation, stated terms, acquisition size where published, expected pilot cost, and model-overlap risks for the candidate set.
 - [ ] Ask Sani to approve FEI and SCface as primary datasets and AgeDB as the contingency/third dataset.
-- [ ] Download the four official FEI original-image archives, hash them, and audit ArcFace-valid counts without committing data.
+- [x] Download the four official FEI original-image archives, hash them, and audit ArcFace-valid counts without committing data (2026-09-12: 2,800 images, 200 identities, 2,378/2,400 protocol embeddings, all identities >= 11 valid).
 - [ ] Request the AgeDB archive password from the official maintainer using an academic email address.
 - [ ] Ask Sani or another full-time staff member to submit the SCface institutional letter and signed release agreement.
 - [ ] If QMUL-SurvFace is activated as a later scale test, clarify collaborator sharing, derived-data, and aggregate-publication terms with the official contact first.
@@ -172,9 +172,10 @@ python scripts\diagnostics\system_info.py
 
 ### Implement datasets
 
-- [ ] Add acquisition documentation and a non-sensitive dataset card for dataset A.
-- [ ] Add deterministic loader, validation, split construction, and tests for dataset A.
-- [ ] Extract embeddings and validate the unprotected ArcFace baseline for dataset A.
+- [x] Add acquisition documentation and a non-sensitive dataset card for dataset A (FEI: `experiments/fei_multiexposure/README.md`).
+- [x] Add deterministic loader, validation, split construction, and tests for dataset A (`src/biometrics_ai/data/fei.py`, `tests/unit/test_fei.py`).
+- [x] Extract embeddings and validate the unprotected ArcFace baseline for dataset A (oracle `100%`).
+- [x] Run the preregistered FEI BioHash key-pool study (pools 1-7 pass, pool 10 fails, fresh at chance).
 - [ ] Add acquisition documentation and a non-sensitive dataset card for dataset B.
 - [ ] Add deterministic loader, validation, split construction, and tests for dataset B.
 - [ ] Extract embeddings and validate the unprotected ArcFace baseline for dataset B.
@@ -202,9 +203,10 @@ python scripts\diagnostics\system_info.py
 
 ### Prepare material for Sani and the paper
 
-- [ ] Create and review the end-to-end architecture diagram.
+- [x] Create and review the end-to-end architecture diagram (`reports/figures/fig_architecture.pdf`, `fig_threat_model.pdf`).
 - [ ] Generate dataset and protection-scheme comparison tables.
-- [ ] Generate fresh-key, reuse-boundary, amplification, and correlation figures from tracked results.
+- [x] Generate fresh-key, reuse-boundary, amplification, and correlation figures from tracked results (`scripts/figures/make_figures.py`).
+- [x] Produce the canonical cross-dataset aggregate table (`experiments/cross_dataset_key_pool_summary.csv`); cross-scheme rows for new schemes pending.
 - [ ] Prepare a 6-8 slide English deck and matching PDF.
 - [ ] Include threat model, methods, controls, theoretical scope, limitations, and reproduction status.
 - [ ] Verify every headline number against a configuration, commit, and compact result artifact.

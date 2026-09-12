@@ -15,7 +15,7 @@ Contributions:
 1. A fresh-key multiplicity invariance theorem with explicit assumptions (Section 3) and a norm-leakage corollary.
 2. A key-blind attacker for sets of protected records (single-template MLP, mean/max pooling, DeepSets) and an identity-disjoint, key-disjoint evaluation protocol on MOBIO with preregistered endpoints.
 3. The first measurement, to our knowledge, of leakage as a function of the number of hidden recurring transforms, showing a sharp regime change and multiplicity amplification that exists only under reuse.
-4. Cross-scheme (BioHash, MLP-Hash), cross-partition (three MOBIO partitions), and cross-dataset (MOBIO, LFW) replication, with all preregistered failures reported.
+4. Cross-scheme (BioHash, MLP-Hash), cross-partition (three MOBIO partitions), and cross-dataset (MOBIO, LFW, FEI) replication, with all preregistered failures reported.
 5. Mechanism controls showing that the gain requires multiple records from the same identity and is not primarily limited by hidden transform-slot identification.
 6. Same-image and partial-key-correlation controls that isolate key independence as the governing boundary.
 
@@ -83,6 +83,10 @@ The first boundary run assigned keys by session index and gave 33.89% at pool 10
 
 Public funneled LFW, 125 identities x 12 images, 75/25/25 identity-disjoint split, chance 4.00% (`experiments/lfw_multiexposure/key_pool_boundary_summary.csv`). Fresh keys: 10-record top-1 exactly 4.00% with zero seed variance (1-record 4.67%), AUROC 0.505. Recurring pools 1/2/3/4/5/7/10: 73.17 / 63.17 / 62.50 / 42.50 / 41.00 / 32.00 / 25.33% (1-record 70.67 / 37.33 / 23.83 / 16.83 / 11.50 / 11.67 / 4.33%). Pools 1-7 pass; pool 10 fails only the interval criterion. The qualitative structure transfers; the boundary is later than on MOBIO (pool 10 still 25.3%), so its location is dataset-specific.
 
+### 5.5b Third dataset: FEI
+
+FEI face database, 200 identities x 12 of 14 images (pose sweep, two expressions, one low-illumination image), 120/40/40 identity-disjoint split, chance 2.50% (`experiments/fei_multiexposure/key_pool_boundary_summary.csv`). Extraction 2,378/2,400; every failure is the low-illumination pose and every identity keeps at least 11 records. Fresh keys: 10-record top-1 1.77% (1-record 2.29%), AUROC 0.502. Recurring pools 1/2/3/4/5/7/10: 76.88 / 63.44 / 54.79 / 47.50 / 37.50 / 23.65 / 3.96% (1-record 74.58 / 36.35 / 3.75 / 3.44 / 2.81 / 2.40 / 3.02%). Pools 1-7 pass; pool 10 fails. FEI gives the cleanest instance of the amplification signature: from pool 3 onward a single record is at chance yet ten records identify 24-55% of a 40-identity gallery. The boundary lies between 7 and 10, matching MOBIO partitions A and 2. Because FEI is single-session, this is a pose-robustness rather than session-robustness result. Cross-dataset figure: `reports/figures/fig_pool_curves.pdf`; canonical table: `experiments/cross_dataset_key_pool_summary.csv`.
+
 ### 5.6 Mechanism controls
 
 On a new paired MOBIO partition, hidden-slot DeepSets gave 10-record top-1 `55.28 / 46.25 / 32.92 / 23.75%` for pools 3/4/5/7 and `3.33%` for fresh keys. Supplying the true recurring-transform slot to the per-record encoder gave `57.08 / 50.69 / 33.61 / 22.92%`, differences of only `+1.81 / +4.44 / +0.69 / -0.83` points. Hidden-slot mixture identification is therefore not the main limitation in this range.
@@ -104,7 +108,7 @@ For a controlled correlation test, each BioHash projection shared an exact prefi
 
 ## 7. Limitations
 
-Two datasets (MOBIO restricted, LFW public), each with a single embedding model; 30 or 25 test identities per partition; three model seeds; MLP-Hash is paper-specified, not source-exact; `benchmark_cb` unavailable (404); the key-slot control exposes transform identifiers but not transform values; the correlated-key construction is a controlled mechanism probe rather than a standard key-derivation scheme; the correlation transition is imprecise; norm leakage and equivalence testing remain open; novelty recheck on IEEE Xplore / Google Scholar pending.
+Three datasets (MOBIO restricted; LFW and FEI public), each with a single embedding model; 30, 25, or 40 test identities per partition; three model seeds; MLP-Hash is paper-specified, not source-exact; `benchmark_cb` unavailable (404); the key-slot control exposes transform identifiers but not transform values; the correlated-key construction is a controlled mechanism probe rather than a standard key-derivation scheme; the correlation transition is imprecise; norm leakage and equivalence testing remain open; novelty recheck on IEEE Xplore / Google Scholar pending.
 
 ## 8. Reproducibility
 

@@ -19,6 +19,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
 face = ["insightface>=0.7", "onnxruntime>=1.17", "opencv-python>=4.9"]
+figures = ["matplotlib>=3.8", "pandas>=2.0"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
