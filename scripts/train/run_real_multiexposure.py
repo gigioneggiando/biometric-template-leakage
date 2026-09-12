@@ -32,6 +32,8 @@ from biometrics_ai.protection import (
     mlphash_batch,
 )
 from biometrics_ai.utils.seeding import seed_record_dict
+from biometrics_ai.protection.iomgrp import IoMGRPConfig, iomgrp_encoded, iomgrp_encoded_batch
+from biometrics_ai.protection.polyprotect import PolyProtectConfig, polyprotect, polyprotect_batch
 
 
 def load_embeddings(directory: Path) -> tuple[np.ndarray, list[dict], dict]:
@@ -91,6 +93,17 @@ def protect_embeddings(
             hidden_layers=int(protection.get("hidden_layers", 3)),
         )
         protect_one, protect_batch = mlphash, mlphash_batch
+    elif scheme_name == "iomgrp_paper_specified":
+        scheme = IoMGRPConfig(embeddings.shape[1], int(protection.get("groups", 300)), int(protection.get("group_size", 16)))
+        if template_dim != scheme.groups * scheme.group_size:
+            raise ValueError("IoM-GRP template_dim must equal groups * group_size for one-hot input")
+        protect_one, protect_batch = iomgrp_encoded, iomgrp_encoded_batch
+    elif scheme_name == "polyprotect_paper_specified":
+        scheme = PolyProtectConfig(embeddings.shape[1], int(protection.get("window_size", 5)),
+                                   int(protection.get("overlap", 2)), int(protection.get("coefficient_bound", 50)))
+        if template_dim != scheme.output_dim:
+            raise ValueError("PolyProtect template_dim must match the window/overlap output dimension")
+        protect_one, protect_batch = polyprotect, polyprotect_batch
     else:
         raise ValueError(f"Unknown protection scheme: {scheme_name}")
     if condition == "shared_key_calibration":
@@ -145,7 +158,13 @@ def protect_embeddings(
         else:
             key_slots = [int(row["sample_index"]) % key_pool_size for row in metadata]
         keys = [key_pool[slot] for slot in key_slots]
-        templates = np.stack([protect_one(embedding, key, scheme) for embedding, key in zip(embeddings, keys)])
+        if scheme_name in {"iomgrp_paper_specified", "polyprotect_paper_specified"}:
+            templates = np.empty((len(embeddings), template_dim), dtype=np.float32)
+            for key in dict.fromkeys(keys):
+                indices = np.flatnonzero(np.asarray(keys) == key)
+                templates[indices] = protect_batch(embeddings[indices], key, scheme)
+        else:
+            templates = np.stack([protect_one(embedding, key, scheme) for embedding, key in zip(embeddings, keys)])
         slot_known = bool(protection.get("include_key_slot", False))
         if slot_known:
             templates = np.concatenate(
@@ -250,6 +269,17 @@ def make_model(model_name: str, input_dim: int, output_dim: int, hidden_dim: int
     raise ValueError(f"Unknown model: {model_name}")
 
 
+def identity_top1_scores(predictions: np.ndarray, test_set: dict[str, np.ndarray]) -> dict[str, float]:
+    predicted = np.asarray(predictions, dtype=np.float64)
+    gallery = np.asarray(test_set["gallery"], dtype=np.float64)
+    predicted = predicted / np.linalg.norm(predicted, axis=1, keepdims=True).clip(min=1e-12)
+    gallery = gallery / np.linalg.norm(gallery, axis=1, keepdims=True).clip(min=1e-12)
+    ranks = np.argsort(-(predicted @ gallery.T), axis=1)[:, 0]
+    identities = test_set["identity_ids"]
+    correct = test_set["gallery_identity_ids"][ranks] == identities
+    return {str(identity): float(correct[identities == identity].mean()) for identity in np.unique(identities)}
+
+
 def train_model(
     model_name: str,
     train_set: dict[str, np.ndarray],
@@ -281,6 +311,8 @@ def train_model(
     best_epoch = 0
     stale_epochs = 0
     for epoch in range(1, int(training["epochs"]) + 1):
+        if time.monotonic() >= float(training.get("deadline_monotonic", float("inf"))):
+            raise TimeoutError("Pilot wall-clock budget exhausted")
         model.train()
         optimizer.zero_grad()
         predictions = model(train_inputs)
@@ -322,6 +354,7 @@ def train_model(
     )
     return {
         "seed": seed,
+        **({"identity_top1_scores": identity_top1_scores(predictions, test_set)} if training.get("retain_identity_scores", False) else {}),
         "seed_record": seed_record,
         "device": str(device),
         "best_epoch": best_epoch,
@@ -432,6 +465,26 @@ def evaluate_primary_evidence(condition_results: dict, metadata: list[dict], con
     }
 
 
+def protected_template_diagnostics(templates: np.ndarray, metadata: list[dict]) -> dict:
+    if not np.isfinite(templates).all() or np.all(np.var(templates, axis=0) == 0):
+        raise ValueError("Protected templates are nonfinite or entirely degenerate")
+    grouped: dict[str, list[int]] = {}
+    for index, record in enumerate(metadata):
+        if record["split"] == "test":
+            grouped.setdefault(str(record["identity_id"]), []).append(index)
+    gallery_indices, probe_indices = [], []
+    for identity in sorted(grouped):
+        ordered = sorted(grouped[identity], key=lambda index: int(metadata[index]["sample_index"]))
+        gallery_indices.append(ordered[0])
+        probe_indices.extend(ordered[1:])
+    utility = gallery_probe_metrics(templates[probe_indices], templates[gallery_indices],
+                                    np.asarray([str(metadata[index]["identity_id"]) for index in probe_indices]),
+                                    np.asarray([str(metadata[index]["identity_id"]) for index in gallery_indices]))
+    return {"input_dimension": int(templates.shape[1]), "minimum": float(templates.min()),
+            "maximum": float(templates.max()), "zero_rows": int((np.linalg.norm(templates, axis=1) == 0).sum()),
+            "constant_columns": int((np.var(templates, axis=0) == 0).sum()), "native_matching": utility}
+
+
 def run(config: dict) -> dict:
     if config.get("classification") != "exploratory independent study, not benchmark_cb reproduction":
         raise ValueError("The real multi-exposure classification must remain explicit")
@@ -453,6 +506,7 @@ def run(config: dict) -> dict:
                 int(config["template_dim"]),
                 config.get("protection"),
             )
+        diagnostics = protected_template_diagnostics(protected, metadata) if config.get("record_template_diagnostics", False) and not same_image_mode else None
         exposure_results = {}
         for exposures in config["exposures"]:
             set_config = ExposureSetConfig(int(exposures), int(config["repeats_per_identity"]), int(config["set_seed"]))
@@ -516,10 +570,13 @@ def run(config: dict) -> dict:
                 "models": models,
             }
         condition_results[condition] = {"key_audit": key_audit, "exposures": exposure_results}
+        if diagnostics is not None:
+            condition_results[condition]["template_diagnostics"] = diagnostics
 
     evidence = evaluate_primary_evidence(condition_results, metadata, config)
     return {
         "classification": config["classification"],
+        "stage": config.get("stage", "exploratory"),
         "dataset": config["dataset"],
         "protection": config.get("protection", {"scheme": "biohash"}),
         "record_control": config.get("record_control", "none"),

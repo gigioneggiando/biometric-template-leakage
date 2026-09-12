@@ -106,6 +106,43 @@ def identity_clustered_top1_interval(
     }
 
 
+def paired_identity_interval(
+    reference: dict[str, float], target: dict[str, float], *, seed: int,
+    n_resamples: int = 2000, confidence: float = 0.95,
+) -> dict[str, float | int]:
+    if set(reference) != set(target) or len(reference) < 2:
+        raise ValueError("Paired inference requires matching sets of at least two identities")
+    if n_resamples < 1 or not 0 < confidence < 1:
+        raise ValueError("Invalid bootstrap resamples or confidence")
+    identities = sorted(reference)
+    before = np.asarray([reference[identity] for identity in identities], dtype=np.float64)
+    after = np.asarray([target[identity] for identity in identities], dtype=np.float64)
+    if not (np.isfinite(before).all() and np.isfinite(after).all()
+            and ((before >= 0) & (before <= 1)).all() and ((after >= 0) & (after <= 1)).all()):
+        raise ValueError("Identity-level top-1 rates must be finite values in [0,1]")
+    differences = after - before
+    sampled = np.random.default_rng(seed).integers(0, len(identities), size=(n_resamples, len(identities)))
+    estimates = differences[sampled].mean(axis=1)
+    alpha = (1 - confidence) / 2
+    return {"estimate": float(differences.mean()), "lower": float(np.quantile(estimates, alpha)),
+            "upper": float(np.quantile(estimates, 1 - alpha)), "confidence": confidence,
+            "resamples": n_resamples, "identity_clusters": len(identities), "seed": seed}
+
+
+def exploratory_equivalence_sensitivity(
+    scores: dict[str, float], chance: float, margins: tuple[float, ...] = (0.01, 0.02, 0.05),
+    *, seed: int = 91223, n_resamples: int = 2000,
+) -> list[dict]:
+    if not 0 < chance < 1 or any(not np.isfinite(margin) or not 0 < margin < 1 for margin in margins):
+        raise ValueError("Chance and sensitivity margins must be in (0,1)")
+    interval = paired_identity_interval({identity: chance for identity in scores}, scores,
+                                        seed=seed, n_resamples=n_resamples, confidence=0.90)
+    return [{**interval, "margin": margin,
+             "interval_within_margin": interval["lower"] > -margin and interval["upper"] < margin,
+             "analysis": "exploratory 90% interval containment; not confirmatory equivalence"}
+            for margin in margins]
+
+
 def verification_metrics(genuine_scores: np.ndarray, impostor_scores: np.ndarray) -> dict[str, float]:
     labels = np.concatenate([np.ones(len(genuine_scores)), np.zeros(len(impostor_scores))])
     scores = np.concatenate([genuine_scores, impostor_scores])

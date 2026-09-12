@@ -53,6 +53,53 @@ def test_pooled_template_mlp_is_permutation_invariant():
         assert torch.allclose(model(values), model(values[:, [2, 0, 3, 1]]), atol=1e-6)
 
 
+@pytest.mark.parametrize("scheme, dimension, options", [
+    ("iomgrp_paper_specified", 12, {"groups": 4, "group_size": 3}),
+    ("polyprotect_paper_specified", 3, {"window_size": 3, "overlap": 1}),
+])
+def test_extension_schemes_preserve_key_scope(tmp_path, scheme, dimension, options):
+    embeddings, _, metadata = _inputs(tmp_path)
+    protection = {"scheme": scheme, **options}
+    for condition in ("shared_key_calibration", "random_key_pool_4", "independent_unseen_keys"):
+        first, audit = run_real_multiexposure.protect_embeddings(embeddings, metadata, condition, 53, dimension, protection)
+        again, _ = run_real_multiexposure.protect_embeddings(embeddings, metadata, condition, 53, dimension, protection)
+        np.testing.assert_array_equal(first, again)
+        assert first.shape == (len(metadata), dimension)
+        assert np.isfinite(first).all()
+        assert audit["split_key_disjoint"] == (condition == "independent_unseen_keys")
+        if condition == "independent_unseen_keys":
+            assert audit["unique_keys"] == len(metadata)
+    with pytest.raises(ValueError, match="template_dim"):
+        run_real_multiexposure.protect_embeddings(embeddings, metadata, "random_key_pool_4", 53, dimension + 1, protection)
+
+
+def test_private_identity_scores_match_reported_top1():
+    predictions = np.array([[1, 0], [0, 1], [0, 1], [0, 1]], dtype=np.float32)
+    test_set = {"gallery": np.eye(2), "identity_ids": np.array(["a", "a", "b", "b"]),
+                "gallery_identity_ids": np.array(["a", "b"])}
+    scores = run_real_multiexposure.identity_top1_scores(predictions, test_set)
+    assert scores == {"a": 0.5, "b": 1.0}
+    metrics = run_real_multiexposure.gallery_probe_metrics(predictions, test_set["gallery"], test_set["identity_ids"], test_set["gallery_identity_ids"])
+    assert np.mean(list(scores.values())) == metrics["top1_linkage"]
+
+
+def test_training_respects_expired_pilot_budget():
+    sets = {"templates": np.ones((2, 1, 3), dtype=np.float32), "targets": np.eye(2, dtype=np.float32)}
+    training = {"hidden_dim": 4, "learning_rate": 0.001, "weight_decay": 0, "epochs": 2, "deadline_monotonic": 0}
+    with pytest.raises(TimeoutError, match="budget"):
+        run_real_multiexposure.train_model("single_mlp", sets, sets, sets, training, 3)
+
+
+def test_protected_diagnostics_use_held_out_native_gallery(tmp_path):
+    embeddings, _, metadata = _inputs(tmp_path)
+    diagnostics = run_real_multiexposure.protected_template_diagnostics(embeddings, metadata)
+    assert diagnostics["input_dimension"] == 6
+    assert diagnostics["zero_rows"] == 0
+    assert 0 <= diagnostics["native_matching"]["top1_linkage"] <= 1
+    with pytest.raises(ValueError, match="degenerate"):
+        run_real_multiexposure.protected_template_diagnostics(np.zeros_like(embeddings), metadata)
+
+
 def test_system_key_pool_recurs_across_identity_splits(monkeypatch: pytest.MonkeyPatch):
     embeddings = np.ones((6, 4), dtype=np.float32)
     metadata = [
