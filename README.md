@@ -4,6 +4,36 @@
 
 **Navigation:** [Research package index](reports/README.md), [current evidence and gates](reports/final_research_status.md), [figure captions](reports/figures/README.md), and [review slides](reports/slides/research_review.pdf).
 
+## Open results, images and diagrams
+
+No environment setup or experiment rerun is needed to view the existing outputs. Open PNG images directly, PDFs in a PDF viewer/browser, and the editable deck in PowerPoint. In VS Code, open this README's Markdown preview for clickable navigation.
+
+| What to view | Location |
+|---|---|
+| All 12 figures together, including architecture and results | [reports/slides/figure_appendix.pdf](reports/slides/figure_appendix.pdf) |
+| Eight-slide research overview | [reports/slides/research_review.pdf](reports/slides/research_review.pdf) |
+| Editable presentation | [reports/slides/research_review.pptx](reports/slides/research_review.pptx) |
+| Architecture diagram image | [reports/figures/fig_architecture.png](reports/figures/fig_architecture.png) |
+| Architecture diagram vector PDF | [reports/figures/fig_architecture.pdf](reports/figures/fig_architecture.pdf) |
+| Threat model and key regimes | [reports/figures/fig_threat_model.png](reports/figures/fig_threat_model.png) |
+| Earlier three-seed results overview | [reports/figures/fig_results_overview.png](reports/figures/fig_results_overview.png) |
+| New IoM-GRP and PolyProtect pilot results | [reports/figures/fig_scheme_pilots.png](reports/figures/fig_scheme_pilots.png) |
+| All plot descriptions and regeneration commands | [reports/figures/README.md](reports/figures/README.md) |
+| Pilot numerical results and interpretation | [experiments/scheme_extension_pilot/README.md](experiments/scheme_extension_pilot/README.md) |
+
+Individual plots, including paired uncertainty, equivalence sensitivity and native matching, are in `reports/figures/`, each as a `.png` and `.pdf` pair. Combined PDFs and the PowerPoint are in `reports/slides/`. These are generated research graphics, not raw face photographs; private biometric data and detailed run artifacts are deliberately excluded.
+
+## Datasets still requiring access
+
+**Request SCface first.** MOBIO, LFW and FEI are already available and used. FEI supplies the first additional multi-exposure dataset beyond MOBIO/LFW; one more accepted dataset is needed for the two-additional-dataset target. AgeDB is the contingency if SCface is unavailable or unsuitable, or an optional third addition if approved. Access to both is not mandatory for the minimum target. Neither currently has authorized access in this project.
+
+| Dataset and role | Official contact | Who should request access and what to send |
+|---|---|---|
+| **SCface: next primary dataset**, camera/distance/pose variation | **Prof. Mislav Grgic**, University of Zagreb: [mislav.grgic@fer.hr](mailto:mislav.grgic@fer.hr). [Official page](https://www.scface.org/) | Ask **Sani or another full-time staff member** to send an institutional-letterhead cover letter and the signed [release agreement](https://www.scface.org/SCface_release_agreement.pdf). A student signature is not accepted. Name all collaborators and ask permission for the intended institutions/machines and aggregate publication. |
+| **AgeDB: backup or optional third addition**, age variation | **Stylianos Moschoglou**, contact listed by Imperial College iBUG: [s.moschoglou@imperial.ac.uk](mailto:s.moschoglou@imperial.ac.uk). [Official page](https://ibug.doc.ic.ac.uk/resources/agedb/) | An authorized project member should email from an **academic address**, state affiliation and non-commercial research purpose, and request the archive password. Clarify collaborator/site and derived-result publication permissions. Keep the password private, outside chat and Git. |
+
+Contacts and procedures were checked against the official pages on **2026-09-12**; no request has been sent on your behalf. After access is granted, each included identity must retain a gallery image plus at least ten valid source embeddings, and the unprotected baseline must pass before new experiments. See the [full access checklist](docs/datasets/access_request_checklist.md). Access does not itself complete confirmation or authorize new training.
+
 **Research question:** Can a key-agnostic attacker recover identity information from multiple independently protected face templates without their secret keys?
 
 **Overall status:**
