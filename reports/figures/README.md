@@ -19,12 +19,16 @@ All plots are generated from tracked compact result files; nothing is transcribe
 | `fig_pooled_boundary` | MOBIO pooled curve over three identity partitions with per-pool pass counts | `dense_key_pool_pooled_analysis.csv` |
 | `fig_controls` | (a) slot-known vs hidden vs shuffled-record controls; (b) partial projection-sharing sweep; (c) same-image fresh-key control | `mobio_mechanism_controls`, `mobio_correlation_controls` |
 | `fig_fresh_exposures` | Fresh-key vs shared-key top-1 as a function of records per person, BioHash and MLP-Hash | `results_summary.csv`, `mlphash_results_summary.csv` |
+| `fig_scheme_pilots` | One-seed MOBIO/FEI IoM-GRP and PolyProtect linkage, single/mean/DeepSets, with clustered 95% intervals | `experiments/scheme_extension_pilot/results_summary.csv` |
+| `fig_pilot_uncertainty` | Paired ten-minus-one mean-pool gains and 95% identity-bootstrap intervals | `experiments/scheme_extension_pilot/paired_uncertainty.csv` |
+| `fig_pilot_native_utility` | Separate protected-gallery matching diagnostic, including fresh PolyProtect discrepancy | `experiments/scheme_extension_pilot/native_utility.csv` |
+| `fig_pilot_equivalence` | Fresh-key 90% interval sensitivity with illustrative +/-2-point band | `experiments/scheme_extension_pilot/equivalence_sensitivity.csv` |
 
 PDF (vector, Type 42 fonts) and PNG (220 dpi) are both written. All diagram and plot exports reject overlapping text, clipped labels, and en/em dashes or Unicode minus characters. Diagram exports also check text padding inside boxes. These geometric checks supplement visual review, not scientific or professor approval.
 
 ## Captions and interpretation
 
-**Architecture.** Source images are detected/aligned with YuNet, embedded with ArcFace and normalized, then protected under hidden keys. A supervised attacker learns from paired templates and embeddings of training identities and predicts an embedding from a set of protected records. Cosine linkage uses a held-out gallery of test identities. The schematic shows the common pipeline, not a claim that both schemes were run on every dataset. Icons and bit patterns are original schematic primitives, not face data or measured templates.
+**Architecture.** Source images are detected/aligned with YuNet, embedded with ArcFace and normalized, then protected under hidden keys. A supervised attacker learns from paired templates and embeddings of training identities and predicts an embedding from a set of protected records. Cosine linkage uses a held-out gallery of test identities. The four schemes produce binary, categorical or real-valued templates; not every scheme has been run on every dataset. Icons and bit patterns are original schematic primitives, not face data or measured templates.
 
 **Key regimes.** Fresh keys are unique to source records and disjoint across splits. Recurring pools reuse hidden transforms across identity splits; a shared key is the k=1 case, not a known-key attack. Colours identify transforms schematically. The idealized invariance proposition additionally requires rotational invariance and source-independent postprocessing; chance-compatible experiments do not prove privacy.
 
@@ -40,6 +44,10 @@ PDF (vector, Type 42 fonts) and PNG (220 dpi) are both written. All diagram and 
 
 ## Review package
 
+**New pilots.** The four added plots describe one model seed per endpoint, with a 120-epoch cap, not a controlled ranking against earlier three-seed studies. Paired intervals condition on that seed/partition and are not multiplicity-adjusted. Fresh points are disconnected from finite-pool curves. Native utility uses a protected gallery and different probes; its PolyProtect fresh-key result needs separate investigation. The shaded equivalence band is illustrative, not approved; no +/-1-point endpoint passes. See the [pilot report](../../experiments/scheme_extension_pilot/README.md).
+
+The [complete figure appendix](../slides/figure_appendix.pdf) collects all 12 current vector figures. The 65-condition overview covers earlier studies only; pilot plots remain separate.
+
 [Eight-slide PDF](../slides/research_review.pdf) and [editable PowerPoint](../slides/research_review.pptx) are generated together. Native slide text/tables are editable; figure panels are embedded PNGs with editable Python sources and separate vector PDFs. No FEI or MOBIO photographs are included. PowerPoint's native rendering should be checked on the presenting machine; the matching PDF has automated text-region and nonblank-page checks.
 
-Install optional tools with `python -m pip install -e ".[presentation]"`. Run `python -m pytest tests/unit/test_figures.py -q` to validate source preservation, metric ranges, table freshness, figure layout, and slide/PDF export. The source-separated study table is not the roadmap's pending per-seed canonical matrix.
+Install optional tools with `python -m pip install -e ".[presentation]"`. Run `python -m pytest tests/unit/test_figures.py -q` to validate source preservation, metric ranges, table freshness, figure layout, and slide/PDF export. A separate [per-seed inventory](../../experiments/multiexposure_run_matrix.csv) now covers 633 locally available rows, but full historical reconciliation and migration of all plots remain pending. Rebuild it with `python scripts/figures/build_run_matrix.py` only when the private source artifacts are available.

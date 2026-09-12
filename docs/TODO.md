@@ -2,6 +2,23 @@
 
 This document separates tasks that need human authorization, licenses, hardware, or author contact from tasks that the repository can perform once those blockers are removed. Never commit biometric data, model weights, keys, tokens, credentials, or private paths to Git.
 
+## Latest extension: 2026-09-12
+
+- [x] Record user-reported Sani approval for paper-specified IoM-GRP and PolyProtect and freeze parameters before running.
+- [x] Implement/test both schemes, key semantics and native-matching diagnostics.
+- [x] Complete 16 MOBIO/FEI one-seed pilot cells (48 runs) in 277.89 seconds, below the one-hour budget.
+- [x] Add paired identity intervals and exploratory equivalence sensitivity; retain identity scores privately.
+- [x] Export a 633-row inventory from 25 local multi-exposure artifacts and refresh the 12-figure/eight-slide package.
+- [x] Correct the theory's side-information corollary and document PolyProtect's existing multiplicity literature.
+- [x] Prepare the [official access checklist](datasets/access_request_checklist.md) and [independent review checklist](review/scheme_pilot_review_2026-09-12.md).
+- [ ] Obtain SCface/AgeDB authorization and complete the second additional dataset.
+- [ ] Approve and freeze full multi-seed confirmation; no such training was authorized in this session.
+- [ ] Investigate fresh PolyProtect native protected-gallery identification; do not claim privacy from learned attacks near chance.
+- [ ] Approve equivalence margins, seed uncertainty and multiplicity analysis; reconcile all historical sources with the local inventory.
+- [ ] Obtain independent human theory, implementation and novelty review, plus Sani's scientific/visual approval.
+
+Historical milestones below retain their dates; current host CUDA availability must be checked separately. The new pilots ran on CPU.
+
 ## Priority 0: MOBIO dataset
 
 - [x] A project member opens the official dataset page: <https://www.idiap.ch/en/scientific-research/data/mobio>.
@@ -167,7 +184,7 @@ python scripts\diagnostics\system_info.py
 - [ ] Confirm that each selected dataset supports at least ten valid records per identity and identity-disjoint splits.
 - [x] Review IoM-GRP, PolyProtect, SWG-MinHash, Bloom Filters, IoM-URP, IronMask, SecureTL, and SecureVector for paper, source, license, implementation, and protocol fit. See [protections/candidate_selection_2026-09-10.md](protections/candidate_selection_2026-09-10.md).
 - [x] Propose paper-specified IoM-GRP and PolyProtect as two additional schemes with distinct categorical-ranking and polynomial transformation families.
-- [ ] Extract and freeze primary IoM-GRP and PolyProtect parameters from their papers before implementation.
+- [x] Extract and freeze primary IoM-GRP and PolyProtect parameters from their papers before implementation (pilot freeze `d5f4e89`).
 - [ ] Obtain Sani's approval of the dataset/scheme decision record before full experiments.
 
 ### Implement datasets
@@ -183,12 +200,10 @@ python scripts\diagnostics\system_info.py
 
 ### Implement protection schemes
 
-- [ ] Record the primary source, code commit/license, algorithm, parameters, and reproduction class for scheme A.
-- [ ] Implement scheme A behind the protection interface with determinism, key-scope, shape, range, and entropy tests.
-- [ ] Validate scheme A with unprotected, shared/reused-transform, and fresh-key controls.
-- [ ] Record the primary source, code commit/license, algorithm, parameters, and reproduction class for scheme B.
-- [ ] Implement scheme B behind the protection interface with determinism, key-scope, shape, range, and entropy tests.
-- [ ] Validate scheme B with unprotected, shared/reused-transform, and fresh-key controls.
+- [x] Record primary sources, paper parameters and paper-specified classification for IoM-GRP and PolyProtect.
+- [x] Implement both schemes with determinism, key-scope, shape, range and nondegeneracy checks.
+- [x] Run existing unprotected calibration and new shared/reused/fresh pilot diagnostics on MOBIO/FEI.
+- [ ] Complete category-occupancy/entropy and parameter-sensitivity audits before confirmation.
 
 ### Run evidence matrix
 
@@ -206,7 +221,7 @@ python scripts\diagnostics\system_info.py
 - [x] Create and review the end-to-end architecture diagram (`reports/figures/fig_architecture.pdf`, `fig_threat_model.pdf`).
 - [x] Generate current dataset and protection-scheme comparison tables in the review deck; proposed extensions remain pending.
 - [x] Generate fresh-key, reuse-boundary, amplification, and correlation figures from tracked results (`scripts/figures/make_figures.py`).
-- [x] Produce a source-separated study-level table (`experiments/cross_dataset_key_pool_summary.csv`, 65 conditions from 11 studies). The per-seed canonical matrix and new-scheme rows remain pending.
+- [x] Produce the earlier 65-condition/11-study table, 48 new-scheme pilot rows, and a 633-row local per-seed inventory. Full historical reconciliation remains pending.
 - [x] Prepare an eight-slide English review deck and matching PDF (`reports/slides/research_review.pptx`, `reports/slides/research_review.pdf`).
 - [x] Include threat model, methods, controls, theoretical scope, limitations, and reproduction status.
 - [x] Check diagram/plot text bounds, box padding, overlaps, and unsupported dashes; validate editable slide content and rendered PDF pages.

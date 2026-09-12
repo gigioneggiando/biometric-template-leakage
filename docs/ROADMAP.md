@@ -4,9 +4,9 @@ This roadmap records Sani's requested next phase. It does not change the interpr
 
 ## Progress update: 2026-09-12
 
-FEI is complete as the first additional dataset beyond MOBIO/LFW: 200 identities, 2,378 successful embeddings, BioHash endpoints 1 and 10, and three model seeds. This does not complete the two-additional-dataset or cross-scheme requirements below. SCface access and approval of IoM-GRP/PolyProtect remain open.
+FEI is complete as the first additional dataset beyond MOBIO/LFW: 200 identities, 2,378 successful embeddings, BioHash endpoints 1 and 10, and three model seeds. The user reported approval of IoM-GRP/PolyProtect; both paper-specified implementations and 16 MOBIO/FEI pilot cells are complete. This does not complete the two-additional-dataset or cross-scheme confirmation requirements. SCface/AgeDB access remains unavailable; see the [request checklist](datasets/access_request_checklist.md).
 
-The review package now includes two audited diagrams, a source-separated 65-condition key-pool overview, supporting plots, and [an eight-slide PDF](../reports/slides/research_review.pdf) with an [editable PowerPoint](../reports/slides/research_review.pptx). Text and tables are editable; embedded figures are regenerated from Python source. The study-level comparison table is not yet the per-seed canonical matrix required by Phase 4. G6 remains pending scientific review and completion of its evidence references; no professor approval is implied.
+The package includes two diagrams, ten result plots, [an eight-slide PDF](../reports/slides/research_review.pdf), [editable PowerPoint](../reports/slides/research_review.pptx) and [12-figure appendix](../reports/slides/figure_appendix.pdf). Earlier three-seed studies and new pilots remain separate. A 633-row per-seed inventory covers 25 local artifacts, but Phase 4 historical reconciliation and plot migration remain incomplete. Paired pilot intervals and exploratory equivalence sensitivity are implemented; approved margins and independent review remain open. No professor approval of the deliverables is implied. See the [pilot review and proposed confirmation plan](review/scheme_pilot_review_2026-09-12.md).
 
 ## Meeting decisions
 
@@ -76,7 +76,7 @@ Dataset acceptance criteria:
 
 ### 1.2 Protection-scheme selection gate
 
-The source and implementation-fit review is recorded in [protections/candidate_selection_2026-09-10.md](protections/candidate_selection_2026-09-10.md). The proposed primaries are paper-specified IoM-GRP and PolyProtect. SWG-MinHash is the implementation backup; Bloom Filters, IoM-URP, and IronMask are deferred for the documented compatibility or source reasons. Selection is not final until Sani approves it and the specification gates pass.
+The source and implementation-fit review is recorded in [protections/candidate_selection_2026-09-10.md](protections/candidate_selection_2026-09-10.md). Paper-specified IoM-GRP and PolyProtect were approved according to the user on 2026-09-12 and implemented for the frozen pilot. SWG-MinHash remains backup; the other candidates remain deferred. Full confirmation and independent source/specification review are separate gates.
 
 Required checks for each candidate:
 

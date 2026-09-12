@@ -6,15 +6,19 @@
 
 Completed: FEI adds a third multi-exposure dataset to MOBIO/LFW, with 200 identities, 2,378 usable embeddings, and three model seeds. Its ten-record fresh-key top-1 is 1.77% versus 2.50% chance; tested recurring pools 1/2/3/4/5/7 pass, while pool 10 fails. No additional training was needed for this presentation audit because the completed run and compact summary already exist.
 
-The presentation package now contains two corrected diagrams, a 65-condition/11-study key-pool overview, mechanism/correlation/same-image plots, and an eight-slide editable review deck plus PDF. Diagram labels no longer imply unseen keys in recurring-pool experiments, exact empirical privacy, or a universal reuse threshold. Text overlap, bounds, box padding, and unsupported dash characters are checked during export. PowerPoint text is editable; embedded figures are regenerated from editable Python sources. Native PowerPoint rendering still needs a check on the presenting machine.
+The user subsequently reported Sani's approval of paper-specified IoM-GRP and PolyProtect and authorized pilots for up to one hour. Both were implemented and frozen at `d5f4e89`; all 16 MOBIO/FEI cells (48 model runs) completed in 277.89 seconds on CPU. At pool 4, mean-pool ten-minus-one gains are 37.92/33.75 points for IoM-GRP on MOBIO/FEI and 30.00/58.13 for PolyProtect, with positive paired 95% intervals conditional on one seed. These are pilots, not confirmation. [Results and caveats](../experiments/scheme_extension_pilot/README.md).
+
+Fresh-key uncertainty remains broad: no endpoint meets the illustrative +/-1-point equivalence band. Native fresh-key PolyProtect protected-gallery top-1 reaches 12.73%/13.73% against 3.33%/2.50% chance. This is distinct from learned unprotected-gallery linkage and prevents a general privacy claim. PolyProtect is outside the rotational-invariance theorem.
+
+The presentation now contains two corrected diagrams, ten result plots, an eight-slide editable deck/PDF and a complete figure appendix. Earlier 65-condition/11-study evidence and new one-seed pilots remain separate. The per-seed inventory contains 633 rows from 25 local artifacts; full historical coverage reconciliation is pending. Export checks cover text overlap, bounds, box padding and unsupported dashes. Native PowerPoint rendering still needs a check on the presenting machine.
 
 | Remaining gate | Current status / next action |
 |---|---|
 | Second additional dataset beyond MOBIO/LFW | FEI is one addition. SCface requires a staff-signed institutional agreement; AgeDB is the authorized-access contingency. Obtain approval/access before acquisition. |
-| Two additional protection families | IoM-GRP and PolyProtect are proposals. Sani must approve scope and frozen specifications before implementation/pilots. |
+| Two additional protection families | User-reported approval, paper-specified implementation and MOBIO/FEI pilots complete; multi-seed confirmation remains open. |
 | Confirmatory matrix | Current LFW/FEI studies cover BioHash endpoints 1 and 10, not all schemes, attackers, exposures, and partitions requested in the roadmap. |
-| Statistical inference | Freeze meaningful equivalence margins prospectively; retain identity-level paired predictions; add paired clustered differences, multiplicity handling, and a per-seed canonical matrix. The current 65-row table is study-level, not that matrix. |
-| Theory and implementation | Independent proof review, side-information/finite-key assumptions, source/specification audit, and a carefully chosen norm-sensitive control. Zero-threshold sign transforms can themselves discard positive scale. |
+| Statistical inference | Paired identity intervals, exploratory equivalence sensitivity and local per-seed matrix implemented. Approved margins, seed uncertainty, multiplicity and historical coverage remain open. |
+| Theory and implementation | Side-information corollary corrected with a counterexample; local source/novelty audit complete. Independent human review and norm-sensitive/native-PolyProtect controls remain open. |
 | Novelty and venue fit | Independent related-work review, realistic key-reuse motivation, and comparison to the selected venue's closest work. An unavailable benchmark blocks an exact reproduction claim, not every possible high-tier independent paper. |
 | Professor review | Review the manuscript and eight-slide package; record decisions before expanding experiments. |
 

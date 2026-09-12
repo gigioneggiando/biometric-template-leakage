@@ -16,6 +16,8 @@
 
 LFW, Olivetti, CFP, and MOBIO results are **independent engineering studies, not paper reproduction**. Synthetic runs validate plumbing only and are excluded from the scientific evidence. No published result has been reproduced yet.
 
+**Latest extension:** user-approved paper-specified IoM-GRP and PolyProtect are implemented. All 16 MOBIO/FEI one-seed pilot cells (48 model runs) completed in 277.89 seconds, within the authorized hour. Pool-4 paired gains are positive; fresh-key uncertainty does not establish equivalence, and fresh PolyProtect protected-gallery matching is above chance. See the [pilot report](experiments/scheme_extension_pilot/README.md), [12-figure PDF appendix](reports/slides/figure_appendix.pdf), and [633-row local per-seed inventory](experiments/multiexposure_run_matrix.csv). New dataset access, full confirmation and independent human review remain open.
+
 ## [x] Month 1 - Foundation and baselines
 
 **Proposal period:** Weeks 1-4
@@ -107,11 +109,11 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 - Dense sweep: pools 3/4/6/7/8/9 gave `65.00%/54.03%/17.36%/34.44%/10.42%/3.89%`, fresh `5.56%`. Pools 3/4/7 passed; 6/8/9 failed. The threshold lies near 7-9 transforms under this protocol and is noisy near the boundary (pool 6 below pool 7).
 - Paper-specified MLP-Hash: pools 1/2/5/10 gave `71.39%/68.89%/22.92%/1.94%`, fresh `3.06%`. Pools 1/2 passed; pool 5 exceeded the five-point margin but one clustered interval touched chance; pool 10 failed.
 
-**Multiplicity amplification is gated by transform diversity.** For pools 4-7 (BioHash) and pool 5 (new partition), a single record is at chance (`3.5%-4.3%`) while 10 records recover `34%-54%` of identities. Under fresh keys the 1-record and 10-record rates coincide (`3.2%` vs `5.6%`; `4.0%` vs `3.6%`), as the invariance theorem in [docs/theory/multiplicity_invariance.md](docs/theory/multiplicity_invariance.md) requires.
+**Multiplicity amplification depends on transform diversity.** Selected BioHash pools show small single-record means (`3.5%-4.3%`) while ten-record means reach `34%-54%`. This is not universal. Fresh-key one- and ten-record means vary (`3.2%` vs `5.6%`; `4.0%` vs `3.6%`); the idealized [invariance theorem](docs/theory/multiplicity_invariance.md) does not require exact finite empirical equality or prove equivalence.
 
-**Boundary resolution and second dataset.** Across three MOBIO identity partitions, pools 3-4 leak in every partition (pooled `56.7% / 51.5%`), pools 5-7 are partition-dependent, and pools >= 8 are null (pooled fresh `3.8%`). A Haar sign-corrected BioHash behaves identically (`74.6 / 48.1 / 2.6%` for pools 1/5/fresh). MLP-Hash pools 3/4 leak `54.3% / 37.8%`. On public LFW (125 identities x 12 images, chance `4.0%`), fresh keys give exactly `4.0%` with zero seed variance while pools 1/2/3/4/5/7/10 give `73.2 / 63.2 / 62.5 / 42.5 / 41.0 / 32.0 / 25.3%`; see [experiments/lfw_multiexposure/README.md](experiments/lfw_multiexposure/README.md).
+**Boundary resolution and second dataset.** Across three MOBIO identity partitions, pools 3-4 pass in every partition (pooled `56.7% / 51.5%`), pools 5-7 are partition-dependent, and tested pools 8/9 fail the interval criterion (pooled fresh `3.8%`). Failure is not equivalence. Haar sign-corrected BioHash gives `74.6 / 48.1 / 2.6%` for pools 1/5/fresh, a qualitatively similar pattern, not verified equivalence. MLP-Hash pools 3/4 give `54.3% / 37.8%`. On LFW (125 identities x 12 images, chance `4.0%`), fresh keys give `4.0%` while pools 1/2/3/4/5/7/10 give `73.2 / 63.2 / 62.5 / 42.5 / 41.0 / 32.0 / 25.3%`; pool 10 fails the strict interval rule. See [experiments/lfw_multiexposure/README.md](experiments/lfw_multiexposure/README.md).
 
-**Third dataset (FEI, 2026-09-12).** Controlled high-resolution pose sweep, 200 identities x 12 images, chance `2.5%`. Fresh keys gave `1.8%` (below chance, AUROC `0.502`); pools 1/2/3/4/5/7/10 gave `76.9 / 63.4 / 54.8 / 47.5 / 37.5 / 23.6 / 4.0%`. Pools 3-7 show single records at chance (`2.4-3.8%`) while ten records recover `24-55%` of the gallery. Pools 1-7 pass, pool 10 fails, as on MOBIO partitions A/2. See [experiments/fei_multiexposure/README.md](experiments/fei_multiexposure/README.md), the canonical table [experiments/cross_dataset_key_pool_summary.csv](experiments/cross_dataset_key_pool_summary.csv), and the figures in [reports/figures](reports/figures/README.md).
+**Third dataset (FEI, 2026-09-12).** Controlled high-resolution pose sweep, 200 identities x 12 images, chance `2.5%`. Fresh keys gave `1.8%` (AUROC `0.502`); pools 1/2/3/4/5/7/10 gave `76.9 / 63.4 / 54.8 / 47.5 / 37.5 / 23.6 / 4.0%`. Tested pools 3/4/5/7 have small single-record means (`2.4-3.8%`) and ten-record means `24-55%`. Tested pools 1/2/3/4/5/7 pass; pool 10 fails; pools 6/8/9 were not tested. See [experiments/fei_multiexposure/README.md](experiments/fei_multiexposure/README.md), the study-level [experiments/cross_dataset_key_pool_summary.csv](experiments/cross_dataset_key_pool_summary.csv), and [reports/figures/README.md](reports/figures/README.md).
 
 **Mechanism controls.** On a new MOBIO partition, the hidden-slot DeepSets baseline gave `55.3 / 46.3 / 32.9 / 23.8%` for pools 3/4/5/7 and `3.33%` for fresh keys. Giving DeepSets the true recurring-transform slot changed these by only `+1.8 / +4.4 / +0.7 / -0.8` points, so implicit slot identification is not the main boundary mechanism. Replacing nine of ten records with records from other identities collapsed pools 3/4 and fresh keys to exactly `3.33%` for every seed. The reuse gain therefore requires multiple records from the same identity rather than set size or transform frequencies alone; see [experiments/mobio_mechanism_controls/README.md](experiments/mobio_mechanism_controls/README.md).
 
@@ -148,13 +150,13 @@ Data, embeddings, keys, model weights, and detailed run artifacts are gitignored
 
 Sani requested the next generalization phase during the 2026-09-10 meeting. The full staged plan, selection gates, experiment matrix, and presentation deliverables are in [docs/ROADMAP.md](docs/ROADMAP.md).
 
-1. Obtain Sani's approval for the [quality/access-screened dataset shortlist](docs/datasets/candidate_selection_2026-09-10.md): FEI and SCface as primaries, with AgeDB as the third/contingency dataset.
-2. Obtain approval for the [proposed protection shortlist](docs/protections/candidate_selection_2026-09-10.md): paper-specified IoM-GRP and PolyProtect, with SWG-MinHash as the implementation backup.
-3. Pilot each new dataset/scheme combination before launching confirmatory runs.
-4. Complete the non-normalized/norm-leakage control and equivalence testing for the fresh-key null.
-5. Obtain independent human review of the theorem in [docs/theory/multiplicity_invariance.md](docs/theory/multiplicity_invariance.md).
-6. Produce the shareable architecture/results deck and final figures from tracked aggregate files.
-7. Recover a source-exact published transform (`benchmark_cb` still unavailable) and recheck novelty before a source-exact or publication-level claim.
+1. Obtain authorized SCface or AgeDB access using the [official request checklist](docs/datasets/access_request_checklist.md); FEI is complete.
+2. Review the completed IoM-GRP/PolyProtect pilots and investigate the native PolyProtect fresh-key diagnostic.
+3. Approve and freeze the broader multi-seed confirmation matrix before new training.
+4. Approve equivalence margins, seed/multiplicity analysis and a justified norm-sensitive control.
+5. Obtain independent human theory/novelty review using the [review checklist](docs/review/scheme_pilot_review_2026-09-12.md).
+6. Review the regenerated deck and figures with Sani; reconcile historical artifacts with the local per-seed matrix.
+7. Recover the official `benchmark_cb` source before claiming source-exact reproduction.
 
 Full task details and human-only blockers are in [docs/TODO.md](docs/TODO.md).
 

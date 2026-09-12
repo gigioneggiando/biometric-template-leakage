@@ -7,6 +7,11 @@
 - [Figure index, captions, and regeneration commands](figures/README.md)
 - [Eight-slide PDF](slides/research_review.pdf)
 - [Editable review deck](slides/research_review.pptx)
+- [Complete vector figure appendix](slides/figure_appendix.pdf)
+- [New scheme pilot results and caveats](../experiments/scheme_extension_pilot/README.md)
+- [Local per-seed run inventory](../experiments/multiexposure_run_matrix.csv)
+- [Dataset access checklist](../docs/datasets/access_request_checklist.md)
+- [Local audit and independent review gates](../docs/review/scheme_pilot_review_2026-09-12.md)
 - [Cross-study key-pool table](../experiments/cross_dataset_key_pool_summary.csv)
 - [Research roadmap](../docs/ROADMAP.md)
 

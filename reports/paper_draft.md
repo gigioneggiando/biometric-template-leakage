@@ -12,10 +12,10 @@ TODO: motivation, deployment reality (application-specific keys, shared salts), 
 
 Contributions:
 
-1. A fresh-key multiplicity invariance theorem with explicit assumptions (Section 3) and a norm-leakage corollary.
+1. A fresh-key multiplicity invariance theorem with explicit assumptions (Section 3), conditional side-information constraints and a norm-information upper bound, not proof of norm leakage.
 2. A key-blind attacker for sets of protected records (single-template MLP, mean/max pooling, DeepSets), with identity-disjoint evaluation and key-disjoint splits in the fresh-key condition only.
 3. Measurements of leakage and record-count amplification across recurring-transform pools, with dataset- and partition-dependent transitions. Priority or novelty claims await an independent literature review.
-4. Cross-scheme (BioHash, MLP-Hash), cross-partition (three MOBIO partitions), and cross-dataset (MOBIO, LFW, FEI) replication, with all preregistered failures reported.
+4. Cross-scheme (BioHash, MLP-Hash), cross-partition (three MOBIO partitions), and cross-dataset (MOBIO, LFW, FEI) studies, with preregistered failures reported. Additional IoM-GRP and PolyProtect pilots are engineering diagnostics, not confirmation.
 5. Mechanism controls showing that the gain requires multiple records from the same identity and is not primarily limited by hidden transform-slot identification.
 6. Same-image and partial-key-correlation controls that isolate key independence as the governing boundary.
 
@@ -29,11 +29,11 @@ Conditions:
 - **Recurring pool of size $k$ (R-$k$).** A hidden pool of $k$ transforms is drawn once and each record is assigned one by a hash of its sample ID. Keys recur across identity splits; slot labels are hidden. $k = 1$ is the unknown-shared-token setting. Increasing pool size to the number of records does not create K0 because hash assignment can still collide; K0 explicitly generates a distinct key per source record.
 - **Controls.** Unprotected oracle (100% in every run); shared-key calibration.
 
-Prior stolen-token attacks (Nagar et al. 2010; Lacharme et al. 2013; Feng et al. 2014; Dong et al. 2019, 2022; Wang et al. 2020; Ghammam et al. 2020; Durbet et al. 2021) assume the transform is known. Record multiplicity has been analyzed for fuzzy vaults (Scheirer and Boult 2007; Merkle and Tams 2013), where no secret rotation is involved. We found no prior treatment of R-$k$ with $k > 1$ or of the fresh-key invariance for deep embeddings; see `docs/theory/multiplicity_invariance.md` for search coverage and the required IEEE Xplore / Google Scholar recheck.
+Prior stolen-token attacks (Nagar et al. 2010; Lacharme et al. 2013; Feng et al. 2014; Dong et al. 2019, 2022; Wang et al. 2020; Ghammam et al. 2020; Durbet et al. 2021) assume the transform is known. Record multiplicity has been analyzed for fuzzy vaults (Scheirer and Boult 2007; Merkle and Tams 2013), where no secret rotation is involved. PolyProtect (Krivokuca Hahn and Marcel 2022, Section 4.3) already studies one to ten records with disclosed parameters. Our hidden-parameter learned linkage task differs, but multiplicity alone is not novel. Priority claims await an independent current literature review; see the [local review memo](../docs/review/scheme_pilot_review_2026-09-12.md).
 
 ## 3. Theory
 
-Statement and proof: `docs/theory/multiplicity_invariance.md`. Summary: if $P_K R \overset{d}{=} P_K$ for all $R \in O(d)$, then for unit $x, y$, $P_K x \overset{d}{=} P_K y$; with independent keys the joint law of $(P_{K_i} x_i)_i$ is a product of source-independent factors, hence $(T_1, \dots, T_n) \perp (Y, x_{1:n})$. Corollaries: chance-level linkage for any attacker and any $n$; only embedding norms can leak when inputs are not normalized.
+Statement and proof: [multiplicity_invariance.md](../docs/theory/multiplicity_invariance.md). Summary: if $P_K R \overset{d}{=} P_K$ for all $R \in O(d)$, then for unit $x, y$, $P_K x \overset{d}{=} P_K y$; with independent keys the joint law is a product of source-independent factors. Under a uniform identity prior, expected Bayes top-1 is chance for every record count. With admissible side information Z, joint independence of key randomness from identity, sources and Z is required; templates give no gain beyond the Bayes decision from Z alone. Without normalization, norms bound possible information, but need not leak: positive scaling leaves zero-threshold BioHash and IoM-GRP unchanged. This is not a finite-implementation or PolyProtect privacy theorem.
 
 Scope: the theorem assumes ideal Gaussian or Haar/Stiefel sampling, independent hidden keys, fixed-norm sources, and source-independent postprocessing. It does not cover key reuse, correlated keys, non-invariant transforms, or key-correlated side information. Raw `numpy.linalg.qr` does not implement the Haar sign convention (Mezzadri 2007). The sign-corrected variant gave fresh-key 10-record top-1 2.64%, pool 1 74.58%, and pool 5 48.06% (`haar_corrected_key_pool_summary.csv`). These results are qualitatively similar to the default construction; no equivalence test was performed. Sign correction aligns the ideal sampling construction, but finite PRNG keys and numerical precision remain implementation assumptions requiring review.
 
@@ -69,7 +69,7 @@ Scope: the theorem assumes ideal Gaussian or Haar/Stiefel sampling, independent 
 | 10 | - | - | - | 5.56 (4.31) | 1.94 (4.58) |
 | fresh | 5.56 (3.19) | 1.53 (2.36) | 4.44 (3.75) | 3.61 (4.03) | 3.06 (2.92) |
 
-Preregistered pooled rule over partitions A/2/3 (`dense_key_pool_pooled_analysis.csv`): pools 3 and 4 pass in 3/3 partitions (pooled 56.67%, 51.53%); pool 7 in 2/3 (24.58%); pools 5 and 6 in 1/2 and 1/3 (24.17%, 20.79%); pools 8 and 9 in 0/3 (9.49%, 5.65%); fresh pooled 3.84%. MLP-Hash: pools 1-4 pass, pool 5 fails on the interval criterion only (one lower bound 0.0; seed std 19.9 points), pool 10 fails. Regimes for this protocol: robust leakage at $k \le 4$; partition-dependent transition at $k = 5$-$7$; null at $k \ge 8$ (BioHash) and $k \ge 5$ (MLP-Hash, interval criterion).
+Preregistered pooled rule over partitions A/2/3 (`dense_key_pool_pooled_analysis.csv`): pools 3 and 4 pass in 3/3 partitions (pooled 56.67%, 51.53%); pool 7 in 2/3 (24.58%); pools 5 and 6 in 1/2 and 1/3 (24.17%, 20.79%); pools 8 and 9 in 0/3 (9.49%, 5.65%); fresh pooled 3.84%. MLP-Hash: tested pools 1-4 pass, pool 5 fails on the interval criterion only (one lower bound 0.0; seed std 19.9 points), pool 10 fails. These failures neither establish equivalence to chance nor support conclusions about untested pool sizes.
 
 ### 5.3 Multiplicity amplification is gated by transform diversity
 
@@ -101,6 +101,16 @@ For a controlled correlation test, each BioHash projection shared an exact prefi
 
 ## 6. Discussion
 
+### Pilot extension, reported separately
+
+After user-reported approval, paper-specified IoM-GRP (300 groups, q=16, one-hot input) and PolyProtect (window 5, overlap 2, raw 170-dimensional output) were implemented. The pre-run commit `d5f4e89` freezes the [pilot configuration](../configs/attacks/scheme_extension_pilot.yaml). Sixteen MOBIO/FEI cells produced 48 single/mean/DeepSets runs in 277.89 seconds on CPU. One seed, a 120-epoch cap and endpoints 1/10 distinguish these engineering diagnostics from the earlier studies; they are not a controlled scheme ranking.
+
+At pool 4, paired mean-pool ten-minus-one gains are 37.92 and 33.75 percentage points for IoM-GRP on MOBIO/FEI, and 30.00 and 58.13 for PolyProtect. All four identity-bootstrap 95% intervals exclude zero, conditional on one seed and partition without multiplicity adjustment. Full values, negative gains and pool-8 outcomes remain in the [pilot report](../experiments/scheme_extension_pilot/README.md).
+
+Fresh-key sensitivity does not establish equivalence: no endpoint's 90% interval lies strictly within +/-1 point of chance, and only one of 12 meets the illustrative +/-2-point band. These margins are not prospectively approved scientific bounds. Native fresh-key PolyProtect protected-gallery top-1 is 12.73%/13.73% on MOBIO/FEI, above 3.33%/2.50% chance; AUROC is 0.4971/0.5237. This separate matching task and probe definition must not be conflated with learned unprotected-gallery linkage. It requires its own uncertainty/null-calibration study and rules out a general privacy claim.
+
+### Interpretation of earlier studies
+
 - Deployment implication: independently sampled hidden per-record transforms remove source information under the idealized assumptions. Public salts are not secret keys and are not covered by that claim. Recurring application-wide or device-wide transforms can support multi-record linkage even when their values are hidden.
 - Boundary location is protocol- and partition-specific and must be reported as a range: partition 3 collapsed at $k = 5$ while partitions A and 2 held to $k = 7$; pool 6 vs 7 non-monotonicity within partition A (seed std 18 points) shows that single-seed points near the boundary are unreliable.
 - Why the collapse: as $k$ grows, the number of training records per transform falls as $1080/k$ and fewer same-transform relations recur within a set. The paired key-slot control changes top-1 by at most 4.44 points, so explicit mixture labels do not remove the boundary; loss of repeated cross-record structure is the stronger explanation under this attacker.
@@ -108,7 +118,7 @@ For a controlled correlation test, each BioHash projection shared an exact prefi
 
 ## 7. Limitations
 
-Three datasets (MOBIO restricted; LFW and FEI public), each with a single embedding model; 30, 25, or 40 test identities per partition; three model seeds; MLP-Hash is paper-specified, not source-exact; `benchmark_cb` unavailable (404); the key-slot control exposes transform identifiers but not transform values; the correlated-key construction is a controlled mechanism probe rather than a standard key-derivation scheme; the correlation transition is imprecise; norm leakage and equivalence testing remain open; novelty recheck on IEEE Xplore / Google Scholar pending.
+Three datasets with one embedding model and 30, 25, or 40 test identities per partition; three model seeds in earlier studies but one in new pilots; MLP-Hash, IoM-GRP and PolyProtect are paper-specified, not source-exact; `benchmark_cb` unavailable (404); the key-slot control exposes identifiers, not transform values; controlled correlation is not a standard key-derivation scheme. The correlation transition is imprecise. Approved equivalence margins, seed/multiplicity inference, norm-sensitive controls and independent novelty review remain open. Bootstrap intervals are descriptive and can under-cover; chance inclusion is not proof of privacy.
 
 ## 8. Reproducibility
 
@@ -116,4 +126,4 @@ All configurations, preregistrations, compact summaries, and hashes are in the r
 
 ## 9. Submission gates
 
-The manuscript can be developed now, but the professor's extension matrix is incomplete. FEI supplies one additional dataset beyond MOBIO/LFW, not both requested additions. SCface needs institutional access; AgeDB needs authorized archive access. IoM-GRP and PolyProtect remain proposed, not approved or implemented. Equivalence margins, paired uncertainty, norm-sensitive controls, per-seed aggregation, scheme-source review, and independent theory/novelty review remain open. A/A* venue selection should follow those reviews, not be inferred from the current effect sizes. The eight-slide review package is a draft, not professor-approved material.
+The manuscript can be developed now, but the extension matrix is incomplete. FEI supplies one additional dataset beyond MOBIO/LFW, not both requested additions. SCface/AgeDB access is unavailable; an [official request checklist](../docs/datasets/access_request_checklist.md) is prepared. IoM-GRP and PolyProtect implementation and pilots are complete after user-reported approval, but full confirmation was not authorized. Paired pilot uncertainty, exploratory equivalence sensitivity and a 633-row local per-seed inventory now exist; approved margins, historical reconciliation, norm-sensitive/native-matching controls and independent theory/novelty review remain open. A/A* suitability is not established. The regenerated eight-slide review package and 12-figure appendix are drafts, not professor-approved material.

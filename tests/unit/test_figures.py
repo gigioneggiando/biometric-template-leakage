@@ -65,7 +65,8 @@ def test_diagrams_export_without_text_collisions(tmp_path):
 
 
 @pytest.mark.parametrize("name", ["fig_results_overview", "fig_pool_curves", "fig_amplification",
-                                 "fig_pooled_boundary", "fig_controls", "fig_fresh_exposures"])
+                                 "fig_pooled_boundary", "fig_controls", "fig_fresh_exposures",
+                                 "fig_scheme_pilots", "fig_pilot_uncertainty", "fig_pilot_native_utility", "fig_pilot_equivalence"])
 def test_result_figures_export_without_text_collisions(tmp_path, name):
     FIGURES[name](tmp_path)
     assert (tmp_path / f"{name}.pdf").stat().st_size > 1000
@@ -108,6 +109,21 @@ def test_presentation_has_eight_nonblank_pages_and_editable_text(tmp_path):
     with pdfium.PdfDocument(tmp_path / "research_review.pdf") as pdf:
         assert len(pdf) == 8
         for page in pdf:
+            bitmap = page.render(scale=0.75)
+            pixels = np.asarray(bitmap.to_pil())
+            assert (pixels[..., :3] < 240).any(axis=2).mean() > 0.01
+            bitmap.close()
+            page.close()
+    with pdfium.PdfDocument(tmp_path / "figure_appendix.pdf") as appendix:
+        assert len(appendix) == 12
+        for page in appendix:
+            text_page = page.get_textpage()
+            try:
+                text = text_page.get_text_range()
+                assert len(text) > 40
+                assert not any(character in text for character in ("\u2013", "\u2014", "\u2212"))
+            finally:
+                text_page.close()
             bitmap = page.render(scale=0.75)
             pixels = np.asarray(bitmap.to_pil())
             assert (pixels[..., :3] < 240).any(axis=2).mean() > 0.01

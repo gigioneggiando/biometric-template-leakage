@@ -147,7 +147,7 @@ def fig_results_overview(out: Path) -> None:
         for spine in ax.spines.values():
             spine.set_visible(False)
     fig.subplots_adjust(left=0.30, right=0.98, top=0.88, bottom=0.30, wspace=0.06)
-    fig.suptitle("Multi-exposure comparison across all completed key-pool studies", y=0.97, fontsize=12)
+    fig.suptitle("Earlier three-seed key-pool studies", y=0.97, fontsize=12)
     color_ax = fig.add_axes([0.50, 0.17, 0.32, 0.022])
     fig.colorbar(image, cax=color_ax, orientation="horizontal", ticks=[0, 0.5, 1])
     color_ax.set_xlabel("Chance-adjusted score: (top-1 - chance) / (1 - chance)", fontsize=8)
@@ -354,6 +354,116 @@ def fig_fresh_exposures(out: Path) -> None:
     save_figure(fig, out, "fig_fresh_exposures")
 
 
+def load_pilot_table(name: str) -> pd.DataFrame:
+    table = pd.read_csv(EXP / "scheme_extension_pilot" / name)
+    if table.empty or set(table["stage"]) != {"pilot"}:
+        raise ValueError("Pilot figures require explicitly labelled pilot rows")
+    if "seed" in table and table["seed"].nunique() != 1:
+        raise ValueError("Pilot figure requires a single model seed; do not merge confirmation results")
+    return table
+
+
+def fig_scheme_pilots(out: Path) -> None:
+    data = load_pilot_table("results_summary.csv")
+    order = ["random_key_pool_1", "random_key_pool_4", "random_key_pool_8", "independent_unseen_keys"]
+    fig, axes = plt.subplots(2, 2, figsize=(7.2, 5.6), sharex=True, sharey=True)
+    styles = [(1, "single_mlp", "1 record", C["grey"], "s", ":"),
+              (10, "mean_mlp", "10 records, mean", C["blue"], "o", "-"),
+              (10, "deepsets", "10 records, DeepSets", C["green"], "^", "--")]
+    for row_index, scheme in enumerate(["IoM-GRP", "PolyProtect"]):
+        for column, dataset in enumerate(["MOBIO", "FEI"]):
+            ax = axes[row_index, column]
+            subset = data[(data["dataset"] == dataset) & (data["scheme"] == scheme)]
+            for exposures, model, label, colour, marker, style in styles:
+                selected = subset[(subset["exposures"] == exposures) & (subset["model"] == model)].set_index("condition").loc[order]
+                values = 100 * selected["top1"].to_numpy()
+                errors = np.stack([values - 100 * selected["lower95"].to_numpy(), 100 * selected["upper95"].to_numpy() - values]).clip(min=0)
+                ax.errorbar([1, 4, 8], values[:3], yerr=errors[:, :3], marker=marker, linestyle=style,
+                            color=colour, capsize=2, label=label)
+                ax.errorbar([11], values[3:], yerr=errors[:, 3:], marker=marker, linestyle="none", color=colour, capsize=2)
+            identities = int(subset["test_identities"].iloc[0])
+            ax.axhline(100 / identities, color=C["black"], linestyle="--", linewidth=0.7)
+            ax.set_title(f"{dataset} / {scheme} (N={identities})")
+            ax.set_xticks([1, 4, 8, 11], ["1", "4", "8", "Fresh"])
+            ax.set_ylim(-2, 105)
+            if column == 0:
+                ax.set_ylabel("Top-1 linkage (%)")
+            if row_index == 1:
+                ax.set_xlabel("Hidden transforms in pool, k")
+    fig.suptitle("New protection schemes: one-seed pilots", y=0.98, fontsize=11)
+    fig.text(0.5, 0.925, "120-epoch cap; bars: identity-clustered 95% intervals; dashed baseline: chance", ha="center", fontsize=8)
+    handles, labels = axes[0, 0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=3, frameon=False, bbox_to_anchor=(0.5, 0.01))
+    fig.tight_layout(rect=(0, 0.09, 1, 0.90))
+    save_figure(fig, out, "fig_scheme_pilots")
+
+
+def fig_pilot_uncertainty(out: Path) -> None:
+    data = load_pilot_table("paired_uncertainty.csv")
+    data = data[(data["contrast"] == "ten_minus_one") & (data["model"] == "mean_mlp")].sort_values(["dataset", "scheme", "condition"])
+    fig, ax = plt.subplots(figsize=(7.2, 5.6))
+    labels = []
+    for position, (_, record) in enumerate(data.iterrows()):
+        condition = "Fresh" if record["condition"] == "independent_unseen_keys" else "k=" + record["condition"].rsplit("_", 1)[1]
+        labels.append(f"{record['dataset']} / {record['scheme']} / {condition}")
+        estimate = 100 * record["estimate"]
+        ax.errorbar(estimate, position, xerr=[[estimate - 100 * record["lower"]], [100 * record["upper"] - estimate]],
+                    fmt="o", color=C["blue"] if record["scheme"] == "IoM-GRP" else C["orange"], capsize=2)
+    ax.axvline(0, color=C["black"], linestyle="--", linewidth=0.8)
+    ax.set_yticks(range(len(labels)), labels, fontsize=7.5)
+    ax.invert_yaxis()
+    ax.set_xlabel("10-record minus 1-record top-1 (percentage points)")
+    ax.set_title("Paired mean-pool gains: one-seed pilots, 95% intervals")
+    fig.tight_layout()
+    save_figure(fig, out, "fig_pilot_uncertainty")
+
+
+def fig_pilot_native_utility(out: Path) -> None:
+    data = load_pilot_table("native_utility.csv")
+    order = ["random_key_pool_1", "random_key_pool_4", "random_key_pool_8", "independent_unseen_keys"]
+    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.5), sharey=True)
+    for ax, scheme in zip(axes, ["IoM-GRP", "PolyProtect"]):
+        for dataset, colour, marker in [("MOBIO", C["blue"], "o"), ("FEI", C["orange"], "s")]:
+            selected = data[(data["dataset"] == dataset) & (data["scheme"] == scheme)].set_index("condition").loc[order]
+            identities = int(selected["test_identities"].iloc[0])
+            ax.plot([1, 4, 8], 100 * selected["native_top1"].iloc[:3], marker=marker, color=colour, label=f"{dataset}, N={identities}")
+            ax.scatter([11], 100 * selected["native_top1"].iloc[3:], marker=marker, color=colour)
+            ax.axhline(100 / identities, color=colour, linestyle=":", linewidth=0.8)
+        ax.set_xticks([1, 4, 8, 11], ["1", "4", "8", "Fresh"])
+        ax.set_title(scheme)
+        ax.set_xlabel("Hidden transforms in pool, k")
+        ax.set_ylim(0, 105)
+    axes[0].set_ylabel("Protected-gallery top-1 (%)")
+    fig.suptitle("Native matching diagnostic, not learned embedding linkage", y=0.98, fontsize=10.5)
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=2, frameon=False)
+    fig.tight_layout(rect=(0, 0.12, 1, 0.90))
+    save_figure(fig, out, "fig_pilot_native_utility")
+
+
+def fig_pilot_equivalence(out: Path) -> None:
+    data = load_pilot_table("equivalence_sensitivity.csv")
+    data = data[data["margin"] == 0.02].sort_values(["dataset", "scheme", "exposures", "model"])
+    fig, ax = plt.subplots(figsize=(7.2, 4.7))
+    ax.axvspan(-2, 2, color=C["grey"], alpha=0.15, label="Illustrative +/-2 pp band; not an approved equivalence margin")
+    labels = []
+    for position, (_, record) in enumerate(data.iterrows()):
+        model = {"single_mlp": "1 / single", "mean_mlp": "10 / mean", "deepsets": "10 / DeepSets"}[record["model"]]
+        labels.append(f"{record['dataset']} / {record['scheme']} / {model}")
+        estimate = 100 * record["estimate"]
+        ax.errorbar(estimate, position, xerr=[[estimate - 100 * record["lower"]], [100 * record["upper"] - estimate]],
+                    fmt="o", color=C["blue"] if record["scheme"] == "IoM-GRP" else C["orange"], capsize=2)
+    ax.axvline(0, color=C["black"], linewidth=0.8)
+    ax.set_yticks(range(len(labels)), labels, fontsize=7)
+    ax.invert_yaxis()
+    ax.set_xlabel("Fresh-key top-1 minus chance (percentage points)")
+    ax.set_title("Fresh-key 90% intervals: exploratory pilot sensitivity")
+    handles, labels = ax.get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", frameon=False, fontsize=7)
+    fig.tight_layout(rect=(0, 0.10, 1, 1))
+    save_figure(fig, out, "fig_pilot_equivalence")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, default=ROOT / "reports/figures")
@@ -365,6 +475,10 @@ def main() -> None:
     fig_pooled_boundary(args.out)
     fig_controls(args.out)
     fig_fresh_exposures(args.out)
+    fig_scheme_pilots(args.out)
+    fig_pilot_uncertainty(args.out)
+    fig_pilot_native_utility(args.out)
+    fig_pilot_equivalence(args.out)
     print(f"figures written to {args.out}")
 
 

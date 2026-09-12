@@ -133,8 +133,8 @@ def fig_architecture(out: Path) -> None:
         ("Face image", "MOBIO / LFW / FEI"),
         ("Detect & align", "YuNet, 5 landmarks"),
         ("ArcFace", "512-D, unit norm"),
-        ("Protection", "BioHash / MLP-Hash"),
-        ("Template", "protected bits"),
+        ("Protection", "four schemes"),
+        ("Template", "bits / codes / reals"),
     ]
     xs = [0.2 + i * (w + gap) for i in range(len(stages))]
     for x, (t, s) in zip(xs, stages):
@@ -222,7 +222,7 @@ def fig_threat_model(out: Path) -> None:
     ax.text(3.45 + pw / 2, py + 0.55, "same colour = same transform", ha="center", fontsize=6.2, color=GREY)
 
     results = [
-        ("Chance-compatible results", "ideal invariance needs assumptions"),
+        ("Learned attacks inconclusive", "PolyProtect outside the theorem"),
         ("Multi-record gains observed", "boundary depends on dataset and split"),
         ("Strong linkage observed", "hidden does not mean unlearnable"),
     ]
@@ -234,7 +234,7 @@ def fig_threat_model(out: Path) -> None:
     ax.text(0.25, 0.40, "Protocol", fontsize=7.2, weight="bold", color=INK, va="center")
     ax.text(1.45, 0.40, "Disjoint train / validation / test identities; one held-out gallery image per identity",
             fontsize=6.4, color=GREY, va="center")
-    ax.text(1.45, 0.16, "8 nested sets per identity; 3 model seeds; identity-clustered bootstrap intervals",
+    ax.text(1.45, 0.16, "8 sets per identity; 3 seeds earlier, 1 in pilots; identity-clustered intervals",
             fontsize=6.4, color=GREY, va="center")
 
     save_diagram(fig, ax, out, "fig_threat_model")

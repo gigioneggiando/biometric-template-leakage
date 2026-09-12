@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from PIL import Image
 import pandas as pd
+import pypdfium2 as pdfium
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.util import Inches, Pt
@@ -73,9 +74,9 @@ def build_presentation(out: Path) -> None:
             "Experimental architecture",
             "Dataset and protection coverage",
             "What changes between key regimes?",
-            "All completed key-pool studies",
+            "Earlier three-seed key-pool studies",
             "Mechanism and correlation controls",
-            "Fresh-key endpoints across datasets",
+            "Approved scheme pilots: one seed",
             "Ready to draft; not yet ready to submit",
         ], start=1):
             slide = presentation.slides.add_slide(presentation.slide_layouts[6])
@@ -85,7 +86,7 @@ def build_presentation(out: Path) -> None:
             if number == 1:
                 add_text(slide, fig, "Can multiple protected records reveal identity when keys remain hidden?",
                          0.6, 1.45, 12.1, 0.7, size=20)
-                add_text(slide, fig, "Fresh independent keys: chance-compatible results in the tested attacks.\n\n"
+                add_text(slide, fig, "Fresh-key learned attacks: uncertainty remains; no equivalence claim.\n\n"
                          "Recurring transforms: large gains from multiple same-identity records.\n\n"
                          "Boundary location changes with the dataset and identity partition.",
                          0.6, 2.55, 12.1, 3.1, size=19)
@@ -95,7 +96,7 @@ def build_presentation(out: Path) -> None:
                 name, caption = {
                     2: ("fig_architecture", "Train on separate identities. Reconstruct an embedding, then link to a held-out gallery."),
                     4: ("fig_threat_model", "Key values stay hidden in every regime. Recurring transforms are shared across identity splits."),
-                    5: ("fig_results_overview", "65 conditions from 11 studies. Missing endpoints stay blank; interval failures remain visible."),
+                    5: ("fig_results_overview", f"{len(table)} conditions from {table['source_file'].nunique()} earlier studies. New one-seed pilots are reported separately."),
                     6: ("fig_controls", "Slot identifiers are not key values. Coarse and fine correlation sweeps use separate partitions."),
                 }[number]
                 add_figure(slide, fig, name)
@@ -111,30 +112,29 @@ def build_presentation(out: Path) -> None:
                     for column, value in enumerate(row):
                         add_text(slide, fig, value, [0.6, 2.6, 4.6, 7.1, 10.0][column], 1.5 + row_index * 0.58,
                                  [1.8, 1.8, 2.3, 2.7, 2.7][column], 0.5, size=15, bold=row_index == 0)
-                add_text(slide, fig, "BioHash: 128 bits; all three datasets.\n"
-                         "MLP-Hash: 512 bits; MOBIO only; paper-specified, not source-exact.\n"
-                         "Haar-sign-corrected BioHash: MOBIO implementation control.",
-                         0.6, 4.35, 12.1, 1.6, size=17)
+                add_text(slide, fig, "BioHash: 128 bits; three datasets; includes a Haar-sign control on MOBIO.\n"
+                         "MLP-Hash: 512 bits; MOBIO; paper-specified, not source-exact.\n"
+                         "IoM-GRP: 300 categorical codes (q=16); MOBIO/FEI pilots.\n"
+                         "PolyProtect: 170 real values (m=5, overlap=2); MOBIO/FEI pilots.",
+                         0.6, 4.15, 12.1, 1.85, size=16)
                 add_text(slide, fig, "FEI: 22 low-illumination failures; all identities retain a gallery image plus 10 exposures.",
                          0.6, 6.3, 12.1, 0.45, size=13)
             elif number == 7:
-                add_figure(slide, fig, "fig_fresh_exposures", x=0.4, y=1.3, width=6.1, height=4.9)
-                lines = ["BioHash, 10-record mean-pool endpoint:"]
-                sources = [("MOBIO", "key_pool_split_replication_summary.csv"), ("LFW", "key_pool_boundary_summary.csv"), ("FEI", "key_pool_boundary_summary.csv")]
-                for dataset, source in sources:
-                    row = table[(table["dataset"] == dataset) & (table["pool_size"] == "fresh") & table["source_file"].str.endswith("/" + source)].iloc[0]
-                    lines.append(f"{dataset}: {100 * row['top1_mean']:.2f}% (chance {100 / row['test_identities']:.2f}%)")
-                add_text(slide, fig, "\n\n".join(lines), 6.8, 1.8, 5.9, 3.4, size=15)
-                add_text(slide, fig, "Chance inclusion is not equivalence.\nNo universal privacy guarantee.",
-                         6.8, 5.4, 5.9, 0.9, size=16, bold=True)
+                add_figure(slide, fig, "fig_scheme_pilots")
+                native = pd.read_csv(ROOT / "experiments/scheme_extension_pilot/native_utility.csv")
+                native = native[(native["scheme"] == "PolyProtect") & (native["condition"] == "independent_unseen_keys")].set_index("dataset")
+                caveat = (f"Fresh PolyProtect native matching: MOBIO {100 * native.loc['MOBIO', 'native_top1']:.2f}%, "
+                          f"FEI {100 * native.loc['FEI', 'native_top1']:.2f}%; separate task, not a privacy result.")
+                add_text(slide, fig, caveat,
+                         0.6, 6.58, 12.1, 0.4, size=12)
             else:
-                add_text(slide, fig, "Completed: three datasets, two schemes on MOBIO, reuse and mechanism controls.",
+                add_text(slide, fig, "Completed: two new schemes, 16 pilot cells, paired intervals, per-seed results.",
                          0.6, 1.4, 12.1, 0.6, size=17)
                 add_text(slide, fig, "Before submission:\n"
-                         "1. Approve and obtain the next dataset; approve two additional schemes.\n"
-                         "2. Freeze the extension protocol, then run pilots and confirmation.\n"
-                         "3. Define equivalence margins; strengthen paired uncertainty analysis.\n"
-                         "4. Review theory, finite-key assumptions, norm controls and novelty.\n"
+                         "1. Obtain authorized access to the next dataset.\n"
+                         "2. Authorize staged confirmation; one-seed pilots are not confirmation.\n"
+                         "3. Approve statistical margins and a multiple-comparison plan.\n"
+                         "4. Independently review the corrected theorem and related work.\n"
                          "5. Obtain Sani's scientific and presentation review.",
                          0.6, 2.35, 12.1, 3.4, size=17)
                 add_text(slide, fig, "A/A* is a venue ambition, not an established property or an acceptance prediction.",
@@ -145,12 +145,21 @@ def build_presentation(out: Path) -> None:
                 "Sources: experiments/cross_dataset_key_pool_summary.csv; experiments/fei_multiexposure/README.md; "
                 "experiments/mobio_mechanism_controls/results_summary.csv; experiments/mobio_correlation_controls/results_summary.csv.\n"
                 "Configuration: configs/attacks/fei_key_pool_boundary.yaml. See reports/figures/README.md for figure captions "
-                "and docs/ROADMAP.md for pending gates. Diagram symbols are schematic, not biometric examples."
+                "and docs/ROADMAP.md for pending gates. Diagram symbols are schematic, not biometric examples.\n"
+                "New pilot code freeze: d5f4e89. Configuration: configs/attacks/scheme_extension_pilot.yaml. "
+                "Sources: experiments/scheme_extension_pilot/{results_summary,paired_uncertainty,equivalence_sensitivity,native_utility}.csv. "
+                "One-seed CPU pilots, 120-epoch cap; not a controlled ranking against earlier 400-epoch, three-seed studies. "
+                "See figure_appendix.pdf for all figures, including native matching and uncertainty."
             )
             pdf.savefig(fig)
             plt.close(fig)
     presentation.save(out / "research_review.pptx")
-    print(f"8-slide review deck and PDF -> {out}")
+    with pdfium.PdfDocument.new() as appendix:
+        for source in sorted(FIGURES.glob("fig_*.pdf")):
+            with pdfium.PdfDocument(source) as document:
+                appendix.import_pages(document)
+        appendix.save(out / "figure_appendix.pdf")
+    print(f"8-slide review deck, PDF, and complete figure appendix -> {out}")
 
 
 def main() -> None:

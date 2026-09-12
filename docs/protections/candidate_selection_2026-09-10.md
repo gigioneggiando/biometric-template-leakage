@@ -4,6 +4,8 @@
 **Status:** paper, source, license, and implementation-fit review complete; selection proposed, not yet approved  
 **Scope:** two additional face-template protection families for the post-meeting multi-exposure study
 
+**Dated update, 2026-09-12:** the user reported Sani's approval of both primaries. Paper-specified implementations and 16 MOBIO/FEI pilot cells are complete under the [frozen pilot protocol](../protocols/scheme_extension_pilot_2026-09-12.md); [results](../../experiments/scheme_extension_pilot/README.md) remain engineering diagnostics. This update supersedes the original proposed status without changing the historical review. Full confirmation, independent review and patent/commercial-use clearance are not implied.
+
 ## Recommendation
 
 | Role | Scheme | Transformation family | Source status | Decision |

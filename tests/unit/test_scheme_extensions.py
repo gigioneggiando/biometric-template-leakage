@@ -93,6 +93,17 @@ def test_pilot_driver_exports_aggregates_and_validates_resume(tmp_path):
     config["training"].update(epochs=1, patience=1, hidden_dim=4, bootstrap_resamples=10)
     result = run_pilots(config)
     assert result["all_cells_complete"] and result["completed_cells"] == 1
+    from scripts.figures.build_run_matrix import collect_runs
+    matrix = collect_runs(tmp_path / "runs")
+    assert len(matrix) == 3
+    assert {row["stage"] for row in matrix} == {"pilot"}
+    assert all(row["identity_pairing_available"] for row in matrix)
+    assert all(len(row["config_sha256"]) == 64 for row in matrix)
+    assert "test_0" not in json.dumps(matrix)
+    legacy = tmp_path / "runs" / "legacy"
+    legacy.mkdir()
+    (legacy / "metrics.json").write_text(json.dumps({"split_identity_counts": {"test": 2}, "conditions": {"fresh": {"runs": []}}}))
+    assert collect_runs(tmp_path / "runs") == matrix
     for filename in ["results_summary.csv", "native_utility.csv", "paired_uncertainty.csv", "equivalence_sensitivity.csv"]:
         text = (tmp_path / "summary" / filename).read_text()
         assert text.count("\n") > 1
