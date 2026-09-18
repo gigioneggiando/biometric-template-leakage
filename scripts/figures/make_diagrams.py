@@ -130,7 +130,7 @@ def fig_architecture(out: Path) -> None:
     # ---- top row: enrolment / protection pipeline
     y, h, w, gap = 3.95, 0.95, 2.06, 0.33
     stages = [
-        ("Face image", "MOBIO / LFW / FEI"),
+        ("Face image", "MOBIO / LFW /\nFEI / SCface"),
         ("Detect & align", "YuNet, 5 landmarks"),
         ("ArcFace", "512-D, unit norm"),
         ("Protection", "four schemes"),

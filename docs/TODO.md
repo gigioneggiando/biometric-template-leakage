@@ -17,6 +17,17 @@ This document separates tasks that need human authorization, licenses, hardware,
 - [ ] Approve equivalence margins, seed uncertainty and multiplicity analysis; reconcile all historical sources with the local inventory.
 - [ ] Obtain independent human theory, implementation and novelty review, plus Sani's scientific/visual approval.
 
+## Latest extension: 2026-09-18
+
+- [x] Receive the authorized SCface archive directly from Sani; document local setup and hashes ([docs/setup/SCFACE_LOCAL_DATA.md](setup/SCFACE_LOCAL_DATA.md)).
+- [x] Add SCface loader, protocol builder, and tests (`src/biometrics_ai/data/scface.py`, `tests/unit/test_scface.py`).
+- [x] Extract embeddings and validate the unprotected mugshot-to-surveillance ArcFace baseline (84.375% top-1 over 544 test probes).
+- [x] Run the preregistered SCface BioHash key-pool study, frozen at `69a93e4` (pools 1/2/3 pass the all-seed clustered-interval criterion; pools 4/5/7/10 and fresh keys do not).
+- [x] Run one-seed IoM-GRP/PolyProtect engineering pilots on SCface (8 cells, 24 model runs, 128.22 seconds on CPU), also frozen at `69a93e4`.
+- [x] Extend the cross-dataset comparison table, figures, and eight-slide presentation to include SCface.
+- [ ] Obtain authorized AgeDB access if pursued as an optional third dataset.
+- [ ] Approve and freeze full multi-seed confirmation across MOBIO/FEI/SCface; no such training was authorized in this session.
+
 Historical milestones below retain their dates; current host CUDA availability must be checked separately. The new pilots ran on CPU.
 
 ## Priority 0: MOBIO dataset
@@ -193,16 +204,17 @@ python scripts\diagnostics\system_info.py
 - [x] Add deterministic loader, validation, split construction, and tests for dataset A (`src/biometrics_ai/data/fei.py`, `tests/unit/test_fei.py`).
 - [x] Extract embeddings and validate the unprotected ArcFace baseline for dataset A (oracle `100%`).
 - [x] Run the preregistered FEI BioHash key-pool study (tested pools 1/2/3/4/5/7 pass; pool 10 fails; fresh results are chance-compatible).
-- [ ] Add acquisition documentation and a non-sensitive dataset card for dataset B.
-- [ ] Add deterministic loader, validation, split construction, and tests for dataset B.
-- [ ] Extract embeddings and validate the unprotected ArcFace baseline for dataset B.
+- [x] Add acquisition documentation and a non-sensitive dataset card for dataset B (SCface: `docs/setup/SCFACE_LOCAL_DATA.md`, `experiments/scface_multiexposure/README.md`).
+- [x] Add deterministic loader, validation, split construction, and tests for dataset B (`src/biometrics_ai/data/scface.py`, `tests/unit/test_scface.py`).
+- [x] Extract embeddings and validate the unprotected ArcFace baseline for dataset B (mugshot-to-surveillance oracle 84.375% top-1 over 544 test probes).
+- [x] Run the preregistered SCface BioHash key-pool study (tested pools 1/2/3 pass; pools 4/5/7/10 fail; fresh results are chance-compatible).
 - [ ] Repeat the dataset tasks for contingency dataset C only if approved and feasible.
 
 ### Implement protection schemes
 
 - [x] Record primary sources, paper parameters and paper-specified classification for IoM-GRP and PolyProtect.
 - [x] Implement both schemes with determinism, key-scope, shape, range and nondegeneracy checks.
-- [x] Run existing unprotected calibration and new shared/reused/fresh pilot diagnostics on MOBIO/FEI.
+- [x] Run existing unprotected calibration and new shared/reused/fresh pilot diagnostics on MOBIO/FEI/SCface.
 - [ ] Complete category-occupancy/entropy and parameter-sensitivity audits before confirmation.
 
 ### Run evidence matrix
@@ -221,7 +233,7 @@ python scripts\diagnostics\system_info.py
 - [x] Create and review the end-to-end architecture diagram (`reports/figures/fig_architecture.pdf`, `fig_threat_model.pdf`).
 - [x] Generate current dataset and protection-scheme comparison tables in the review deck; proposed extensions remain pending.
 - [x] Generate fresh-key, reuse-boundary, amplification, and correlation figures from tracked results (`scripts/figures/make_figures.py`).
-- [x] Produce the earlier 65-condition/11-study table, 48 new-scheme pilot rows, and a 633-row local per-seed inventory. Full historical reconciliation remains pending.
+- [x] Produce the earlier 73-condition/12-study table, 72 new-scheme pilot rows, and a 633-row local per-seed inventory. Full historical reconciliation remains pending.
 - [x] Prepare an eight-slide English review deck and matching PDF (`reports/slides/research_review.pptx`, `reports/slides/research_review.pdf`).
 - [x] Include threat model, methods, controls, theoretical scope, limitations, and reproduction status.
 - [x] Check diagram/plot text bounds, box padding, overlaps, and unsupported dashes; validate editable slide content and rendered PDF pages.

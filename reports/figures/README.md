@@ -13,16 +13,16 @@ All plots are generated from tracked compact result files; nothing is transcribe
 |---|---|---|
 | `fig_architecture` | Pipeline: image, detection/alignment, ArcFace, keyed protection, multi-record set, key-blind attacker, gallery linkage | - |
 | `fig_threat_model` | Three key regimes (fresh, recurring pool of k, single shared key) and the evaluation protocol | - |
-| `fig_results_overview` | All 65 conditions from 11 completed key-pool studies; one-record and ten-record top-1; missing endpoints and interval failures explicit | `experiments/cross_dataset_key_pool_summary.csv` |
-| `fig_pool_curves` | (a) chance-normalized 10-record top-1 for MOBIO, LFW, FEI; (b) separate initial/dense MLP-Hash studies with seed-SD bars | `experiments/*/key_pool*_summary.csv`, `dense_key_pool_sweep*_summary.csv`, `mlphash_key_pool*_summary.csv` |
+| `fig_results_overview` | All 73 conditions from 12 completed key-pool studies; one-record and ten-record top-1; missing endpoints and interval failures explicit | `experiments/cross_dataset_key_pool_summary.csv` |
+| `fig_pool_curves` | (a) chance-normalized 10-record top-1 for MOBIO, LFW, FEI, SCface; (b) separate initial/dense MLP-Hash studies with seed-SD bars | `experiments/*/key_pool*_summary.csv`, `dense_key_pool_sweep*_summary.csv`, `mlphash_key_pool*_summary.csv` |
 | `fig_amplification` | 1-record vs 10-record chance-normalized top-1 per condition; filled = recurring pool, hollow = fresh keys | same as above |
 | `fig_pooled_boundary` | MOBIO pooled curve over three identity partitions with per-pool pass counts | `dense_key_pool_pooled_analysis.csv` |
 | `fig_controls` | (a) slot-known vs hidden vs shuffled-record controls; (b) partial projection-sharing sweep; (c) same-image fresh-key control | `mobio_mechanism_controls`, `mobio_correlation_controls` |
 | `fig_fresh_exposures` | Fresh-key vs shared-key top-1 as a function of records per person, BioHash and MLP-Hash | `results_summary.csv`, `mlphash_results_summary.csv` |
-| `fig_scheme_pilots` | One-seed MOBIO/FEI IoM-GRP and PolyProtect linkage, single/mean/DeepSets, with clustered 95% intervals | `experiments/scheme_extension_pilot/results_summary.csv` |
-| `fig_pilot_uncertainty` | Paired ten-minus-one mean-pool gains and 95% identity-bootstrap intervals | `experiments/scheme_extension_pilot/paired_uncertainty.csv` |
-| `fig_pilot_native_utility` | Separate protected-gallery matching diagnostic, including fresh PolyProtect discrepancy | `experiments/scheme_extension_pilot/native_utility.csv` |
-| `fig_pilot_equivalence` | Fresh-key 90% interval sensitivity with illustrative +/-2-point band | `experiments/scheme_extension_pilot/equivalence_sensitivity.csv` |
+| `fig_scheme_pilots` | One-seed MOBIO/FEI/SCface IoM-GRP and PolyProtect linkage, single/mean/DeepSets, with clustered 95% intervals | `experiments/scheme_extension_pilot/results_summary.csv`, `experiments/scface_scheme_extension_pilot/results_summary.csv` |
+| `fig_pilot_uncertainty` | Paired ten-minus-one mean-pool gains and 95% identity-bootstrap intervals | `experiments/scheme_extension_pilot/paired_uncertainty.csv`, `experiments/scface_scheme_extension_pilot/paired_uncertainty.csv` |
+| `fig_pilot_native_utility` | Separate protected-gallery matching diagnostic, including fresh PolyProtect discrepancy | `experiments/scheme_extension_pilot/native_utility.csv`, `experiments/scface_scheme_extension_pilot/native_utility.csv` |
+| `fig_pilot_equivalence` | Fresh-key 90% interval sensitivity with illustrative +/-2-point band | `experiments/scheme_extension_pilot/equivalence_sensitivity.csv`, `experiments/scface_scheme_extension_pilot/equivalence_sensitivity.csv` |
 
 PDF (vector, Type 42 fonts) and PNG (220 dpi) are both written. All diagram and plot exports reject overlapping text, clipped labels, and en/em dashes or Unicode minus characters. Diagram exports also check text padding inside boxes. These geometric checks supplement visual review, not scientific or professor approval.
 
@@ -44,9 +44,9 @@ PDF (vector, Type 42 fonts) and PNG (220 dpi) are both written. All diagram and 
 
 ## Review package
 
-**New pilots.** The four added plots describe one model seed per endpoint, with a 120-epoch cap, not a controlled ranking against earlier three-seed studies. Paired intervals condition on that seed/partition and are not multiplicity-adjusted. Fresh points are disconnected from finite-pool curves. Native utility uses a protected gallery and different probes; its PolyProtect fresh-key result needs separate investigation. The shaded equivalence band is illustrative, not approved; no +/-1-point endpoint passes. See the [pilot report](../../experiments/scheme_extension_pilot/README.md).
+**New pilots.** The four added plots describe one model seed per endpoint, with a 120-epoch cap, not a controlled ranking against earlier three-seed studies. Paired intervals condition on that seed/partition and are not multiplicity-adjusted. Fresh points are disconnected from finite-pool curves. Native utility uses a protected gallery and different probes; its PolyProtect fresh-key result needs separate investigation. The shaded equivalence band is illustrative, not approved; no +/-1-point endpoint passes. See the [MOBIO/FEI pilot report](../../experiments/scheme_extension_pilot/README.md) and the [SCface pilot report](../../experiments/scface_scheme_extension_pilot/README.md).
 
-The [complete figure appendix](../slides/figure_appendix.pdf) collects all 12 current vector figures. The 65-condition overview covers earlier studies only; pilot plots remain separate.
+The [complete figure appendix](../slides/figure_appendix.pdf) collects all 12 current vector figures. The 73-condition overview covers earlier studies only; pilot plots remain separate.
 
 [Eight-slide PDF](../slides/research_review.pdf) and [editable PowerPoint](../slides/research_review.pptx) are generated together. Native slide text/tables are editable; figure panels are embedded PNGs with editable Python sources and separate vector PDFs. No FEI or MOBIO photographs are included. PowerPoint's native rendering should be checked on the presenting machine; the matching PDF has automated text-region and nonblank-page checks.
 

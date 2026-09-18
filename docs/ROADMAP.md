@@ -2,9 +2,9 @@
 
 This roadmap records Sani's requested next phase. It does not change the interpretation of existing results and does not authorize unsupported reproduction or SOTA claims.
 
-## Progress update: 2026-09-12
+## Progress update: 2026-09-18
 
-FEI is complete as the first additional dataset beyond MOBIO/LFW: 200 identities, 2,378 successful embeddings, BioHash endpoints 1 and 10, and three model seeds. The user reported approval of IoM-GRP/PolyProtect; both paper-specified implementations and 16 MOBIO/FEI pilot cells are complete. This does not complete the two-additional-dataset or cross-scheme confirmation requirements. SCface/AgeDB access remains unavailable; see the [request checklist](datasets/access_request_checklist.md).
+FEI and SCface are both complete as added datasets beyond MOBIO/LFW: FEI has 200 identities, 2,378 successful embeddings; SCface has 130 identities, 2,851 successful embeddings from a mugshot-gallery/surveillance-probe protocol. Both cover BioHash endpoints 1 and 10 with three model seeds. The user reported approval of IoM-GRP/PolyProtect; both paper-specified implementations and one-seed pilot cells are complete on MOBIO/FEI (16 cells) and SCface (8 cells). This is pilot-grade, single-identity-assignment evidence, not the roadmap's cross-scheme confirmation requirement. Sani supplied the authorized SCface archive directly on 2026-09-18; AgeDB access remains unavailable, see the [request checklist](datasets/access_request_checklist.md).
 
 The package includes two diagrams, ten result plots, [an eight-slide PDF](../reports/slides/research_review.pdf), [editable PowerPoint](../reports/slides/research_review.pptx) and [12-figure appendix](../reports/slides/figure_appendix.pdf). Earlier three-seed studies and new pilots remain separate. A 633-row per-seed inventory covers 25 local artifacts, but Phase 4 historical reconciliation and plot migration remain incomplete. Paired pilot intervals and exploratory equivalence sensitivity are implemented; approved margins and independent review remain open. No professor approval of the deliverables is implied. See the [pilot review and proposed confirmation plan](review/scheme_pilot_review_2026-09-12.md).
 
@@ -22,7 +22,7 @@ The additional datasets and schemes must be selected through the gates below bef
 
 | Axis | Current evidence | Required extension |
 |---|---|---|
-| Multi-exposure datasets | MOBIO and LFW | Add 2 primary datasets; add a third if access and compute permit |
+| Multi-exposure datasets | MOBIO, LFW, FEI, SCface | Two primary datasets (FEI, SCface) added; AgeDB remains an optional third if access and compute permit |
 | Protection schemes | BioHash and paper-specified MLP-Hash | Add 2 schemes with distinct transformation families |
 | Key conditions | Fresh, shared/reused pools, controlled correlation | Preserve comparable fresh/reuse endpoints for every scheme |
 | Exposures | 1, 2, 5, 10 | Preserve 1 and 10 as mandatory endpoints; run 2 and 5 in full confirmation |
@@ -203,7 +203,7 @@ Presentation requirements:
 ## Immediate next actions
 
 1. Ask Sani to approve FEI + SCface as primaries and AgeDB as the third/contingency dataset in the [dated dataset memo](datasets/candidate_selection_2026-09-10.md).
-2. FEI acquisition and the first BioHash endpoint run are complete. Obtain institutional SCface access and authorized AgeDB access before either acquisition; do not rerun FEI simply to regenerate figures.
+2. FEI and SCface acquisition and their first BioHash endpoint runs are complete. Obtain authorized AgeDB access before acquisition if the third dataset is pursued; do not rerun FEI or SCface simply to regenerate figures.
 3. Ask Sani to approve paper-specified IoM-GRP + PolyProtect using the [dated protection memo](protections/candidate_selection_2026-09-10.md).
 4. Extract and freeze the IoM-GRP and PolyProtect parameter settings before implementation.
 5. Freeze the extension protocol and estimated compute budget after dataset eligibility audits.

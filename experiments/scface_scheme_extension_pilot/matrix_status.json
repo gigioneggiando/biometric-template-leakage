@@ -1,0 +1,67 @@
+{
+  "stage": "pilot",
+  "planned_cells": 8,
+  "completed_cells": 8,
+  "all_cells_complete": true,
+  "wall_seconds": 128.21759819999716,
+  "budget_seconds": 3600.0,
+  "cells": [
+    {
+      "dataset": "SCface",
+      "scheme": "IoM-GRP",
+      "condition": "random_key_pool_1",
+      "status": "completed",
+      "elapsed_seconds": 9.431141999993997
+    },
+    {
+      "dataset": "SCface",
+      "scheme": "PolyProtect",
+      "condition": "random_key_pool_1",
+      "status": "completed",
+      "elapsed_seconds": 3.2918245999971987
+    },
+    {
+      "dataset": "SCface",
+      "scheme": "IoM-GRP",
+      "condition": "independent_unseen_keys",
+      "status": "completed",
+      "elapsed_seconds": 95.90631130000111
+    },
+    {
+      "dataset": "SCface",
+      "scheme": "PolyProtect",
+      "condition": "independent_unseen_keys",
+      "status": "completed",
+      "elapsed_seconds": 2.600115099994582
+    },
+    {
+      "dataset": "SCface",
+      "scheme": "IoM-GRP",
+      "condition": "random_key_pool_4",
+      "status": "completed",
+      "elapsed_seconds": 5.098063099998399
+    },
+    {
+      "dataset": "SCface",
+      "scheme": "PolyProtect",
+      "condition": "random_key_pool_4",
+      "status": "completed",
+      "elapsed_seconds": 2.826627300004475
+    },
+    {
+      "dataset": "SCface",
+      "scheme": "IoM-GRP",
+      "condition": "random_key_pool_8",
+      "status": "completed",
+      "elapsed_seconds": 5.189894399998593
+    },
+    {
+      "dataset": "SCface",
+      "scheme": "PolyProtect",
+      "condition": "random_key_pool_8",
+      "status": "completed",
+      "elapsed_seconds": 3.3758157000047504
+    }
+  ],
+  "interpretation": "One-seed engineering pilots, not confirmation or proof of equivalence"
+}

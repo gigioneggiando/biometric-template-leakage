@@ -1,8 +1,8 @@
 # Official dataset access checklist
 
-Status 2026-09-12: no authorized SCface or AgeDB access is available. This is a preparation checklist only; no request has been sent or agreement signed by the assistant. FEI is already complete and is the first additional dataset beyond MOBIO/LFW.
+Status 2026-09-18: Sani supplied the authorized SCface archive directly on 2026-09-18 (see [local data setup](../setup/SCFACE_LOCAL_DATA.md)); the formal request path below was not exercised by the assistant. AgeDB access remains unavailable. This is a preparation checklist only; no request has been sent or agreement signed by the assistant. FEI and SCface are both complete as additional datasets beyond MOBIO/LFW.
 
-## SCface: primary next dataset
+## SCface: complete (archive supplied by Sani, 2026-09-18)
 
 Official [dataset page](https://www.scface.org/) and [release agreement](https://www.scface.org/SCface_release_agreement.pdf). Recheck the current agreement and contact details before sending.
 

@@ -67,7 +67,7 @@ def build_presentation(out: Path) -> None:
     presentation = Presentation()
     presentation.slide_width, presentation.slide_height = Inches(WIDTH), Inches(HEIGHT)
     presentation.core_properties.title = "Hidden keys and repeated biometric records"
-    presentation.core_properties.subject = "Research review draft, 2026-09-12"
+    presentation.core_properties.subject = "Research review draft, 2026-09-18"
     with PdfPages(out / "research_review.pdf") as pdf:
         for number, title in enumerate([
             "Hidden keys and repeated biometric records",
@@ -82,7 +82,7 @@ def build_presentation(out: Path) -> None:
             slide = presentation.slides.add_slide(presentation.slide_layouts[6])
             fig = plt.figure(figsize=(WIDTH, HEIGHT), dpi=120, facecolor="white")
             add_text(slide, fig, title, 0.6, 0.3, 12.1, 0.6, size=25, bold=True)
-            add_text(slide, fig, f"Research review draft | 12 September 2026 | {number}/8", 0.6, 7.07, 12.1, 0.3, size=11, color="#666666")
+            add_text(slide, fig, f"Research review draft | 18 September 2026 | {number}/8", 0.6, 7.07, 12.1, 0.3, size=11, color="#666666")
             if number == 1:
                 add_text(slide, fig, "Can multiple protected records reveal identity when keys remain hidden?",
                          0.6, 1.45, 12.1, 0.7, size=20)
@@ -107,32 +107,37 @@ def build_presentation(out: Path) -> None:
                     ["MOBIO", "150", "90/30/30", "1,799 / 1,800", "Sessions"],
                     ["LFW", "125", "75/25/25", "1,500 / 1,500", "In-the-wild"],
                     ["FEI", "200", "120/40/40", "2,378 / 2,400", "Pose/expression"],
+                    ["SCface", "130", "78/26/26", "2,851 / 2,860", "Camera/distance"],
                 ]
                 for row_index, row in enumerate(rows):
                     for column, value in enumerate(row):
-                        add_text(slide, fig, value, [0.6, 2.6, 4.6, 7.1, 10.0][column], 1.5 + row_index * 0.58,
+                        add_text(slide, fig, value, [0.6, 2.6, 4.6, 7.1, 10.0][column], 1.5 + row_index * 0.5,
                                  [1.8, 1.8, 2.3, 2.7, 2.7][column], 0.5, size=15, bold=row_index == 0)
-                add_text(slide, fig, "BioHash: 128 bits; three datasets; includes a Haar-sign control on MOBIO.\n"
+                add_text(slide, fig, "BioHash: 128 bits; four datasets; includes a Haar-sign control on MOBIO.\n"
                          "MLP-Hash: 512 bits; MOBIO; paper-specified, not source-exact.\n"
-                         "IoM-GRP: 300 categorical codes (q=16); MOBIO/FEI pilots.\n"
-                         "PolyProtect: 170 real values (m=5, overlap=2); MOBIO/FEI pilots.",
+                         "IoM-GRP: 300 categorical codes (q=16); MOBIO/FEI/SCface pilots.\n"
+                         "PolyProtect: 170 real values (m=5, overlap=2); MOBIO/FEI/SCface pilots.",
                          0.6, 4.15, 12.1, 1.85, size=16)
-                add_text(slide, fig, "FEI: 22 low-illumination failures; all identities retain a gallery image plus 10 exposures.",
+                add_text(slide, fig, "SCface: mugshot gallery and visible surveillance probes; 9 detection failures, all identities eligible.",
                          0.6, 6.3, 12.1, 0.45, size=13)
             elif number == 7:
                 add_figure(slide, fig, "fig_scheme_pilots")
                 native = pd.read_csv(ROOT / "experiments/scheme_extension_pilot/native_utility.csv")
                 native = native[(native["scheme"] == "PolyProtect") & (native["condition"] == "independent_unseen_keys")].set_index("dataset")
-                caveat = (f"Fresh PolyProtect native matching: MOBIO {100 * native.loc['MOBIO', 'native_top1']:.2f}%, "
-                          f"FEI {100 * native.loc['FEI', 'native_top1']:.2f}%; separate task, not a privacy result.")
+                scface_native = pd.read_csv(ROOT / "experiments/scface_scheme_extension_pilot/native_utility.csv")
+                scface_native = scface_native[(scface_native["scheme"] == "PolyProtect") &
+                                              (scface_native["condition"] == "independent_unseen_keys")].iloc[0]
+                caveat = (f"Fresh PolyProtect native top-1: MOBIO {100 * native.loc['MOBIO', 'native_top1']:.2f}%, "
+                          f"FEI {100 * native.loc['FEI', 'native_top1']:.2f}%, "
+                          f"SCface {100 * scface_native['native_top1']:.2f}%; separate diagnostic.")
                 add_text(slide, fig, caveat,
                          0.6, 6.58, 12.1, 0.4, size=12)
             else:
-                add_text(slide, fig, "Completed: two new schemes, 16 pilot cells, paired intervals, per-seed results.",
+                add_text(slide, fig, "Completed: two added datasets, two new schemes, 24 pilot cells, paired intervals.",
                          0.6, 1.4, 12.1, 0.6, size=17)
                 add_text(slide, fig, "Before submission:\n"
-                         "1. Obtain authorized access to the next dataset.\n"
-                         "2. Authorize staged confirmation; one-seed pilots are not confirmation.\n"
+                         "1. Freeze and authorize staged confirmation; one-seed pilots are not confirmation.\n"
+                         "2. Decide whether AgeDB adds enough value for a third added dataset.\n"
                          "3. Approve statistical margins and a multiple-comparison plan.\n"
                          "4. Independently review the corrected theorem and related work.\n"
                          "5. Obtain Sani's scientific and presentation review.",
@@ -148,6 +153,8 @@ def build_presentation(out: Path) -> None:
                 "and docs/ROADMAP.md for pending gates. Diagram symbols are schematic, not biometric examples.\n"
                 "New pilot code freeze: d5f4e89. Configuration: configs/attacks/scheme_extension_pilot.yaml. "
                 "Sources: experiments/scheme_extension_pilot/{results_summary,paired_uncertainty,equivalence_sensitivity,native_utility}.csv. "
+                "SCface protocol and pilot freeze: 69a93e4; sources under experiments/scface_multiexposure and "
+                "experiments/scface_scheme_extension_pilot. "
                 "One-seed CPU pilots, 120-epoch cap; not a controlled ranking against earlier 400-epoch, three-seed studies. "
                 "See figure_appendix.pdf for all figures, including native matching and uncertainty."
             )

@@ -27,6 +27,7 @@ SOURCES = [
     ("MOBIO", "A", "MLP-Hash", "mobio_multiexposure/mlphash_key_pool_dense_summary.csv", 30),
     ("LFW", "A", "BioHash", "lfw_multiexposure/key_pool_boundary_summary.csv", 25),
     ("FEI", "A", "BioHash", "fei_multiexposure/key_pool_boundary_summary.csv", 40),
+    ("SCface", "A", "BioHash", "scface_multiexposure/key_pool_boundary_summary.csv", 26),
 ]
 
 

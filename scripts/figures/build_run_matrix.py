@@ -24,7 +24,8 @@ def collect_runs(results_root: Path) -> list[dict]:
         config = yaml.safe_load(config_path.read_text(encoding="utf-8")) if config_path.exists() else {}
         config_hash = hashlib.sha256(config_path.read_bytes()).hexdigest() if config_path.exists() else "unavailable"
         description = str(result.get("dataset", "")).upper()
-        dataset = next((name for name in ("MOBIO", "LFW", "FEI") if name in description), "other")
+        dataset = next((name for name in ("MOBIO", "LFW", "FEI", "SCFACE") if name in description), "other")
+        dataset = "SCface" if dataset == "SCFACE" else dataset
         common = {
             "source_metrics": "results/" + path.relative_to(results_root).as_posix(),
             "metrics_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),

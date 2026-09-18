@@ -54,6 +54,7 @@ DATASETS = [
     ("MOBIO, dense 3 (n=30)", EXP / "mobio_multiexposure/dense_key_pool_sweep_partition3_summary.csv", 1 / 30, C["blue"], "v"),
     ("LFW (n=25)", EXP / "lfw_multiexposure/key_pool_boundary_summary.csv", 1 / 25, C["orange"], "D"),
     ("FEI (n=40)", EXP / "fei_multiexposure/key_pool_boundary_summary.csv", 1 / 40, C["green"], "P"),
+    ("SCface (n=26)", EXP / "scface_multiexposure/key_pool_boundary_summary.csv", 1 / 26, C["red"], "X"),
 ]
 MLPHASH = [
     EXP / "mobio_multiexposure/mlphash_key_pool_summary.csv",
@@ -112,6 +113,7 @@ def fig_results_overview(out: Path) -> None:
         "mobio_multiexposure/mlphash_key_pool_dense_summary.csv": "MOBIO / MLP-Hash / dense",
         "lfw_multiexposure/key_pool_boundary_summary.csv": "LFW / BioHash",
         "fei_multiexposure/key_pool_boundary_summary.csv": "FEI / BioHash",
+        "scface_multiexposure/key_pool_boundary_summary.csv": "SCface / BioHash",
     }
     if set(studies) != set(study_labels):
         raise ValueError("Update overview labels for the source inventory")
@@ -152,7 +154,7 @@ def fig_results_overview(out: Path) -> None:
     fig.colorbar(image, cax=color_ax, orientation="horizontal", ticks=[0, 0.5, 1])
     color_ax.set_xlabel("Chance-adjusted score: (top-1 - chance) / (1 - chance)", fontsize=8)
     fig.text(0.30, 0.035, "Cells: top-1 (%), 3-seed means. Grey: unavailable. *: not all seed intervals exclude chance.\n"
-             "Gallery sizes: MOBIO 30; LFW 25; FEI 40. Rows are separate studies, not matched replications.", fontsize=8)
+             "Gallery sizes: MOBIO 30; LFW 25; FEI 40; SCface 26. Rows are separate studies, not matched replications.", fontsize=8)
     save_figure(fig, out, "fig_results_overview")
 
 
@@ -355,23 +357,26 @@ def fig_fresh_exposures(out: Path) -> None:
 
 
 def load_pilot_table(name: str) -> pd.DataFrame:
-    table = pd.read_csv(EXP / "scheme_extension_pilot" / name)
+    paths = [EXP / "scheme_extension_pilot" / name, EXP / "scface_scheme_extension_pilot" / name]
+    table = pd.concat([pd.read_csv(path) for path in paths if path.exists()], ignore_index=True)
     if table.empty or set(table["stage"]) != {"pilot"}:
         raise ValueError("Pilot figures require explicitly labelled pilot rows")
-    if "seed" in table and table["seed"].nunique() != 1:
-        raise ValueError("Pilot figure requires a single model seed; do not merge confirmation results")
+    if "seed" in table:
+        cells = [column for column in ("dataset", "scheme", "condition", "exposures", "model") if column in table]
+        if table.groupby(cells)["seed"].nunique().max() != 1:
+            raise ValueError("Each pilot endpoint must contain exactly one model seed")
     return table
 
 
 def fig_scheme_pilots(out: Path) -> None:
     data = load_pilot_table("results_summary.csv")
     order = ["random_key_pool_1", "random_key_pool_4", "random_key_pool_8", "independent_unseen_keys"]
-    fig, axes = plt.subplots(2, 2, figsize=(7.2, 5.6), sharex=True, sharey=True)
+    fig, axes = plt.subplots(2, 3, figsize=(10.2, 5.6), sharex=True, sharey=True)
     styles = [(1, "single_mlp", "1 record", C["grey"], "s", ":"),
               (10, "mean_mlp", "10 records, mean", C["blue"], "o", "-"),
               (10, "deepsets", "10 records, DeepSets", C["green"], "^", "--")]
     for row_index, scheme in enumerate(["IoM-GRP", "PolyProtect"]):
-        for column, dataset in enumerate(["MOBIO", "FEI"]):
+        for column, dataset in enumerate(["MOBIO", "FEI", "SCface"]):
             ax = axes[row_index, column]
             subset = data[(data["dataset"] == dataset) & (data["scheme"] == scheme)]
             for exposures, model, label, colour, marker, style in styles:
@@ -423,7 +428,8 @@ def fig_pilot_native_utility(out: Path) -> None:
     order = ["random_key_pool_1", "random_key_pool_4", "random_key_pool_8", "independent_unseen_keys"]
     fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.5), sharey=True)
     for ax, scheme in zip(axes, ["IoM-GRP", "PolyProtect"]):
-        for dataset, colour, marker in [("MOBIO", C["blue"], "o"), ("FEI", C["orange"], "s")]:
+        for dataset, colour, marker in [("MOBIO", C["blue"], "o"), ("FEI", C["orange"], "s"),
+                                        ("SCface", C["green"], "^")]:
             selected = data[(data["dataset"] == dataset) & (data["scheme"] == scheme)].set_index("condition").loc[order]
             identities = int(selected["test_identities"].iloc[0])
             ax.plot([1, 4, 8], 100 * selected["native_top1"].iloc[:3], marker=marker, color=colour, label=f"{dataset}, N={identities}")
