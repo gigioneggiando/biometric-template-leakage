@@ -2,19 +2,21 @@
 
 **Updated: 2026-09-18.** Latest result integration: `4352eeb`; SCface freeze `69a93e4`. Current evidence: four multi-exposure datasets, 73 key-pool conditions / 12 studies, and 24 additional-scheme pilot cells / 72 model endpoints. Pilots are not confirmation.
 
-The subsequent [bounded MOBIO/FEI follow-up](../experiments/scheme_followup_2026-09-18/README.md) adds 216 endpoints across three model seeds and two identity partitions, plus native permutation and radial controls. It completed in 859.63 seconds; its source/configuration hashes are recorded separately from base commit `4352eeb`. The nine-page report and eight-slide deck focus on findings, with separate overview and detailed attacker diagrams; the appendix contains 15 figures.
+The [bounded follow-up](../experiments/scheme_followup_2026-09-18/README.md) adds 216 endpoints across three seeds/two partitions in 859.63 seconds, frozen against `4352eeb`. The subsequent [raw-norm/native audit](../experiments/norm_native_audit_2026-09-18/README.md), frozen against `15e4384`, re-extracts 4,177 records and checks all 48 paired contrasts in 254.157 seconds. The revised package has a 14-page report, ten-slide deck and 17 figures. Raw norms do not establish identity-specific leakage; four significant shared-key DeepSets regressions are retained.
 
 ## Start here
 
-- [September dataset update: nine pages, defined architecture and latest results](Sept_Dataset_Update.pdf)
+- [September dataset update: 14 pages, architecture, results and scientific scope](Sept_Dataset_Update.pdf)
+- [Each page explained in plain language](Sept_Dataset_Update_guide.md)
+- [Closest research, precise contribution and attacker access](../docs/literature/closest_work_2026-09-18.md)
 - [Current findings and scientific scope](final_research_status.md)
 - [Completed 216-endpoint follow-up: results, controls and provenance](../experiments/scheme_followup_2026-09-18/README.md)
 - [Architecture overview](figures/fig_architecture.pdf) and [detailed attacker](figures/fig_attack_detail.pdf)
 - [Working manuscript](paper_draft.md)
 - [Figure index, captions, and regeneration commands](figures/README.md)
-- [Eight-slide PDF](slides/research_review.pdf)
+- [Ten-slide PDF](slides/research_review.pdf)
 - [Editable review deck](slides/research_review.pptx)
-- [Complete 15-figure vector appendix](slides/figure_appendix.pdf)
+- [Complete 17-figure vector appendix](slides/figure_appendix.pdf)
 - [New scheme pilot results and caveats](../experiments/scheme_extension_pilot/README.md)
 - [SCface added-dataset study](../experiments/scface_multiexposure/README.md) and [SCface scheme pilots](../experiments/scface_scheme_extension_pilot/README.md)
 - [Local per-seed run inventory](../experiments/multiexposure_run_matrix.csv)

@@ -1,5 +1,16 @@
 # Research log
 
+## 2026-09-18 (raw-norm audit and manuscript revision)
+
+- User requested closest-work comparison, justified attacker access, implementation checks, genuine raw-input controls, complete follow-up inference/failures and revised PDF.
+- Froze the new protocol and executed sources against `15e4384`; completed in 254.157 seconds within 3,600 seconds. Re-extracted all 4,177 MOBIO/FEI records; normalized maximum error 2.98e-8. Private raw arrays remain ignored.
+- Separate scalar PolyProtect matches all 48 cells exactly; independent cosine rankings agree, with no ties, gallery overlap or order dependence. Sampled IoM natural-scale comparisons change zero of 38,400 codes.
+- Native raw top-1 15.58-16.66%; raw-unit paired correction survives only on FEI. Raw-shuffled adjusted p >= 0.7584; norm-only oracle tests do not survive correction. Identity-specific norm leakage is not established.
+- All 48 trained follow-up contrasts exported with crossed intervals, seed ranges and leave-one-out sensitivity: eight pool-4 mean gains and four shared-key PolyProtect DeepSets losses survive post-hoc Holm family 48 (p = 0.0192). Original primary family unchanged.
+- Primary literature check corrects Li/Hu DOI to 10.1002/cpe.3042 and updates FaceLinkGen to v3. PolyProtect already studies 1-10 records and naive-parameter residual linkage. Candidate novelty is controlled hidden-pool set aggregation, not those general ideas. Same-pool training access and closed-gallery membership are explicit assumptions.
+- Manuscript narrowed to three claims; report expanded to 14 pages, deck to ten slides, appendix to 17 figures, with a plain-language page guide. No new raw-input learned training, stronger parameter-policy test or independent human review is claimed. [Audit report](../experiments/norm_native_audit_2026-09-18/README.md).
+- Validation: 62 focused scheme/figure tests pass; 32 earlier and 33 new executed source hashes remain unchanged. All 14 rendered PDF pages visually inspected; separate formula/matcher tests and aggregate-family checks pass. No editor diagnostics in touched Python files. Native PowerPoint rendering remains a presenting-machine check.
+
 ## 2026-09-18 (bounded multi-seed follow-up, after the visual refresh)
 
 - Authorization: user explicitly allowed up to one hour of local compute and selected available MOBIO/FEI data; SCface embeddings were unavailable on this host.

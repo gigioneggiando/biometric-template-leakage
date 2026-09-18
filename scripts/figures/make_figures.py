@@ -530,6 +530,56 @@ def fig_followup_native_controls(out: Path) -> None:
     save_figure(fig, out, "fig_followup_native_controls")
 
 
+def fig_native_norm_audit(out: Path) -> None:
+    table = pd.read_csv(EXP / "norm_native_audit_2026-09-18/native_norm_controls.csv")
+    fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.6), sharey=True)
+    arms = ["unit", "raw", "norm_shuffled", "fixed_radius"]
+    for axis, dataset in zip(axes, ["MOBIO", "FEI"]):
+        for split, offset, color, marker, label in [(91831, -0.08, C["blue"], "o", "Partition A"),
+                                                   (91843, 0.08, C["green"], "s", "Partition B")]:
+            subset = table[(table["dataset"] == dataset) & (table["split_seed"] == split)].set_index("arm").loc[arms]
+            axis.errorbar(np.arange(4) + offset, 100 * subset["top1"],
+                          yerr=100 * np.vstack([subset["top1"] - subset["lower95"], subset["upper95"] - subset["top1"]]),
+                          fmt=marker, color=color, capsize=3, label=label)
+        axis.axhline(100 * subset["chance"].iloc[0], color="#777777", ls="--", lw=1)
+        axis.set_xticks(range(4), ["Unit", "Raw", "Shuffled\nnorms", "Fixed\nradius"])
+        axis.set_title(dataset)
+        axis.set_ylim(0, 25)
+        axis.legend(frameon=False, loc="upper left", ncol=2, fontsize=8)
+    axes[0].set_ylabel("Native protected-gallery top-1 (%)")
+    fig.subplots_adjust(left=0.08, right=0.97, top=0.9, bottom=0.29, wspace=0.12)
+    fig.text(0.03, 0.12, "Three fixed key seeds averaged; identity-bootstrap 95% intervals. All 16 null tests: Holm p = 0.0032.", fontsize=8)
+    fig.text(0.03, 0.07, "Raw minus unit survives paired correction only on FEI. Raw minus shuffled: all adjusted p >= 0.7584.", fontsize=8)
+    fig.text(0.03, 0.025, "Natural identity-specific norm leakage is not established. No learned raw-input attack was retrained.", fontsize=8)
+    save_figure(fig, out, "fig_native_norm_audit")
+
+
+def fig_followup_failures(out: Path) -> None:
+    table = pd.read_csv(EXP / "norm_native_audit_2026-09-18/failure_analysis.csv")
+    fig, axes = plt.subplots(1, 2, figsize=(10.5, 5.1), gridspec_kw={"width_ratios": [1.2, 1]})
+    selected = table[(table["condition"] == "random_key_pool_4") & (table["model"] == "deepsets")].copy()
+    failures = table[(table["condition"] == "random_key_pool_1") & (table["model"] == "deepsets") & (table["scheme"] == "PolyProtect")].copy()
+    for axis, subset, title, color in [(axes[0], selected, "Pool-4 DeepSets: uncertain gains", C["blue"]),
+                                       (axes[1], failures, "Shared-key PolyProtect: regressions", C["red"])]:
+        subset = subset.reset_index(drop=True)
+        positions = np.arange(len(subset))
+        axis.errorbar(100 * subset["gain"], positions,
+                      xerr=100 * np.vstack([subset["gain"] - subset["lower95"], subset["upper95"] - subset["gain"]]),
+                      fmt="o", color=color, capsize=3)
+        labels = [f"{row.dataset} {row.scheme if axis is axes[0] else ''} {'A' if row.split_seed == 91831 else 'B'}".strip()
+                  for row in subset.itertuples()]
+        axis.set_yticks(positions, labels, fontsize=8)
+        axis.invert_yaxis()
+        axis.axvline(0, color="#777777", lw=1, ls="--")
+        axis.set_title(title, fontsize=10)
+        axis.set_xlabel("Ten minus one top-1 (percentage points)", fontsize=9)
+    fig.subplots_adjust(left=0.19, right=0.98, top=0.9, bottom=0.25, wspace=0.48)
+    fig.text(0.03, 0.12, "All 48 contrasts reported; post-hoc two-sided Holm family 48. Pointwise crossed seed/identity 95% intervals.", fontsize=8)
+    fig.text(0.03, 0.07, "Left: none survives correction (minimum p = 0.0576). Right: all four negative contrasts survive (p = 0.0192).", fontsize=8)
+    fig.text(0.03, 0.025, "All eight pool-4 mean-pool gains remain significant (p = 0.0192). More records do not universally improve linkage.", fontsize=8)
+    save_figure(fig, out, "fig_followup_failures")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, default=ROOT / "reports/figures")
@@ -547,6 +597,8 @@ def main() -> None:
     fig_pilot_equivalence(args.out)
     fig_followup_amplification(args.out)
     fig_followup_native_controls(args.out)
+    fig_native_norm_audit(args.out)
+    fig_followup_failures(args.out)
     print(f"figures written to {args.out}")
 
 

@@ -10,6 +10,10 @@ The [216-endpoint MOBIO/FEI follow-up](../experiments/scheme_followup_2026-09-18
 
 Only compact aggregates and the [execution manifest](../experiments/scheme_followup_2026-09-18/execution_manifest.json) are shareable. Identity-level scores, keys and embeddings remain private. The radial control scales existing unit embeddings synthetically; it does not supply naturally non-normalized face embeddings or establish natural norm leakage.
 
+## Subsequent raw extraction audit
+
+The [norm/native revision](../experiments/norm_native_audit_2026-09-18/README.md) genuinely re-extracted 1,799 MOBIO and 2,378 FEI pre-normalization embeddings using the same verified models and preprocessing. No records were skipped; normalized agreement is within 2.98e-8 maximum absolute error. Raw norm ranges are 15.00-28.53 and 17.44-25.97. Raw arrays stay under ignored `results/norm_native_audit_2026-09-18/`; only aggregate checks and hashes are shareable. No new data acquisition occurred. Raw/shuffled/fixed-radius comparisons concern native matching, not retrained learned attacks or demonstrated identity-specific norm leakage.
+
 MOBIO is a manual-access dataset. Follow [MOBIO setup](../docs/setup/MOBIO.md), then run `python scripts/data/prepare_mobio.py --root <authorized-path>`.
 
 LFW, Olivetti faces, and CFP are real-data engineering fallbacks and must never be reported as MOBIO or paper reproductions. Their downloaders verify available source artifacts before use:

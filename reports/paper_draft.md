@@ -1,23 +1,26 @@
 # Hidden Transform Reuse Amplifies Linkage from Protected Face Records
 
-Working draft, audited 2026-09-12. Results are traceable to tracked summaries under `experiments/`; study protocols and their status are recorded in `docs/protocols/multi_exposure.md`. This is not a submission-ready manuscript. Items marked TODO require evidence or review, not inferred conclusions.
+Working draft, revised 2026-09-18. Primary evidence is the separately hash-frozen MOBIO/FEI follow-up; older exploratory studies remain separately labeled. The raw-norm audit and post-hoc failure analysis do not retroactively change the primary family. No independent human review or source-exact reproduction is claimed.
 
 ## Abstract
 
-Cancelable biometric schemes use secret, key-seeded transforms to protect face embeddings. We study whether a key-blind attacker can combine multiple protected records to recover identity-discriminative information. An idealized proposition gives source-independent observations for fixed-norm embeddings under independently sampled, hidden rotationally invariant projections and source-independent postprocessing. Empirically, fresh-key attacks remain chance-compatible on MOBIO, LFW, and FEI with one ArcFace checkpoint; this does not establish statistical equivalence or implementation-level privacy. Hidden recurring transforms produce substantial multi-record gains. For example, FEI pool 4 gives 3.44% single-record and 47.50% ten-record top-1 against 2.50% chance. Shuffled-record and same-image controls support the role of same-identity record structure and key independence. Controlled partial projection sharing also produces leakage, while the transition depends on dataset, partition, and seed. These findings characterize the tested hidden-transform reuse regimes, not a universal threshold or an exact reproduction of a published benchmark.
+We study how hidden transform reuse conditions the benefit of combining protected face records. An attacker trains on paired examples from the same hidden pool but disjoint identities, then links one or ten same-person records to a small closed gallery. A matched MOBIO/FEI study of IoM-GRP and PolyProtect spans three model seeds and two identity assignments, yielding 216 trained endpoints. All eight planned pool-4 mean-pooling contrasts improve by 21.25-40.83 percentage points (Holm p = 0.004). A separate post-hoc family of 48 retains these gains but identifies shared-key PolyProtect DeepSets regressions. Separate polynomial and cosine implementations reproduce native matching. Re-extracting 4,177 genuine pre-normalization embeddings raises native matching descriptively, but corrected tests do not distinguish raw from shuffled norms; identity-specific norm leakage is not established. Prior work already shows multiplicity attacks, adaptive identity extraction and residual naive-parameter PolyProtect linkage. Our contribution is the controlled hidden-reuse comparison and its boundaries, not those general observations. Chance-compatible attacks do not establish privacy.
 
 ## 1. Introduction
 
-TODO: motivation, deployment reality (application-specific keys, shared salts), gap in the literature.
+Retained templates can expose several records grouped by an account pseudonym even when real identity and protection keys remain unknown. We study a strong access scenario: paired training examples and targets share the same realized hidden transform pool. We do not claim that this policy is prevalent in products. The question is whether same-person aggregation helps under reuse, and where that statement fails.
 
 Contributions:
 
-1. A fresh-key multiplicity invariance theorem with explicit assumptions (Section 3), conditional side-information constraints and a norm-information upper bound, not proof of norm leakage.
-2. A key-blind attacker for sets of protected records (single-template MLP, mean/max pooling, DeepSets), with identity-disjoint evaluation and key-disjoint splits in the fresh-key condition only.
-3. Measurements of leakage and record-count amplification across recurring-transform pools, with dataset- and partition-dependent transitions. Priority or novelty claims await an independent literature review.
-4. Cross-scheme (BioHash, MLP-Hash), cross-partition (three MOBIO partitions), and cross-dataset (MOBIO, LFW, FEI) studies, with preregistered failures reported. Additional IoM-GRP and PolyProtect pilots are engineering diagnostics, not confirmation.
-5. Mechanism controls showing that the gain requires multiple records from the same identity and is not primarily limited by hidden transform-slot identification.
-6. Same-image and partial-key-correlation controls that isolate key independence as the governing boundary.
+1. **Reuse-conditioned amplification:** eight corrected paired pool-4 mean-pooling gains in the matched 216-endpoint follow-up. Earlier four-dataset sweeps motivate the test but are not pooled into its significance claims.
+2. **Limits on aggregation:** mechanism controls constrain interpretation; all 48 follow-up contrasts expose shared-key regressions and uncertain DeepSets gains. More records are not universally better.
+3. **Separate native and learned attack surfaces:** reference implementation/matcher checks and genuine raw/shuffled/fixed-radius controls validate the local native computation without attributing it to natural norm leakage or stronger parameter policies.
+
+### Closest research
+
+Li and Hu (2014, DOI 10.1002/cpe.3042) already attack multiple fingerprint templates with disclosed parameters. PolyProtect (2022), IV-C3, evaluates inversion of 1-10 versions of the same embedding with disclosed coefficients/exponents; IV-D finds residual different-image linkage under naive parameters and reduces it through stricter selection. Our different-image hidden-pool learned task differs, but multiplicity and native residual linkage are not novel.
+
+The cancelable-biometrics benchmark already compares recognition, unlinkability and information estimates, including sample-specific keys. FaceLinkGen v3 (3 September 2026) already trains adaptive ArcFace-aligned extractors from paired data under unknown per-query randomness. We add an explicit reuse axis and one-versus-ten set comparison, not distillation itself or a comparable accuracy win. IoM magnitude independence is prior art. The 2024 maximal-leakage paper addresses multiple protected templates; its full text was not verified here, so no exclusion-based novelty claim is made. See the [versioned comparison](../docs/literature/closest_work_2026-09-18.md). This bounded review does not establish global priority.
 
 ## 2. Threat model
 
@@ -27,7 +30,9 @@ Conditions:
 
 - **Fresh keys (K0).** Every source record has its own key; train/validation/test key pools are disjoint. The theorem describes an idealized rotationally invariant version of this condition, not every finite seeded implementation.
 - **Recurring pool of size $k$ (R-$k$).** A hidden pool of $k$ transforms is drawn once and each record is assigned one by a hash of its sample ID. Keys recur across identity splits; slot labels are hidden. $k = 1$ is the unknown-shared-token setting. Increasing pool size to the number of records does not create K0 because hash assignment can still collide; K0 explicitly generates a distinct key per source record.
-- **Controls.** Unprotected oracle (100% in every run); shared-key calibration.
+- **Controls.** Unprotected oracle and shared-key calibration. Earlier MOBIO/LFW/FEI setups reach 100%; SCface's camera-shift oracle is 84.375%, not 100%.
+
+**Access justification.** Persistent account/session identifiers can group records without revealing gallery identity. An authorized enrollment/query interface using consented faces, or a provider observing originals and protected outputs, could supply paired training data. Recurring-pool training must use the same realized hidden pool as the targets; an unrelated-key proxy is insufficient. Lawful public or consented images could supply a reference gallery. Here target membership is guaranteed among only 25-40 identities (SCface: 26); gallery images are excluded from exposures. Open-set search, internet-scale distractors, unknown grouping and cross-provider transfer are untested. Fresh independent keys can impair legitimate matching and are not a validated drop-in defense.
 
 Prior stolen-token attacks (Nagar et al. 2010; Lacharme et al. 2013; Feng et al. 2014; Dong et al. 2019, 2022; Wang et al. 2020; Ghammam et al. 2020; Durbet et al. 2021) assume the transform is known. Record multiplicity has been analyzed for fuzzy vaults (Scheirer and Boult 2007; Merkle and Tams 2013), where no secret rotation is involved. PolyProtect (Krivokuca Hahn and Marcel 2022, Section 4.3) already studies one to ten records with disclosed parameters. Our hidden-parameter learned linkage task differs, but multiplicity alone is not novel. Priority claims await an independent current literature review; see the [local review memo](../docs/review/scheme_pilot_review_2026-09-12.md).
 
@@ -42,10 +47,10 @@ Scope: the theorem assumes ideal Gaussian or Haar/Stiefel sampling, independent 
 - Data: MOBIO selected still images, 150 identities, 12 sessions, 1,799 embeddings (one detection failure), 90/30/30 identity-disjoint splits; one gallery image per identity held out; eight nested exposure permutations per identity; 720/240/240 attack sets per level.
 - Embeddings: InsightFace `buffalo_l` ArcFace (SHA-256 recorded), YuNet detection, L2-normalized.
 - Protection: 128-bit BioHash (key-seeded orthonormal Gaussian projection, sign threshold); paper-specified MLP-Hash (512-1024-1024-1024-512, ReLU, semi-orthogonal key-seeded layers, output-mean binarization; not source-exact, authors' repository unavailable).
-- Attackers: single-template MLP (n=1); mean-pool MLP, max-pool MLP, DeepSets (n>1); hidden 256; cosine + 0.1 MSE loss; 400 epochs, patience 60; three model seeds.
+- Attackers: single-template MLP (n=1); mean/max-pool MLP and DeepSets (n>1); hidden 256; cosine + 0.1 MSE. Earlier studies use 400 epochs/patience 60; matched follow-up uses 120/patience 30, three seeds and mean/DeepSets at n=10. Target: normalized mean of exposed source embeddings, not the gallery.
 - Metrics: top-1/top-5 linkage against the unprotected gallery, AUROC, EER, TAR@FAR, 2,000-resample identity-clustered 95% intervals. Preregistered per-pool criterion: all clustered intervals above chance and at least five points over the fresh endpoint.
 
-## 5. Results
+## 5. Earlier Exploratory Results (Separate Evidence)
 
 ### 5.1 Fresh keys: no useful linkage detected by the tested attacks
 
@@ -99,7 +104,7 @@ Repeating the exact same normalized ArcFace embedding under ten distinct fresh, 
 
 For a controlled correlation test, each BioHash projection shared an exact prefix of system-wide projection columns and used orthonormal private columns for the remainder. A coarse `0/25/50/75/100%` sweep gave 10-record top-1 `3.33/9.44/46.39/61.11/71.67%`. Because the 25% result was unstable, an independently preregistered fine sweep on a new partition tested `0/12.5/18.75/25/31.25/37.5/43.75/50%` and gave `3.33/3.75/6.94/7.64/14.17/35.83/49.31/42.64%`. All three seeds were strongly above chance from 37.5% onward; lower transition points were seed-sensitive. This supports correlation-dependent leakage but neither a sharp universal threshold nor strict empirical monotonicity.
 
-## 6. Discussion
+## 6. Corrected Follow-up and Diagnostics
 
 ### Pilot extension, reported separately
 
@@ -117,6 +122,16 @@ Three fresh-key seeds per dataset/partition produced twelve native PolyProtect c
 
 SCface separately extends earlier BioHash coverage to a fourth dataset: 130 identities, 2,851 usable embeddings and 26 test identities. Pools 1/2/3 pass the all-seed interval rule; pool 4 does not. Its IoM-GRP/PolyProtect results remain one-seed pilots, not part of the new bounded follow-up. See [SCface results](../experiments/scface_multiexposure/README.md) and [pilots](../experiments/scface_scheme_extension_pilot/README.md).
 
+### Raw inputs, implementation checks and failures
+
+The [raw-norm audit](../experiments/norm_native_audit_2026-09-18/README.md) re-extracted all 4,177 inputs in 254.157 seconds. Re-normalization matches saved vectors within 2.98e-8 maximum absolute error. Separate scalar PolyProtect and matrix/SciPy cosine calculations agree on predictions in all 48 cells, with no gallery overlap, ties or order dependence. Formula/windows/padding/parameter ranges match the paper, but its stricter score-conditioned selection is not implemented. This is computational checking, not official-code equivalence or independent human validation.
+
+Three-key-averaged native unit top-1 is 12.20-12.42% on MOBIO and 11.09-11.12% on FEI; raw top-1 is 16.46-16.66% and 15.58-16.01%. All 16 endpoints pass gallery-label null tests (Holm p = 0.0032). Identity-bootstrap intervals condition on these three fixed keys. Raw-unit gains survive paired Holm family 8 only on FEI (p = 0.0160/0.0168; MOBIO 0.1380/0.1032). Raw-shuffled differences span -0.61 to +0.61 points; all intervals include zero, adjusted p >= 0.7584. Fixed training-median radius performs similarly to raw. This demonstrates scale sensitivity, not identity-specific norm leakage or equivalence; shuffling also disrupts quality associations. No source-norm oracle test survives its family of four, and it is not a protected-template attack. IoM changes zero of 38,400 sampled unit/raw codes, consistent with known scale invariance.
+
+Unit-input linear-only native top-1 is 10.70-12.53%, and median nonlinear residual is 0.072-0.085 of template norm. Low-degree terms may contribute to residual matching; this diagnostic does not prove a complete mechanism. Original PolyProtect already reports naive-parameter residual linkage. Its stricter-policy evaluation is not overturned.
+
+All 48 one-to-ten contrasts now have crossed seed/identity intervals, seed ranges, leave-one-seed-out sensitivity and two-sided Holm correction. The post-hoc family retains eight pool-4 mean gains (p = 0.0192; minimum leave-one-seed-out gain 17.71 points). No pool-4 DeepSets gain survives (minimum p = 0.0576). Four shared-key PolyProtect DeepSets gains are significantly negative, -15.42 to -24.86 points (p = 0.0192). Optimization/aggregation explanations remain untested. Original one-sided primary results (family eight, p = 0.004) are unchanged. Pointwise bootstrap intervals are not simultaneous and need not agree with corrected tests.
+
 ### Interpretation of earlier studies
 
 - Deployment implication: independently sampled hidden per-record transforms remove source information under the idealized assumptions. Public salts are not secret keys and are not covered by that claim. Recurring application-wide or device-wide transforms can support multi-record linkage even when their values are hidden.
@@ -126,7 +141,7 @@ SCface separately extends earlier BioHash coverage to a fourth dataset: 130 iden
 
 ## 7. Limitations
 
-Four multi-exposure datasets with one embedding model and 25-40 test identities per partition; three model seeds in earlier studies and the MOBIO/FEI follow-up, but one in the historical scheme pilots; MLP-Hash, IoM-GRP and PolyProtect are paper-specified, not source-exact; `benchmark_cb` unavailable (404); the key-slot control exposes identifiers, not transform values; controlled correlation is not a standard key-derivation scheme. The correlation transition is imprecise. Approved equivalence margins, older-study multiplicity inference, natural norm-leakage experiments and independent novelty review remain open. Bootstrap intervals can under-cover; chance inclusion is not proof of privacy. The bounded follow-up does not complete all datasets, exposures and key seeds.
+One encoder, four datasets and 25-40 gallery identities; only three model seeds, overlapping assignments and fixed training key/set seeds. SCface new-scheme results remain one-seed pilots. Training and targets share a hidden pool; unrelated-key transfer is untested. Implementations are paper-specified, not source-exact; benchmark source retrieval previously failed, and current availability is not asserted. The norm audit covers native matching, not retrained learned raw-input attacks. Stricter PolyProtect selection, other encoders, open-set galleries, approved equivalence margins, unavailable historical paired scores and independent human review remain open. Bootstrap intervals may under-cover; chance inclusion and nonsignificance do not prove privacy. This bounded revision does not complete every dataset, exposure and key seed.
 
 ## 8. Reproducibility
 
@@ -134,4 +149,4 @@ All configurations, preregistrations, compact summaries, and hashes are in the r
 
 ## 9. Result coverage
 
-FEI and SCface supply the two added BioHash datasets beyond MOBIO/LFW. The earlier table preserves 73 conditions from 12 source-separated studies; 72 one-seed scheme pilot endpoints and 216 bounded follow-up endpoints remain separately reported. The local inventory contains 849 rows from 49 artifacts with all previous 633 rows preserved. Its [coverage audit](../experiments/scheme_followup_2026-09-18/coverage_audit.csv) identifies legacy schemas and missing local SCface details; tracked SCface aggregates remain available. Figures distinguish these study scopes rather than pooling their differing budgets and protocols. The presentation provides an eight-slide summary, a nine-page findings report and a 15-figure appendix.
+FEI and SCface extend historical BioHash coverage beyond MOBIO/LFW. The earlier table preserves 73 conditions from 12 studies; 72 pilot and 216 follow-up endpoints remain separate. The inventory retains 849 rows from 49 artifacts, including all previous 633. Its [coverage audit](../experiments/scheme_followup_2026-09-18/coverage_audit.csv) identifies legacy schemas and missing local SCface details. The 130 new audit rows are not trained endpoints and remain separate. The revised report distinguishes prior work, access assumptions, historical results, corrected tests, raw-norm controls and failures.

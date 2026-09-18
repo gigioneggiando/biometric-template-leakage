@@ -79,11 +79,13 @@ def build_presentation(out: Path) -> None:
             "Mechanism and correlation controls",
             "Replicated multi-record amplification",
             "Native linkage and radial sensitivity",
+            "Genuine raw-input controls",
+            "Failure analysis: aggregation is not always better",
         ], start=1):
             slide = presentation.slides.add_slide(presentation.slide_layouts[6])
             fig = plt.figure(figsize=(WIDTH, HEIGHT), dpi=120, facecolor="white")
             add_text(slide, fig, title, 0.6, 0.3, 12.1, 0.6, size=25, bold=True)
-            add_text(slide, fig, f"Research review draft | 18 September 2026 | {number}/8", 0.6, 7.07, 12.1, 0.3, size=11, color="#666666")
+            add_text(slide, fig, f"Research review draft | 18 September 2026 | {number}/10", 0.6, 7.07, 12.1, 0.3, size=11, color="#666666")
             if number == 1:
                 add_text(slide, fig, "Can multiple protected records reveal identity when keys remain hidden?",
                          0.6, 1.45, 12.1, 0.7, size=20)
@@ -125,9 +127,17 @@ def build_presentation(out: Path) -> None:
                 add_figure(slide, fig, "fig_followup_amplification")
                 add_text(slide, fig, "MOBIO / FEI; IoM-GRP / PolyProtect; 3 model seeds x 2 identity partitions; matched 120-epoch caps.",
                          0.6, 6.58, 12.1, 0.4, size=12)
-            else:
+            elif number == 8:
                 add_figure(slide, fig, "fig_followup_native_controls")
                 add_text(slide, fig, "Protected-gallery matching is distinct from learned linkage. Radial sensitivity does not establish natural norm leakage.",
+                         0.6, 6.58, 12.1, 0.4, size=12)
+            elif number == 9:
+                add_figure(slide, fig, "fig_native_norm_audit")
+                add_text(slide, fig, "4,177 raw extractions verified. Separate scalar and SciPy checks reproduce native matching; stronger parameter policies remain untested.",
+                         0.6, 6.58, 12.1, 0.4, size=12)
+            else:
+                add_figure(slide, fig, "fig_followup_failures")
+                add_text(slide, fig, "Original primary family unchanged. All 48 contrasts, including significant losses, are reported separately from historical exploration.",
                          0.6, 6.58, 12.1, 0.4, size=12)
             slide.notes_slide.notes_text_frame.text = (
                 "Evidence baseline: commit 655ae1ecc2c9fc0aa80c828fe0303753296f66df. "
@@ -154,7 +164,7 @@ def build_presentation(out: Path) -> None:
             with pdfium.PdfDocument(source) as document:
                 appendix.import_pages(document)
         appendix.save(out / "figure_appendix.pdf")
-    print(f"8-slide review deck, PDF, and complete figure appendix -> {out}")
+    print(f"10-slide review deck, PDF, and complete figure appendix -> {out}")
 
 
 def build_dataset_update(destination: Path) -> None:
@@ -181,16 +191,20 @@ def build_dataset_update(destination: Path) -> None:
               "Detailed attacker: aggregation and reconstruction", "Cross-dataset key-reuse boundary",
               "Mechanism controls and interpretation", "Multi-seed, multi-partition validation",
               "Native linkage and radial sensitivity", "Earlier cross-dataset scheme pilots",
+              "Closest research and our precise contribution", "Attacker access: assumptions and limits",
+              "Separate implementation and matching checks", "Raw embeddings: scale is not identity leakage",
+              "Failure analysis: all 48 contrasts",
               "Findings and study scope"]
     figure_names = {2: "fig_architecture", 3: "fig_attack_detail", 4: "fig_results_overview", 5: "fig_controls",
-                    6: "fig_followup_amplification", 7: "fig_followup_native_controls", 8: "fig_scheme_pilots"}
+                    6: "fig_followup_amplification", 7: "fig_followup_native_controls", 8: "fig_scheme_pilots",
+                    12: "fig_native_norm_audit", 13: "fig_followup_failures"}
     presentation = Presentation()
     writer = PdfWriter()
     for number, title in enumerate(titles, start=1):
         slide = presentation.slides.add_slide(presentation.slide_layouts[6])
         fig = plt.figure(figsize=(WIDTH, HEIGHT), dpi=120, facecolor="white")
         add_text(slide, fig, title, 0.6, 0.3, 12.1, 0.6, size=25, bold=True)
-        add_text(slide, fig, f"18 September 2026 | Base commit: 4352eeb; follow-up source/config hashes recorded | {number}/{len(titles)}",
+        add_text(slide, fig, f"18 September 2026 | Follow-up: 4352eeb; norm audit: 15e4384; executed source hashes recorded | {number}/{len(titles)}",
                  0.6, 7.07, 12.1, 0.3, size=11, color="#666666")
         if number == 1:
             add_text(slide, fig, "Identity-disjoint evaluation across session, pose and camera variation.",
@@ -246,7 +260,7 @@ def build_dataset_update(destination: Path) -> None:
                      f"Fresh PolyProtect native identification exceeds the gallery-label null in {len(native_controls)} / {len(native_controls)} tests.\n"
                      f"Maximum Holm-adjusted p = {native_controls['holm_p'].max():.3f}; three fresh-key seeds per dataset and identity partition.",
                      0.6, 1.05, 12.1, 0.65, size=14)
-            add_text(slide, fig, "IoM-GRP is invariant to the tested positive scales. PolyProtect is scale-sensitive; natural norm leakage was not tested.",
+            add_text(slide, fig, "Earlier synthetic stress: IoM-GRP unchanged, PolyProtect scale-sensitive. Genuine raw-input controls follow on page 12.",
                      0.6, 6.58, 12.1, 0.4, size=12)
         elif number == 8:
             values = " / ".join(f"{100 * fresh_native.loc[dataset, 'native_top1']:.2f}%" for dataset in ("MOBIO", "FEI", "SCface"))
@@ -255,23 +269,85 @@ def build_dataset_update(destination: Path) -> None:
                      0.6, 1.05, 12.1, 0.65, size=14)
             add_text(slide, fig, "Pilot intervals condition on one seed and partition; not confirmation. New replicated MOBIO/FEI results are on page 6.",
                      0.6, 6.58, 12.1, 0.4, size=12)
+        elif number == 9:
+            add_text(slide, fig,
+                     "WHAT PRIOR WORK ALREADY SHOWED\n"
+                     "Record-multiplicity attacks: several templates plus known parameters can enable recovery.\n"
+                     "PolyProtect (2022): 1-10-record inversion; residual linkage under naive random parameters;\n"
+                     "stricter parameter selection improves unlinkability. Our native result is not a first discovery.\n"
+                     "benchmark_cb: recognition, score-based unlinkability and information estimates across schemes.\n"
+                     "FaceLinkGen v3: adaptive identity distillation from paired data with hidden per-query randomness.\n\n"
+                     "WHAT OUR CONTROLLED EXPERIMENT ADDS\n"
+                     "Different-image set aggregation with hidden fresh/shared/pool keys and disjoint training identities.\n"
+                     "A measured one-to-ten benefit conditional on transform reuse, plus mechanism and failure controls.\n"
+                     "Matched raw/shuffled/fixed-radius inputs separate scale effects from a norm-leakage claim.\n\n"
+                     "NOT CLAIMED\n"
+                     "Multiplicity, identity distillation and IoM scale invariance are not new.\n"
+                     "No head-to-head accuracy win, exhaustive priority claim or break of stricter PolyProtect policies.",
+                     0.6, 1.15, 12.1, 5.45, size=15)
+            add_text(slide, fig, "Sources: 10.1002/cpe.3042; 2110.00434v3; 2302.13286; 2602.02914v3. Full comparison: docs/literature/closest_work_2026-09-18.md.",
+                     0.6, 6.65, 12.1, 0.3, size=10)
+        elif number == 10:
+            add_text(slide, fig,
+                     "SAME-PERSON RECORDS\n"
+                     "An account or session pseudonym could group retained records without revealing real identity.\n"
+                     "Stable grouping and retention are assumed; their prevalence in deployed products is not measured.\n\n"
+                     "PAIRED TRAINING EXAMPLES\n"
+                     "An authorized enrollment/query interface or a provider seeing inputs and outputs could supply pairs.\n"
+                     "Crucially, training must use the SAME realized hidden pool as the target records.\n"
+                     "A proxy with unrelated keys is insufficient. Identity splits are disjoint; recurring keys are not.\n\n"
+                     "REFERENCE GALLERY\n"
+                     "Lawful public or consented reference images; gallery images are excluded from exposure sets.\n"
+                     "Only 25-40 candidate people, with guaranteed target membership: a small closed-set experiment.\n\n"
+                     "BOUNDARIES\n"
+                     "No open-set search, internet-scale distractors, unknown grouping or cross-provider transfer test.\n"
+                     "Fresh independent transforms can also harm legitimate matching; they are not a tested defense.",
+                     0.6, 1.15, 12.1, 5.45, size=15)
+        elif number == 11:
+            add_text(slide, fig,
+                     "FORMULA AND PARAMETER CHECKS\n"
+                     "PolyProtect: separate scalar windows, zero padding, coefficients and powers match local outputs.\n"
+                     "IoM-GRP: explicit grouped dot-product/argmax reference agrees; paper dimensions are tested.\n"
+                     "Original PolyProtect uses different encoders and offers a stricter parameter-selection policy.\n\n"
+                     "NATIVE MATCHING AUDIT: 48 MATCHED CELLS\n"
+                     "Scalar PolyProtect and production outputs: zero difference after float32 casting.\n"
+                     "Matrix and SciPy cosine scores: maximum difference 1.33e-15; identical predictions.\n"
+                     "Zero gallery/probe overlap, score ties, reversed-gallery changes or duplicate fresh keys.\n"
+                     "The unit-input results reproduce the earlier three-key native averages.\n\n"
+                     "RAW EXTRACTION CHECK\n"
+                     "All 4,177 MOBIO/FEI records re-extracted; normalized discrepancy at most 2.98e-8.\n"
+                     "Natural raw/unit scaling changes zero of 38,400 sampled IoM codes.\n\n"
+                     "Separate computational checks, not independent human review or official-code certification.",
+                     0.6, 1.15, 12.1, 5.45, size=15)
+        elif number == 12:
+            add_text(slide, fig, "Real raw embeddings, shuffled norms and a fixed training-median radius; same keys in every arm.\n"
+                     "Raw matching rises to 15.58-16.66%, but shuffled norms perform similarly; identity-specific norm leakage is not established.",
+                     0.6, 1.05, 12.1, 0.65, size=14)
+            add_text(slide, fig, "Raw-unit gain survives correction only on FEI. Source-norm oracle: no corrected detection. No learned raw-input retraining.",
+                     0.6, 6.58, 12.1, 0.4, size=12)
+        elif number == 13:
+            add_text(slide, fig, "Post-hoc two-sided family of 48; original primary eight-test family remains unchanged.\n"
+                     "Eight pool-4 mean gains survive; four shared-key PolyProtect DeepSets losses also survive (adjusted p = 0.0192).",
+                     0.6, 1.05, 12.1, 0.65, size=14)
+            add_text(slide, fig, "Seed ranges and leave-one-seed-out gains are published. Negative results constrain the claim: more records are not always better.",
+                     0.6, 6.58, 12.1, 0.4, size=12)
         else:
             add_text(slide, fig,
                      "TRANSFORM REUSE AND RECORD MULTIPLICITY\n"
                      "Recurring hidden transforms support substantial identity linkage from multiple protected records.\n"
                      "The transition depends on dataset and identity partition, rather than a universal pool-size threshold.\n"
                      "SCface pool 3: 5.29% single-record versus 33.17% ten-record top-1; chance is 3.846%.\n\n"
-                     "MECHANISM\n"
-                     "Shuffled-identity sets remove the MOBIO gain; record count alone does not explain the effect.\n"
-                     "Slot-label controls and partial projection sharing separate transform reuse from key disclosure.\n"
-                     "Mean pooling and DeepSets test aggregation at the template and learned-feature levels.\n\n"
+                     "BOUNDARIES AND FAILURES\n"
+                     "Shuffled-identity controls constrain the mechanism; same-pool training access remains essential.\n"
+                     "Shared-key PolyProtect DeepSets loses 15.42-24.86 points: aggregation is not universally beneficial.\n"
+                     "Native matching survives separate checks, but natural identity-specific norm leakage is not established.\n\n"
                      "STATISTICAL AND THREAT-MODEL SCOPE\n"
                      "BioHash evidence spans four datasets and three model seeds per study.\n"
                      f"New scheme follow-up: {len(model_runs)} endpoints; all {len(primary)} primary contrasts pass Holm correction.\n"
                      "Native protected-gallery matching and learned embedding linkage measure different attack surfaces.\n"
                      "Fresh-key learned intervals include chance; they do not establish equivalence or general unlinkability.\n\n"
-                     "Scope: fixed key/set seeds for training; two overlapping identity assignments; SCface remains one-seed for new schemes.\n"
-                     "Follow-up protocol and pre-execution hashes: experiments/scheme_followup_2026-09-18/execution_manifest.json.",
+                     "Scope: fixed training key/set seeds, overlapping assignments, one encoder, small closed galleries, strong paired access.\n"
+                     "Raw-input learned retraining, stricter PolyProtect policies and independent human review remain outside this revision.",
                      0.6, 1.15, 12.1, 5.45, size=14)
         buffer = BytesIO()
         fig.savefig(buffer, format="pdf")

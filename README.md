@@ -13,9 +13,12 @@
 | New MOBIO/FEI scheme follow-up | [24 cells / 216 endpoints](experiments/scheme_followup_2026-09-18/README.md), two identity assignments and three model seeds; 859.63 seconds total |
 | Follow-up statistical controls | Eight positive pool-4 amplification contrasts (Holm p = 0.004); twelve native permutation tests (Holm p = 0.006); separate synthetic radial sensitivity |
 | Local run inventory | [849 rows from 49 artifacts](experiments/multiexposure_run_matrix.csv), with [legacy/missing-detail coverage audit](experiments/scheme_followup_2026-09-18/coverage_audit.csv) |
-| Scientific presentation | Nine-page report, eight-slide PDF/editable deck, 15 figures including separate overview and detailed attacker diagrams |
+| Raw-norm and native audit | [4,177 verified raw extractions, 48 implementation cells, 130 aggregate rows](experiments/norm_native_audit_2026-09-18/README.md); completed in 254.157 seconds |
+| Scientific presentation | 14-page report, ten-slide PDF/editable deck, 17 figures and a page-by-page plain-language guide |
 
-The follow-up is separately hash-frozen against base commit `4352eeb`; it is not part of that commit's results. Historical pilots and new endpoints are not pooled. SCface follow-up, the full exposure/dataset matrix, natural norm-leakage experiments and approved equivalence analysis remain incomplete. Fresh-key chance compatibility is not a privacy proof.
+The trained follow-up is hash-frozen against `4352eeb`; the new raw audit against `15e4384`, with executed source hashes recording uncommitted additions. Historical studies are not pooled. Raw-vs-shuffled controls do not establish identity-specific norm leakage. All 48 trained follow-up contrasts now have intervals, corrected tests and seed-sensitivity analysis; eight pool-4 mean gains and four shared-key DeepSets losses survive the post-hoc family. SCface confirmation, the full matrix, raw-input learned retraining, equivalence and independent review remain open. Chance compatibility is not privacy.
+
+The [closest-work comparison](docs/literature/closest_work_2026-09-18.md) identifies the contribution as controlled **hidden-pool reuse and set aggregation**, not multiplicity or identity distillation themselves. Training requires paired access to the same realized pool used by targets; this is a strong explicit assumption.
 
 ## Open results, images and diagrams
 
@@ -24,8 +27,9 @@ No environment setup or experiment rerun is needed to view the existing outputs.
 | What to view | Location |
 |---|---|
 | September dataset update: findings, architecture overview and detailed attacker | [reports/Sept_Dataset_Update.pdf](reports/Sept_Dataset_Update.pdf) |
-| All 15 figures together, including architecture and results | [reports/slides/figure_appendix.pdf](reports/slides/figure_appendix.pdf) |
-| Eight-slide research overview | [reports/slides/research_review.pdf](reports/slides/research_review.pdf) |
+| All 17 figures together, including architecture and results | [reports/slides/figure_appendix.pdf](reports/slides/figure_appendix.pdf) |
+| Ten-slide research overview | [reports/slides/research_review.pdf](reports/slides/research_review.pdf) |
+| Each report page explained simply | [reports/Sept_Dataset_Update_guide.md](reports/Sept_Dataset_Update_guide.md) |
 | Editable presentation | [reports/slides/research_review.pptx](reports/slides/research_review.pptx) |
 | Architecture diagram image | [reports/figures/fig_architecture.png](reports/figures/fig_architecture.png) |
 | Architecture diagram vector PDF | [reports/figures/fig_architecture.pdf](reports/figures/fig_architecture.pdf) |
@@ -64,7 +68,7 @@ LFW, Olivetti, CFP, and MOBIO results are **independent engineering studies, not
 
 **Latest extension:** The authorized one-hour MOBIO/FEI follow-up completed 24 cells / 216 endpoints in 859.63 seconds: IoM-GRP and PolyProtect, two new identity partitions, three model seeds, and fresh/shared/pool-4 keys. All eight primary pool-4 amplification contrasts have positive crossed-bootstrap intervals and Holm p = 0.004. Fresh PolyProtect native matching exceeds its permutation null in all 12 controls (Holm p = 0.006); synthetic radial sensitivity is not natural norm leakage. See the [follow-up results and scope](experiments/scheme_followup_2026-09-18/README.md). This bounded study does not complete the full roadmap.
 
-SCface adds 130 identities and 2,851/2,860 valid embeddings, with 84.375% unprotected top-1 over 544 probes. Its BioHash pools 1/2/3 pass the all-seed interval rule; pool 4 fails. The earlier table remains 73 conditions from 12 source-separated studies, and the earlier one-seed scheme pilots remain 24 cells / 72 endpoints. See [SCface results](experiments/scface_multiexposure/README.md), [SCface pilots](experiments/scface_scheme_extension_pilot/README.md), and the [15-figure appendix](reports/slides/figure_appendix.pdf). The [849-row local inventory](experiments/multiexposure_run_matrix.csv) contains 49 artifacts, preserves all previous 633 rows, and excludes unavailable SCface details; its [coverage audit](experiments/scheme_followup_2026-09-18/coverage_audit.csv) also identifies legacy-schema gaps.
+SCface adds 130 identities and 2,851/2,860 valid embeddings, with 84.375% unprotected top-1 over 544 probes. BioHash pools 1/2/3 pass the all-seed rule; pool 4 fails. The earlier table remains 73 conditions / 12 studies, and pilots remain 24 cells / 72 endpoints. See [SCface results](experiments/scface_multiexposure/README.md), [SCface pilots](experiments/scface_scheme_extension_pilot/README.md), and the [17-figure appendix](reports/slides/figure_appendix.pdf). The [849-row inventory](experiments/multiexposure_run_matrix.csv) preserves all previous 633 rows, excluding unavailable SCface details; its [coverage audit](experiments/scheme_followup_2026-09-18/coverage_audit.csv) identifies legacy-schema gaps.
 
 ## [x] Month 1 - Foundation and baselines
 
@@ -141,10 +145,10 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 - [x] Start the paper draft with every number traced to a tracked summary ([reports/paper_draft.md](reports/paper_draft.md)).
 - [x] Run corrected key-slot-known and shuffled-non-anchor mechanism controls.
 - [x] Run key-correlation and same-image/different-key ablations.
-- [ ] Run the non-normalized/norm-leakage ablation.
-- [ ] Complete confidence intervals, significance tests, and failure analysis.
-- [ ] Run revisions and final experiments.
-- [ ] Produce final figures, reproducible commands, and paper draft.
+- [x] Run genuine raw/shuffled/fixed-radius native controls on MOBIO/FEI; identity-specific norm leakage not established.
+- [x] Complete intervals, corrected tests and failure analysis for all 48 bounded-follow-up contrasts; historical missing-score inference remains open.
+- [x] Run the bounded revision audit and revise supported claims; broader confirmatory experiments remain outside this scope.
+- [x] Produce revised figures, reproducible commands and paper draft; independent review/final submission remain open.
 - [ ] Submit the paper.
 
 **Results:** BioHash and MLP-Hash both show chance-level identity recovery under fresh independent hidden keys. A scoped rotational-invariance proposition explains why arbitrary record multiplicity cannot help under fixed-norm ideal assumptions; the key-reuse boundary below tests one important violation.
@@ -169,7 +173,7 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 
 **Proposal deliverable:** Reproducible attack framework, results, and paper.
 
-**[ ] Not met as of 2026-09-18.** The framework, four-dataset BioHash evidence, 24 additional-scheme pilot cells, 216 follow-up endpoints, native permutation/radial controls, current figures and a working paper draft exist. Natural norm-leakage experiments, the full cross-dataset confirmation matrix, approved equivalence analysis, independent review, manuscript finalization and submission remain open. Source-exact reproduction is still blocked.
+**[ ] Full submission milestone not met as of 2026-09-18.** The framework, four-dataset evidence, 72 pilot/216 follow-up endpoints, genuine raw-input native audit, complete follow-up failure analysis, revised figures and manuscript exist. The full matrix, raw-input learned retraining, stricter PolyProtect policy, equivalence margins, independent review and submission remain open. Source-exact reproduction is still blocked.
 
 **Fourth dataset (SCface, 2026-09-18).** On a 78/26/26 identity split, ten-record BioHash top-1 is `81.57/61.06/33.17/20.51/5.93/1.92/3.04%` for pools 1/2/3/4/5/7/10; fresh keys give `3.85%` against `3.846%` chance. Pools 1-3 pass the all-seed interval criterion. SCface pool-4 pilot paired gains are `+34.62` points for IoM-GRP and `+41.83` for PolyProtect, conditional on one seed. These are independent studies, not benchmark reproductions or confirmation of the complete roadmap.
 
@@ -184,7 +188,7 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 | AgeDB                | [ ] Optional | No authorized archive or experiments | Acquire only if the optional third addition is approved |
 | Olivetti faces       | [x] Used     | Full 40-identity protocol and dimension sweep                         | Preserve as cross-dataset evidence                  |
 | CFP                  | [x] Used     | Full frontal/profile protocols and crossed-seed sensitivity checks    | Preserve as large-scale/view evidence               |
-| MOBIO                | [x] Used     | BioHash/MLP-Hash boundary and controls; IoM-GRP/PolyProtect pilots and 108 follow-up endpoints | Natural norm-leakage and equivalence analysis |
+| MOBIO                | [x] Used     | Boundary/controls; pilots and 108 follow-up endpoints; genuine raw-norm/native audit | Independent review and scoped remaining confirmation |
 | CASIA-WebFace        | [ ] Not used | Reviewed as a possible FaceLinkGen training source                    | Use only after license and protocol verification    |
 | TPDNE                | [ ] Not used | Reviewed as optional FaceLinkGen evaluation data                      | Defer until core identity linkage works             |
 
@@ -205,7 +209,7 @@ Sani requested the next generalization phase during the 2026-09-10 meeting. The 
 1. Review completed FEI/SCface added-dataset studies; decide whether optional AgeDB coverage is justified before requesting access.
 2. Review the 216-endpoint follow-up alongside the 72 historical pilot endpoints; investigate the mechanism behind native PolyProtect linkage after the completed permutation controls.
 3. Approve and freeze the remaining cross-dataset/exposure matrix before further training; SCface follow-up needs local embeddings.
-4. Approve equivalence margins and natural norm-leakage experiments; crossed seed/identity intervals and primary Holm corrections are already complete for the bounded follow-up.
+4. Review completed raw/shuffled/fixed-radius controls and all 48 follow-up contrasts; approve equivalence margins before any equivalence claim.
 5. Obtain independent human theory/novelty review using the [review checklist](docs/review/scheme_pilot_review_2026-09-12.md).
 6. Review the regenerated deck and figures with Sani; reconcile historical artifacts with the local per-seed matrix.
 7. Recover the official `benchmark_cb` source before claiming source-exact reproduction.

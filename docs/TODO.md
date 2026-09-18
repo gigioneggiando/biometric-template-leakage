@@ -2,6 +2,18 @@
 
 This document separates tasks that need human authorization, licenses, hardware, or author contact from tasks that the repository can perform once those blockers are removed. Never commit biometric data, model weights, keys, tokens, credentials, or private paths to Git.
 
+## Revision audit: 2026-09-18
+
+- [x] Compare primary sources, correct Li/Hu DOI and FaceLinkGen v3, distinguish existing PolyProtect multiplicity/residual linkage from our hidden-pool experiment.
+- [x] Explain grouping, paired same-pool training access and small closed-gallery assumptions.
+- [x] Verify separate scalar PolyProtect/grouped IoM formulas and independent cosine matching; no prediction disagreements.
+- [x] Re-extract 4,177 raw embeddings and complete matched unit/raw/shuffled/fixed-radius native controls in 254.157 seconds.
+- [x] Report all 48 follow-up contrasts with crossed intervals, two-sided Holm tests, seed ranges and failures; retain original primary family.
+- [x] Revise manuscript around three supported claims and expand report/deck/appendix to 14 pages / ten slides / 17 figures.
+- [ ] Independent human review, stricter PolyProtect selection, learned raw-input retraining and wider confirmation remain uncompleted.
+
+See the [completed audit and limitations](../experiments/norm_native_audit_2026-09-18/README.md). Nonsignificant norm differences and chance-compatible attacks are not privacy proofs.
+
 ## Latest extension: 2026-09-12
 
 - [x] Record user-reported Sani approval for paper-specified IoM-GRP and PolyProtect and freeze parameters before running.
@@ -37,7 +49,7 @@ This document separates tasks that need human authorization, licenses, hardware,
 - [x] Complete twelve native permutation controls (Holm p = 0.006) and synthetic radial sensitivity diagnostics; do not label these natural norm leakage.
 - [x] Preserve all 633 historical inventory rows and add 216 new rows; export a scoped legacy/missing-detail coverage audit.
 - [x] Split overview and detailed attacker figures; replace presentation submission checklists with scientific findings; expand appendix to 15 figures.
-- [ ] Complete the remaining cross-dataset/exposure matrix, natural norm experiments, approved equivalence analysis and independent review. See [results and scope](../experiments/scheme_followup_2026-09-18/README.md).
+- [ ] Complete the remaining cross-dataset/exposure matrix, approved equivalence analysis and independent review. Native raw-norm controls are complete in the separate revision above; learned raw-input retraining is not.
 
 Historical milestones below retain their dates; current host CUDA availability must be checked separately. The new pilots ran on CPU.
 
@@ -185,7 +197,7 @@ python scripts\diagnostics\system_info.py
 - [x] Add a corrected key-aware (slot-label-known) DeepSets attacker paired with a hidden-slot baseline.
 - [x] Add a paired same-image/different-fresh-key control.
 - [x] Add coarse and independent-partition fine key-correlation controls.
-- [ ] Add the non-normalized/norm-leakage control.
+- [x] Add genuine raw/shuffled/fixed-radius native controls; no identity-specific norm leakage established. Learned raw-input retraining remains outside this audit.
 - [ ] Recheck the novelty claim against IEEE Xplore and Google Scholar before submission.
 
 **Done when:** 1/2/5/10 exposure plots and tables are reproducible from configuration, seed, code, and protocol with no identity, key, or metadata leakage.
@@ -235,7 +247,7 @@ python scripts\diagnostics\system_info.py
 - [ ] Freeze the confirmatory protocol before inspecting Stage B results.
 - [ ] Run 1/2/5/10 exposures with fresh and recurring transforms over at least three model seeds.
 - [ ] Add multiple identity assignments where dataset size permits.
-- [ ] Complete the non-normalized/norm-leakage control.
+- [x] Complete the bounded MOBIO/FEI native norm-control protocol; do not generalize to learned raw-input attacks.
 - [ ] Add equivalence analysis for fresh-key results.
 - [ ] Produce the canonical cross-dataset/cross-scheme aggregate table and failure analysis.
 

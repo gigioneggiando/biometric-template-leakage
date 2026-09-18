@@ -1,6 +1,6 @@
 # Month 1 LFW engineering validation
 
-**Documentation checked: 2026-09-18. Historical Month 1 evidence retained.** MOBIO access was subsequently completed on 2026-09-04, and current multi-exposure studies cover MOBIO/LFW/FEI/SCface. The latest [216-endpoint scheme follow-up](../scheme_followup_2026-09-18/README.md) covers MOBIO/FEI only. See the [research package](../../reports/README.md) for the nine-page report and 15 figures; the six-run LFW baseline here has not been rerun or replaced.
+**Documentation checked: 2026-09-18. Historical Month 1 evidence retained.** MOBIO access was subsequently completed on 2026-09-04, and current multi-exposure studies cover MOBIO/LFW/FEI/SCface. The [216-endpoint scheme follow-up](../scheme_followup_2026-09-18/README.md) covers MOBIO/FEI only. See the [research package](../../reports/README.md) for the 14-page report, 17 figures and subsequent raw-norm audit; the six-run LFW baseline here has not been rerun or replaced.
 
 Status: **COMPLETED ENGINEERING VALIDATION; NOT A PAPER REPRODUCTION**.
 

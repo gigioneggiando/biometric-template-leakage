@@ -56,6 +56,61 @@ def test_polyprotect_determinism_parameters_and_batch():
     assert np.isfinite(first).all()
 
 
+@pytest.mark.parametrize("overlap", range(5))
+@pytest.mark.parametrize("scale", [0.04, 1.0, 4.0])
+def test_polyprotect_separate_scalar_reference(overlap, scale):
+    config = PolyProtectConfig(input_dim=17, overlap=overlap)
+    values = np.random.default_rng(91901).normal(size=(4, 17)) * scale
+    coefficients = np.array([-43, 7, 19, -2, 50])
+    exponents = np.array([3, 1, 5, 2, 4])
+    reference = []
+    for vector in values:
+        output, offset = [], 0
+        while True:
+            output.append(sum(float(coefficients[position]) *
+                              (float(vector[offset + position]) if offset + position < len(vector) else 0.0)
+                              ** int(exponents[position]) for position in range(5)))
+            if offset + 5 >= len(vector):
+                break
+            offset += 5 - overlap
+        reference.append(output)
+    actual = polyprotect_with_parameters(values, coefficients, exponents, config)
+    np.testing.assert_allclose(actual, np.asarray(reference, dtype=np.float32), rtol=2e-6, atol=1e-6)
+
+
+def test_iom_separate_grouped_dot_reference(monkeypatch):
+    config = IoMGRPConfig(input_dim=9, groups=7, group_size=4)
+    rng = np.random.default_rng(91901)
+    matrix = rng.normal(size=(9, 28)).astype(np.float32)
+    values = rng.normal(size=(6, 9)).astype(np.float32)
+    monkeypatch.setattr(iom_module, "_projection_matrix", lambda key, config: matrix)
+    reference = [[max(range(4), key=lambda category: sum(float(vector[dimension]) *
+                  float(matrix[dimension, group * 4 + category]) for dimension in range(9)))
+                  for group in range(7)] for vector in values]
+    np.testing.assert_array_equal(iomgrp_batch(values, 1, config), reference)
+
+
+def test_norm_audit_reference_matching_and_identity_protocol():
+    from scripts.diagnostics.run_norm_native_audit import scalar_polyprotect, native_confusion, gallery_protocol, identity_interval, signflip
+
+    config = PolyProtectConfig(input_dim=17)
+    vector = np.random.default_rng(9).normal(size=17)
+    coefficients, exponents = polyprotect_parameters(13, config)
+    full, linear = scalar_polyprotect(vector, coefficients, exponents)
+    np.testing.assert_allclose(full, polyprotect_with_parameters(vector, coefficients, exponents, config))
+    assert linear.shape == full.shape
+    metadata = [{"sample_id": f"record-{identity}-{sample}", "identity_id": str(identity), "sample_index": sample}
+                for identity in range(3) for sample in range(3)]
+    templates = np.repeat(np.eye(3), 3, axis=0)
+    confusion, audit = native_confusion(templates, metadata)
+    np.testing.assert_array_equal(confusion, np.eye(3))
+    assert audit["gallery_probe_overlap"] == audit["gallery_order_disagreements"] == audit["matcher_prediction_disagreements"] == 0
+    assert identity_interval(np.full(5, 0.25)) == pytest.approx((0.25, 0.25))
+    assert signflip(np.zeros(6)) == 1
+    with pytest.raises(ValueError, match="Duplicate"):
+        gallery_protocol(metadata + [metadata[0]])
+
+
 @pytest.mark.parametrize("factory", [lambda: IoMGRPConfig(group_size=1), lambda: PolyProtectConfig(overlap=5), lambda: PolyProtectConfig(coefficient_bound=1)])
 def test_invalid_scheme_parameters_rejected(factory):
     with pytest.raises(ValueError):
@@ -123,6 +178,42 @@ def test_followup_exports_are_complete_and_consistent():
     status = json.loads((root / "matrix_status.json").read_text())
     manifest = json.loads((root / "execution_manifest.json").read_text())
     assert status["all_cells_complete"] and status["completed_cells"] == 24
+    assert manifest["status"] == "completed" and manifest["wall_seconds"] < manifest["budget_seconds"]
+
+
+def test_norm_audit_exports_preserve_families_and_reference_agreement():
+    import pandas as pd
+    from scripts.train.run_scheme_followup import holm_adjust
+
+    root = Path(__file__).resolve().parents[2] / "experiments/norm_native_audit_2026-09-18"
+    extraction = pd.read_csv(root / "extraction_audit.csv")
+    assert extraction["records"].sum() == 4177
+    assert (extraction["normalization_max_abs_error"] < 1e-4).all()
+    audit = pd.read_csv(root / "implementation_audit.csv")
+    assert len(audit) == 48
+    assert (audit["records"] == audit["unique_keys"]).all()
+    assert audit["reference_max_abs_error"].max() == 0
+    assert audit["matcher_max_abs_error"].max() < 1e-10
+    for column in ("matcher_prediction_disagreements", "gallery_order_disagreements", "top_score_ties", "gallery_probe_overlap"):
+        assert audit[column].sum() == 0
+    for name, count, probability in [("native_norm_controls", 16, "permutation_p"),
+                                      ("norm_only_linkage", 4, "permutation_p"),
+                                      ("paired_norm_contrasts", 8, "signflip_p"),
+                                      ("failure_analysis", 48, "signflip_p")]:
+        table = pd.read_csv(root / f"{name}.csv")
+        assert len(table) == count
+        assert (table["lower95"] <= table["upper95"]).all()
+        np.testing.assert_allclose(table["holm_p"], holm_adjust(table[probability].tolist(), count))
+    native = pd.read_csv(root / "native_norm_controls.csv")
+    assert set(native["arm"]) == {"unit", "raw", "norm_shuffled", "fixed_radius"}
+    assert native.groupby(["dataset", "split_seed"]).size().eq(4).all()
+    previous = pd.read_csv(root.parent / "scheme_followup_2026-09-18/native_null_controls.csv")
+    unit = native[native["arm"] == "unit"].set_index(["dataset", "split_seed"])["top1"].sort_index()
+    expected = previous.groupby(["dataset", "split_seed"])["identity_balanced_top1"].mean().sort_index()
+    np.testing.assert_allclose(unit, expected)
+    scale = pd.read_csv(root / "scale_invariance.csv")
+    assert len(scale) == 4 and scale["changed_codes"].sum() == 0
+    manifest = json.loads((root / "execution_manifest.json").read_text())
     assert manifest["status"] == "completed" and manifest["wall_seconds"] < manifest["budget_seconds"]
 
 
