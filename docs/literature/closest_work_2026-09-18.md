@@ -1,4 +1,4 @@
-# Closest-work comparison: 18 September 2026
+# Closest-work comparison: updated 19 September 2026
 
 ## Defensible distinction
 
@@ -11,7 +11,25 @@ The candidate contribution is a **controlled hidden-transform-reuse study of lea
 | benchmark_cb, [preprint](https://arxiv.org/html/2302.13286v1), [journal](https://doi.org/10.1186/s13640-025-00679-y) | Recognition, score-based unlinkability and estimated mutual information across schemes/modalities; sample-specific keys for unlinkability and a stolen-key setting. | Learned one-to-ten contrasts under recurring hidden pools. Independent-key evaluation and cross-scheme benchmarking are not new. Published metrics are not interchangeable with our top-1. |
 | Guo, Shehata and Du, FaceLinkGen, [v3, 3 September 2026](https://arxiv.org/html/2602.02914v3), sections 3-6 | Adaptive identity extraction using paired original/protected data and frozen ArcFace teacher distillation. Service-provider and De-ID threats with unknown per-query randomness. | Fixed keyed templates, controlled reuse and same-person set aggregation. Identity distillation and the warning that failed attacks do not prove privacy are prior art. No numerical superiority claim: galleries and data scale differ. |
 | Jin et al., IoM, [1703.05455](https://arxiv.org/abs/1703.05455), [DOI](https://doi.org/10.1109/TIFS.2017.2753172) | GRP/URP ranking protection explicitly emphasizes magnitude independence. | Our natural-scale check validates local GRP code; scale invariance is not a new finding. |
-| Otroshi Shahreza, Shkel and Marcel, 2024, [10.1109/ACCESS.2024.3433536](https://doi.org/10.1109/ACCESS.2024.3433536) | Metadata verifies prior work specifically on linkability of multiple protected templates using maximal leakage. | Full text was not verified in this revision. We do not claim it omits a specific setting or equate empirical top-1 with maximal leakage. |
+| Otroshi Shahreza, Shkel and Marcel, 2024, [10.1109/ACCESS.2024.3433536](https://doi.org/10.1109/ACCESS.2024.3433536); full author-thesis section 5.4 inspected | Joint-score maximal linkability, five composition scenarios including different keys and grouped same-person templates; MOBIO experiments on BioHash, MLP-Hash, IoM-GRP and HE. | Our trained different-image closed-set linkage and explicit recurring-pool axis differ from score-distribution measurement. Multiplicity and multi-key leakage are prior art. Publisher PDF blocked; thesis/journal version identity is not certified. |
+
+## Full-text maximal-leakage comparison
+
+The [Idiap record](https://publications.idiap.ch/publications/show/5382) and DOI/Crossref identify IEEE Access 12, 106618-106630 (2024). Publisher PDF requests returned HTTP 418. The complete corresponding treatment was inspected in the author's [doctoral thesis](https://publications.idiap.ch/attachments/papers/2024/OtroshiShahreza_THESIS_2024.pdf), *On the Information in Deep Biometric Templates: from Vulnerability of Unprotected Templates to Leakage in Protected Templates*, section 5.4, printed pages 157-171 (PDF 187-201). This is a full-chapter comparison, not abstract-only verification; identity with the final journal version and later corrections remains unverified.
+
+Retrieved 2026-09-19; 241-page PDF SHA-256: `965962ece08045cfb9b653de57eb1faec493a1e7f5134ad3e32762b5900f7751`. The third-party PDF stays in ignored research storage, not redistributed. Appendix E (PDF 222) lists [the multiple-linkability package](https://gitlab.idiap.ch/bob/bob.paper.access2024_linkability_multiple), J6; no verified code commit or source-exact reproduction is claimed.
+
+| Inspected location | Full-text evidence | Consequence |
+|---|---|---|
+| 5.4.1, pp. 158-160 | Five scenarios: modalities, extractors, schemes, different-key templates, multiple scoring functions. Scenario 4 already groups two templates to one person. | Grouping, different keys and combining templates are not new threat concepts. The framework is not conceptually limited to two templates. |
+| 5.4.2, equations 5.35-5.43 | Maximal leakage of a binary mated/non-mated hypothesis through joint scores; data processing and hypothesis-testing bounds. | This is not gallery top-1. Weak learned attacks do not upper-bound template information. |
+| 5.4.2.2-3, equations 5.44-5.55 | Additive composition requires a conditional-independence/Markov condition; otherwise a conditional maximal-leakage term is needed. | Independent key draws do not imply independent same-person scores. No naive additive guarantee applies to our correlated records. |
+| 5.4.3, Tables 5.15-5.18 | MOBIO face/voice; ArcFace, ElasticFace, FaceNet, ECAPA; BioHash, MLP-Hash, IoM-GRP, BFV HE; different keys explicitly tested. | Do not claim first MOBIO, ArcFace, multi-scheme or multi-key linkage study. No PolyProtect experiment appears in this chapter, not proof of absence elsewhere. |
+| Table 5.19/Figure 5.11 | Two/three scoring functions improve the joint-score proxy. | Our trained one-to-ten embedding reconstruction studies a particular attacker, not a new maximal-leakage definition. |
+
+Lemma 6 bounds `(1 - FMR) + (1 - FNMR)` by two raised to joint maximal linkability. It is not an identity-recognition accuracy formula. Table 5.18 displays identical single/joint values for BioHash (0.0156), MLP-Hash (0.0096) and IoM-GRP (0.0024), while HE changes from 0.0042/0.0031 to 0.0100. Thus its prose about increased linkability must not become a strict empirical increase for every scheme. These are information-metric values, not percentages. Table 5.17 reports IoM/HE joint 0.0088, exceeding 0.0024 + 0.0042, illustrating the independence caveat.
+
+The inspected chapter does not report our particular trained different-image one-versus-ten experiment with same-pool paired supervision and an explicit system-wide recurring-pool sweep. This is a bounded experimental distinction, not exhaustive firstness. The [new pool study](../../experiments/pool_replication_2026-09-19/README.md) finds a competitive prediction-mean baseline and pool-sensitive PolyProtect, narrowing the contribution to reuse-conditioned measurement and failure boundaries.
 
 ## Corrections and boundaries
 
@@ -27,3 +45,5 @@ Persistent account/session pseudonyms could group retained enrollment or verific
 Paired training data could come from an authorized enrollment/query interface using consented faces, or a service provider seeing source images and protected outputs. Crucially, recurring-pool training must query the **same realized hidden pool** later used for targets. A separate proxy with unrelated keys does not satisfy this assumption. Key values and slots are hidden; identities are split-disjoint, but recurring transforms deliberately are not.
 
 A gallery could use lawful public or consented reference images. Ours is a small closed set of 25-40 people with guaranteed target membership and separate gallery images. Open-set search, internet-scale distractors, cross-provider transfer, unknown record grouping and real-product attack access are not demonstrated. Fresh independent transforms can impair legitimate matching too; they are not a validated drop-in defense.
+
+The assumed query interface must expose protected outputs or an equivalent observation; accept/reject-only access is insufficient. A provider knowing the keys is stronger than our key-blind attacker, not evidence that the exact model is prevalent. A common algorithm with distinct user/provider pools is not the evaluated system-wide reuse policy.

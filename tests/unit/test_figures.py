@@ -83,7 +83,8 @@ def test_detail_section_heading_does_not_touch_nodes(tmp_path, monkeypatch):
                                  "fig_pooled_boundary", "fig_controls", "fig_fresh_exposures",
                                  "fig_scheme_pilots", "fig_pilot_uncertainty", "fig_pilot_native_utility", "fig_pilot_equivalence",
                                  "fig_followup_amplification", "fig_followup_native_controls",
-                                 "fig_native_norm_audit", "fig_followup_failures"])
+                                 "fig_native_norm_audit", "fig_followup_failures",
+                                 "fig_dataset_coverage", "fig_pool_replication"])
 def test_result_figures_export_without_text_collisions(tmp_path, name):
     FIGURES[name](tmp_path)
     assert (tmp_path / f"{name}.pdf").stat().st_size > 1000
@@ -116,10 +117,11 @@ def test_dataset_update_contains_current_evidence_and_vector_figures(tmp_path):
     destination = tmp_path / "Sept_Dataset_Update.pdf"
     presentation["build_dataset_update"](destination)
     document = pypdf.PdfReader(destination)
-    assert len(document.pages) == 14
+    assert len(document.pages) == 16
     text = "\n".join(page.extract_text() for page in document.pages)
     for expected in ("4352eeb", "15e4384", "SCface", "73", "72", "216", "33.17%", "10.66%", "not confirmation", "0.004", "0.006",
-                     "4,177", "0.0192", "0.0032", "SAME realized hidden pool", "not independent human review", "not established"):
+                     "4,177", "0.0192", "0.0032", "SAME realized hidden pool", "not independent human review", "not established",
+                     "144 fits", "72 prediction-mean", "publisher PDF blocked", "pool-sensitive"):
         assert expected in text
     assert "we have not tested it yet" not in text.lower()
     assert "luigi" not in text.lower()
@@ -142,13 +144,13 @@ def test_dataset_update_contains_current_evidence_and_vector_figures(tmp_path):
     assert not destination.with_suffix(".tmp.pdf").exists()
 
 
-def test_presentation_has_ten_nonblank_pages_and_editable_text(tmp_path):
+def test_presentation_has_twelve_nonblank_pages_and_editable_text(tmp_path):
     pptx = pytest.importorskip("pptx")
     pdfium = pytest.importorskip("pypdfium2")
     presentation = runpy.run_path(str(ROOT / "scripts/figures/make_presentation.py"))
     presentation["build_presentation"](tmp_path)
     deck = pptx.Presentation(tmp_path / "research_review.pptx")
-    assert len(deck.slides) == 10
+    assert len(deck.slides) == 12
     for slide in deck.slides:
         text = " ".join(shape.text for shape in slide.shapes if shape.has_text_frame)
         assert len(text) > 70
@@ -158,7 +160,7 @@ def test_presentation_has_ten_nonblank_pages_and_editable_text(tmp_path):
             assert shape.left + shape.width <= deck.slide_width
             assert shape.top + shape.height <= deck.slide_height
     with pdfium.PdfDocument(tmp_path / "research_review.pdf") as pdf:
-        assert len(pdf) == 10
+        assert len(pdf) == 12
         for page in pdf:
             bitmap = page.render(scale=0.75)
             pixels = np.asarray(bitmap.to_pil())
@@ -166,7 +168,7 @@ def test_presentation_has_ten_nonblank_pages_and_editable_text(tmp_path):
             bitmap.close()
             page.close()
     with pdfium.PdfDocument(tmp_path / "figure_appendix.pdf") as appendix:
-        assert len(appendix) == 17
+        assert len(appendix) == 19
         for page in appendix:
             text_page = page.get_textpage()
             try:

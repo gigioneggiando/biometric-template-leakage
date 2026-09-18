@@ -1,0 +1,9 @@
+base_config: configs/attacks/scheme_followup_2026-09-18.yaml
+protocol: docs/protocols/pool_replication_2026-09-19.md
+key_seeds: [91901, 91907, 91909]
+condition: random_key_pool_4
+max_wall_seconds: 3600
+bootstrap_resamples: 4000
+analysis_seed: 91919
+output_root: results/pool_replication_2026-09-19
+summary_dir: experiments/pool_replication_2026-09-19

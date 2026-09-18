@@ -68,7 +68,7 @@ def build_presentation(out: Path) -> None:
     presentation = Presentation()
     presentation.slide_width, presentation.slide_height = Inches(WIDTH), Inches(HEIGHT)
     presentation.core_properties.title = "Hidden keys and repeated biometric records"
-    presentation.core_properties.subject = "Research review draft, 2026-09-18"
+    presentation.core_properties.subject = "Research review draft, 2026-09-19"
     with PdfPages(out / "research_review.pdf") as pdf:
         for number, title in enumerate([
             "Hidden keys and repeated biometric records",
@@ -81,19 +81,21 @@ def build_presentation(out: Path) -> None:
             "Native linkage and radial sensitivity",
             "Genuine raw-input controls",
             "Failure analysis: aggregation is not always better",
+            "Four datasets, distinct evidence layers",
+            "Independent pools and a matched baseline",
         ], start=1):
             slide = presentation.slides.add_slide(presentation.slide_layouts[6])
             fig = plt.figure(figsize=(WIDTH, HEIGHT), dpi=120, facecolor="white")
             add_text(slide, fig, title, 0.6, 0.3, 12.1, 0.6, size=25, bold=True)
-            add_text(slide, fig, f"Research review draft | 18 September 2026 | {number}/10", 0.6, 7.07, 12.1, 0.3, size=11, color="#666666")
+            add_text(slide, fig, f"Research review draft | 19 September 2026 | {number}/12", 0.6, 7.07, 12.1, 0.3, size=11, color="#666666")
             if number == 1:
                 add_text(slide, fig, "Can multiple protected records reveal identity when keys remain hidden?",
                          0.6, 1.45, 12.1, 0.7, size=20)
                 add_text(slide, fig, "Fresh-key learned attacks: uncertainty remains; no equivalence claim.\n\n"
                          "Recurring transforms: large gains from multiple same-identity records.\n\n"
-                         "Boundary location changes with the dataset and identity partition.",
+                         "Pool draws matter; a simple prediction-mean baseline is competitive.",
                          0.6, 2.55, 12.1, 3.1, size=19)
-                add_text(slide, fig, "Four datasets; hidden-key protocols; matched MOBIO/FEI follow-up with 216 trained endpoints.",
+                add_text(slide, fig, "MOBIO/FEI: 216 earlier trained endpoints; 144 new fits plus 72 prediction-mean evaluations.",
                          0.6, 6.3, 12.1, 0.45, size=13)
             elif number in (2, 4, 5, 6):
                 name, caption = {
@@ -135,9 +137,17 @@ def build_presentation(out: Path) -> None:
                 add_figure(slide, fig, "fig_native_norm_audit")
                 add_text(slide, fig, "4,177 raw extractions verified. Separate scalar and SciPy checks reproduce native matching; stronger parameter policies remain untested.",
                          0.6, 6.58, 12.1, 0.4, size=12)
-            else:
+            elif number == 10:
                 add_figure(slide, fig, "fig_followup_failures")
                 add_text(slide, fig, "Original primary family unchanged. All 48 contrasts, including significant losses, are reported separately from historical exploration.",
+                         0.6, 6.58, 12.1, 0.4, size=12)
+            elif number == 11:
+                add_figure(slide, fig, "fig_dataset_coverage")
+                add_text(slide, fig, "SCface remains supporting cross-camera evidence, not matched new-scheme confirmation. Missing cells are not zero accuracy.",
+                         0.6, 6.58, 12.1, 0.4, size=12)
+            else:
+                add_figure(slide, fig, "fig_pool_replication")
+                add_text(slide, fig, "Three new pool draws: IoM gains persist; PolyProtect is variable. Input-pooling superiority is not established.",
                          0.6, 6.58, 12.1, 0.4, size=12)
             slide.notes_slide.notes_text_frame.text = (
                 "Evidence baseline: commit 655ae1ecc2c9fc0aa80c828fe0303753296f66df. "
@@ -155,6 +165,9 @@ def build_presentation(out: Path) -> None:
                 " Follow-up: experiments/scheme_followup_2026-09-18; 216 endpoints, two identity partitions, three model seeds. "
                 "Pre-execution source/config hashes: execution_manifest.json; base commit 4352eeb, dirty working tree recorded. "
                 "Primary sign-flip tests: Holm family 8; native gallery-label permutations: Holm family 12."
+                " Independent-pool follow-up: experiments/pool_replication_2026-09-19; 24 cells, 144 fits, "
+                "72 prediction-mean evaluations; source snapshots and input hashes recorded. Three-pool intervals "
+                "are pointwise, not corrected significance tests. Full-text comparison uses the author's thesis section 5.4."
             )
             pdf.savefig(fig)
             plt.close(fig)
@@ -164,7 +177,7 @@ def build_presentation(out: Path) -> None:
             with pdfium.PdfDocument(source) as document:
                 appendix.import_pages(document)
         appendix.save(out / "figure_appendix.pdf")
-    print(f"10-slide review deck, PDF, and complete figure appendix -> {out}")
+    print(f"12-slide review deck, PDF, and complete figure appendix -> {out}")
 
 
 def build_dataset_update(destination: Path) -> None:
@@ -194,17 +207,19 @@ def build_dataset_update(destination: Path) -> None:
               "Closest research and our precise contribution", "Attacker access: assumptions and limits",
               "Separate implementation and matching checks", "Raw embeddings: scale is not identity leakage",
               "Failure analysis: all 48 contrasts",
-              "Findings and study scope"]
+              "Findings and study scope", "Four datasets: coverage and evidence strength",
+              "Independent pool draws and matched baseline"]
     figure_names = {2: "fig_architecture", 3: "fig_attack_detail", 4: "fig_results_overview", 5: "fig_controls",
                     6: "fig_followup_amplification", 7: "fig_followup_native_controls", 8: "fig_scheme_pilots",
-                    12: "fig_native_norm_audit", 13: "fig_followup_failures"}
+                    12: "fig_native_norm_audit", 13: "fig_followup_failures",
+                    15: "fig_dataset_coverage", 16: "fig_pool_replication"}
     presentation = Presentation()
     writer = PdfWriter()
     for number, title in enumerate(titles, start=1):
         slide = presentation.slides.add_slide(presentation.slide_layouts[6])
         fig = plt.figure(figsize=(WIDTH, HEIGHT), dpi=120, facecolor="white")
         add_text(slide, fig, title, 0.6, 0.3, 12.1, 0.6, size=25, bold=True)
-        add_text(slide, fig, f"18 September 2026 | Follow-up: 4352eeb; norm audit: 15e4384; executed source hashes recorded | {number}/{len(titles)}",
+        add_text(slide, fig, f"19 September 2026 | Earlier: 4352eeb / 15e4384; new pool study: source archive + hashes | {number}/{len(titles)}",
                  0.6, 7.07, 12.1, 0.3, size=11, color="#666666")
         if number == 1:
             add_text(slide, fig, "Identity-disjoint evaluation across session, pose and camera variation.",
@@ -226,7 +241,7 @@ def build_dataset_update(destination: Path) -> None:
                      "Unprotected SCface top-1: 84.375% over 544 test probes; chance: 1/26 = 3.846%.\n"
                      f"Evidence: {len(table)} key-pool conditions / {table['source_file'].nunique()} studies; "
                      f"{len(pilots)} one-seed model endpoints / 24 scheme pilot cells.\n"
-                     f"New MOBIO/FEI follow-up: {len(model_runs)} trained endpoints; 3 model seeds x 2 identity partitions.",
+                     f"MOBIO/FEI: {len(model_runs)} earlier trained endpoints; new study adds 144 fits + 72 baseline evaluations.",
                      0.6, 4.55, 12.1, 1.95, size=15)
         elif number == 2:
             add_text(slide, fig, "System overview: fixed encoder, hidden-key protection, same-identity exposure sets and held-out gallery linkage.",
@@ -277,15 +292,16 @@ def build_dataset_update(destination: Path) -> None:
                      "stricter parameter selection improves unlinkability. Our native result is not a first discovery.\n"
                      "benchmark_cb: recognition, score-based unlinkability and information estimates across schemes.\n"
                      "FaceLinkGen v3: adaptive identity distillation from paired data with hidden per-query randomness.\n\n"
+                     "Maximal-linkability work: joint similarity scores, multiple keys and composition limits (thesis 5.4).\n\n"
                      "WHAT OUR CONTROLLED EXPERIMENT ADDS\n"
                      "Different-image set aggregation with hidden fresh/shared/pool keys and disjoint training identities.\n"
                      "A measured one-to-ten benefit conditional on transform reuse, plus mechanism and failure controls.\n"
-                     "Matched raw/shuffled/fixed-radius inputs separate scale effects from a norm-leakage claim.\n\n"
+                     "Independent pool draws and prediction averaging expose pool sensitivity and a competitive baseline.\n\n"
                      "NOT CLAIMED\n"
                      "Multiplicity, identity distillation and IoM scale invariance are not new.\n"
                      "No head-to-head accuracy win, exhaustive priority claim or break of stricter PolyProtect policies.",
-                     0.6, 1.15, 12.1, 5.45, size=15)
-            add_text(slide, fig, "Sources: 10.1002/cpe.3042; 2110.00434v3; 2302.13286; 2602.02914v3. Full comparison: docs/literature/closest_work_2026-09-18.md.",
+                     0.6, 1.15, 12.1, 5.45, size=13)
+            add_text(slide, fig, "Full-text evidence: author thesis 5.4, linked to Access 2024; publisher PDF blocked. See docs/literature/closest_work_2026-09-18.md.",
                      0.6, 6.65, 12.1, 0.3, size=10)
         elif number == 10:
             add_text(slide, fig,
@@ -331,24 +347,38 @@ def build_dataset_update(destination: Path) -> None:
                      0.6, 1.05, 12.1, 0.65, size=14)
             add_text(slide, fig, "Seed ranges and leave-one-seed-out gains are published. Negative results constrain the claim: more records are not always better.",
                      0.6, 6.58, 12.1, 0.4, size=12)
-        else:
+        elif number == 14:
             add_text(slide, fig,
                      "TRANSFORM REUSE AND RECORD MULTIPLICITY\n"
                      "Recurring hidden transforms support substantial identity linkage from multiple protected records.\n"
-                     "The transition depends on dataset and identity partition, rather than a universal pool-size threshold.\n"
+                     "The transition depends on dataset, partition and realized pool, not a universal pool-size threshold.\n"
                      "SCface pool 3: 5.29% single-record versus 33.17% ten-record top-1; chance is 3.846%.\n\n"
                      "BOUNDARIES AND FAILURES\n"
                      "Shuffled-identity controls constrain the mechanism; same-pool training access remains essential.\n"
                      "Shared-key PolyProtect DeepSets loses 15.42-24.86 points: aggregation is not universally beneficial.\n"
                      "Native matching survives separate checks, but natural identity-specific norm leakage is not established.\n\n"
                      "STATISTICAL AND THREAT-MODEL SCOPE\n"
-                     "BioHash evidence spans four datasets and three model seeds per study.\n"
+                     "BioHash spans four datasets; new scheme confirmation is limited to MOBIO and FEI.\n"
                      f"New scheme follow-up: {len(model_runs)} endpoints; all {len(primary)} primary contrasts pass Holm correction.\n"
-                     "Native protected-gallery matching and learned embedding linkage measure different attack surfaces.\n"
+                     "New three-pool study: IoM gains persist; PolyProtect is sensitive to the pool draw.\n"
+                     "All direct prediction-mean baseline intervals include zero: no input-pooling superiority claim.\n"
                      "Fresh-key learned intervals include chance; they do not establish equivalence or general unlinkability.\n\n"
-                     "Scope: fixed training key/set seeds, overlapping assignments, one encoder, small closed galleries, strong paired access.\n"
+                     "Scope: only three new pools, fixed set seed, overlapping assignments, one encoder, small galleries, paired access.\n"
                      "Raw-input learned retraining, stricter PolyProtect policies and independent human review remain outside this revision.",
-                     0.6, 1.15, 12.1, 5.45, size=14)
+                     0.6, 1.15, 12.1, 5.45, size=13)
+        elif number == 15:
+            add_text(slide, fig, "All four datasets are shown, without mixing historical studies, one-seed pilots and matched follow-ups.\n"
+                     "SCface keeps its cross-camera supporting role; its private inputs were unavailable for new matched training.",
+                     0.6, 1.05, 12.1, 0.65, size=14)
+            add_text(slide, fig, "Evidence coverage, not a performance ranking. LFW remains historical BioHash evidence; missing studies require experiments.",
+                     0.6, 6.58, 12.1, 0.4, size=12)
+        else:
+            add_text(slide, fig, "24 cells; 3 new pool draws x 3 model seeds x 2 partitions; 144 fits plus 72 prediction-mean endpoints.\n"
+                     "Matched gallery and records; prediction mean reuses single-record training, not the set-training objective.\n"
+                     "Pool seeds vary transforms and slot assignments jointly. Intervals are pointwise; only three pool draws.",
+                     0.6, 1.05, 12.1, 0.8, size=12)
+            add_text(slide, fig, "IoM per-pool gains: +21.56 to +42.36 pp. PolyProtect: -3.23 to +72.40 pp. Three pools do not establish universal robustness.",
+                     0.6, 6.58, 12.1, 0.4, size=12)
         buffer = BytesIO()
         fig.savefig(buffer, format="pdf")
         plt.close(fig)
@@ -362,7 +392,7 @@ def build_dataset_update(destination: Path) -> None:
             left = 0.6 * 72 + (12.1 * 72 - float(source.mediabox.width) * scale) / 2
             bottom = (HEIGHT - top - available_height) * 72 + (available_height * 72 - float(source.mediabox.height) * scale) / 2
             page.merge_transformed_page(source, Transformation().scale(scale).translate(left, bottom))
-    writer.add_metadata({"/Title": "September Dataset Update - 18 September 2026",
+    writer.add_metadata({"/Title": "September Dataset Update - 19 September 2026",
                          "/Subject": "Identity-disjoint multi-record linkage: architecture, results and study scope"})
     destination.parent.mkdir(parents=True, exist_ok=True)
     temporary = destination.with_suffix(".tmp.pdf")

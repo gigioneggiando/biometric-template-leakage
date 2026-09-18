@@ -1,12 +1,13 @@
 # Research package
 
-**Updated: 2026-09-18.** Latest result integration: `4352eeb`; SCface freeze `69a93e4`. Current evidence: four multi-exposure datasets, 73 key-pool conditions / 12 studies, and 24 additional-scheme pilot cells / 72 model endpoints. Pilots are not confirmation.
+**Updated: 2026-09-19.** Historical integration: `4352eeb`; SCface freeze `69a93e4`. Four datasets contribute at different evidence levels; pilots are not confirmation. The new [independent-pool study](../experiments/pool_replication_2026-09-19/README.md) adds 144 fits and 72 prediction-mean evaluations in 254.188 seconds. IoM gains persist across tested pools; PolyProtect is pool-sensitive, and no input-pooling superiority is established. SCface remains supporting pilot evidence.
 
-The [bounded follow-up](../experiments/scheme_followup_2026-09-18/README.md) adds 216 endpoints across three seeds/two partitions in 859.63 seconds, frozen against `4352eeb`. The subsequent [raw-norm/native audit](../experiments/norm_native_audit_2026-09-18/README.md), frozen against `15e4384`, re-extracts 4,177 records and checks all 48 paired contrasts in 254.157 seconds. The revised package has a 14-page report, ten-slide deck and 17 figures. Raw norms do not establish identity-specific leakage; four significant shared-key DeepSets regressions are retained.
+The earlier [bounded follow-up](../experiments/scheme_followup_2026-09-18/README.md) adds 216 endpoints across three seeds/two partitions in 859.63 seconds, frozen against `4352eeb`. The [raw-norm/native audit](../experiments/norm_native_audit_2026-09-18/README.md), frozen against `15e4384`, re-extracts 4,177 records and checks all 48 paired contrasts in 254.157 seconds. The current package has a 16-page report, 12-slide deck and 19 figures. Raw norms do not establish identity-specific leakage; four significant shared-key DeepSets regressions are retained.
 
 ## Start here
 
-- [September dataset update: 14 pages, architecture, results and scientific scope](Sept_Dataset_Update.pdf)
+- [September dataset update: 16 pages, architecture, results and scientific scope](Sept_Dataset_Update.pdf)
+- [Independent pools, simple baseline, full numerical results and reproduction](../experiments/pool_replication_2026-09-19/README.md)
 - [Each page explained in plain language](Sept_Dataset_Update_guide.md)
 - [Closest research, precise contribution and attacker access](../docs/literature/closest_work_2026-09-18.md)
 - [Current findings and scientific scope](final_research_status.md)
@@ -14,9 +15,9 @@ The [bounded follow-up](../experiments/scheme_followup_2026-09-18/README.md) add
 - [Architecture overview](figures/fig_architecture.pdf) and [detailed attacker](figures/fig_attack_detail.pdf)
 - [Working manuscript](paper_draft.md)
 - [Figure index, captions, and regeneration commands](figures/README.md)
-- [Ten-slide PDF](slides/research_review.pdf)
+- [12-slide PDF](slides/research_review.pdf)
 - [Editable review deck](slides/research_review.pptx)
-- [Complete 17-figure vector appendix](slides/figure_appendix.pdf)
+- [Complete 19-figure vector appendix](slides/figure_appendix.pdf)
 - [New scheme pilot results and caveats](../experiments/scheme_extension_pilot/README.md)
 - [SCface added-dataset study](../experiments/scface_multiexposure/README.md) and [SCface scheme pilots](../experiments/scface_scheme_extension_pilot/README.md)
 - [Local per-seed run inventory](../experiments/multiexposure_run_matrix.csv)

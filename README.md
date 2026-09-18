@@ -1,6 +1,6 @@
 # Key-agnostic multi-exposure biometric template leakage
 
-**Last status update:** 2026-09-18. Evidence integration: `4352eeb`; SCface protocol/pilot freeze: `69a93e4`.
+**Last status update:** 2026-09-19. Historical integration: `4352eeb`; SCface protocol/pilot freeze: `69a93e4`. New pool study has its own executed-source archive.
 
 **Navigation:** [Research package index](reports/README.md), [current evidence and gates](reports/final_research_status.md), [figure captions](reports/figures/README.md), and [review slides](reports/slides/research_review.pdf).
 
@@ -14,7 +14,10 @@
 | Follow-up statistical controls | Eight positive pool-4 amplification contrasts (Holm p = 0.004); twelve native permutation tests (Holm p = 0.006); separate synthetic radial sensitivity |
 | Local run inventory | [849 rows from 49 artifacts](experiments/multiexposure_run_matrix.csv), with [legacy/missing-detail coverage audit](experiments/scheme_followup_2026-09-18/coverage_audit.csv) |
 | Raw-norm and native audit | [4,177 verified raw extractions, 48 implementation cells, 130 aggregate rows](experiments/norm_native_audit_2026-09-18/README.md); completed in 254.157 seconds |
-| Scientific presentation | 14-page report, ten-slide PDF/editable deck, 17 figures and a page-by-page plain-language guide |
+| Independent recurring pools and simple baseline | [24 cells / 144 fits / 72 prediction-mean evaluations](experiments/pool_replication_2026-09-19/README.md); three new pools, three model seeds, two partitions; 254.188 seconds |
+| Scientific presentation | 16-page report, 12-slide PDF/editable deck, 19 figures and a page-by-page plain-language guide |
+
+**New result:** IoM amplification persists across the tested pool draws; PolyProtect is strongly pool-sensitive (-3.23 to +72.40 points). All eight input-mean versus prediction-mean intervals include zero, so method superiority is not established. The full author-thesis maximal-linkability chapter is compared explicitly; publisher-PDF version verification remains blocked. SCface is retained as supporting pilot evidence, not newly replicated cross-camera confirmation.
 
 The trained follow-up is hash-frozen against `4352eeb`; the new raw audit against `15e4384`, with executed source hashes recording uncommitted additions. Historical studies are not pooled. Raw-vs-shuffled controls do not establish identity-specific norm leakage. All 48 trained follow-up contrasts now have intervals, corrected tests and seed-sensitivity analysis; eight pool-4 mean gains and four shared-key DeepSets losses survive the post-hoc family. SCface confirmation, the full matrix, raw-input learned retraining, equivalence and independent review remain open. Chance compatibility is not privacy.
 
@@ -27,8 +30,10 @@ No environment setup or experiment rerun is needed to view the existing outputs.
 | What to view | Location |
 |---|---|
 | September dataset update: findings, architecture overview and detailed attacker | [reports/Sept_Dataset_Update.pdf](reports/Sept_Dataset_Update.pdf) |
-| All 17 figures together, including architecture and results | [reports/slides/figure_appendix.pdf](reports/slides/figure_appendix.pdf) |
-| Ten-slide research overview | [reports/slides/research_review.pdf](reports/slides/research_review.pdf) |
+| All 19 figures together, including architecture and results | [reports/slides/figure_appendix.pdf](reports/slides/figure_appendix.pdf) |
+| 12-slide research overview | [reports/slides/research_review.pdf](reports/slides/research_review.pdf) |
+| Four-dataset evidence coverage | [reports/figures/fig_dataset_coverage.pdf](reports/figures/fig_dataset_coverage.pdf) |
+| Independent pools and matched prediction baseline | [reports/figures/fig_pool_replication.pdf](reports/figures/fig_pool_replication.pdf) |
 | Each report page explained simply | [reports/Sept_Dataset_Update_guide.md](reports/Sept_Dataset_Update_guide.md) |
 | Editable presentation | [reports/slides/research_review.pptx](reports/slides/research_review.pptx) |
 | Architecture diagram image | [reports/figures/fig_architecture.png](reports/figures/fig_architecture.png) |
@@ -45,7 +50,7 @@ Individual plots, including paired uncertainty, equivalence sensitivity and nati
 
 ## Dataset access and archives
 
-**MOBIO, LFW, FEI and SCface are available and used.** Sani supplied the authorized SCface archive on 2026-09-18; its BioHash study and one-seed scheme pilots are complete. FEI and SCface satisfy the two-added-dataset coverage target beyond MOBIO/LFW, but do not complete the broader confirmatory matrix. AgeDB remains an optional third addition without authorized access.
+**MOBIO, LFW, FEI and SCface have been used.** Sani supplied the authorized SCface archive on 2026-09-18; its BioHash study and one-seed scheme pilots are complete, but its private inputs were unavailable on the host executing the later follow-ups. FEI and SCface satisfy added-dataset coverage beyond MOBIO/LFW, not the broader confirmatory matrix. AgeDB remains an optional addition without authorized access.
 
 | Dataset and role | Official contact | Who should request access and what to send |
 |---|---|---|

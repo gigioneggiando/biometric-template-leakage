@@ -580,6 +580,66 @@ def fig_followup_failures(out: Path) -> None:
     save_figure(fig, out, "fig_followup_failures")
 
 
+def fig_dataset_coverage(out: Path) -> None:
+    from matplotlib.colors import ListedColormap
+
+    labels = ["BioHash historical", "MLP-Hash historical", "IoM / PolyProtect pilots",
+              "IoM / PolyProtect follow-up", "Native / raw-norm audit", "Independent-pool + baseline"]
+    cells = [[2, 2, 2, 2], [2, 0, 0, 0], [1, 0, 1, 1], [3, 0, 3, 0], [3, 0, 3, 0], [4, 0, 4, 0]]
+    text = [["3 model seeds"] * 4, ["3 model seeds", "Not run", "Not run", "Not run"],
+            ["1 model seed", "Not run", "1 model seed", "1 model seed"],
+            ["3 seeds / 2 splits", "Not run", "3 seeds / 2 splits", "Not run"],
+            ["3 keys / 2 splits", "Not run", "3 keys / 2 splits", "Not run"],
+            ["3 pools / 3 seeds\n2 splits", "Not run", "3 pools / 3 seeds\n2 splits", "Not run"]]
+    fig, axis = plt.subplots(figsize=(10.5, 4.8))
+    axis.imshow(cells, cmap=ListedColormap(["#eeeeee", "#f9e6b2", "#d5e9f5", "#bde5d8", "#83c6b4"]), vmin=0, vmax=4, aspect="auto")
+    axis.set_xticks(range(4), ["MOBIO", "LFW", "FEI", "SCface"])
+    axis.set_yticks(range(len(labels)), labels)
+    axis.grid(False)
+    axis.tick_params(length=0)
+    for row, values in enumerate(text):
+        for column, value in enumerate(values):
+            axis.text(column, row, value, ha="center", va="center", fontsize=9)
+    axis.set_title("Dataset coverage: evidence layers are not interchangeable", pad=16)
+    fig.subplots_adjust(left=0.29, right=0.98, top=0.85, bottom=0.25)
+    fig.text(0.03, 0.11, "SCface retains mugshot-to-surveillance historical and pilot evidence; no new matched confirmation.", fontsize=9)
+    fig.text(0.03, 0.055, "Grey = not run in this package, not zero accuracy. Identity partitions overlap; native audits do not train attackers.", fontsize=9)
+    save_figure(fig, out, "fig_dataset_coverage")
+
+
+def fig_pool_replication(out: Path) -> None:
+    root = EXP / "pool_replication_2026-09-19"
+    summaries = pd.read_csv(root / "crossed_contrasts.csv")
+    pools = pd.read_csv(root / "pool_contrasts.csv")
+    fig, axes = plt.subplots(1, 2, figsize=(10.5, 5.3), sharey=True)
+    contrasts = [("mean10_minus_single1", "(a) Ten-record gain over one record"),
+                 ("mean10_minus_prediction10", "(b) Input mean minus prediction mean")]
+    for axis, (contrast, title) in zip(axes, contrasts):
+        subset = summaries[summaries["contrast"] == contrast].reset_index(drop=True)
+        for position, row in subset.iterrows():
+            axis.errorbar(100 * row["gain"], position, xerr=[[100 * (row["gain"] - row["lower95"])],
+                          [100 * (row["upper95"] - row["gain"])]], fmt="D", color=C["black"], capsize=3)
+            selected = pools[(pools["contrast"] == contrast) & (pools["dataset"] == row["dataset"]) &
+                             (pools["scheme"] == row["scheme"]) & (pools["split_seed"] == row["split_seed"])].sort_values("key_seed")
+            for offset, (_, pool), color in zip([-0.18, 0, 0.18], selected.iterrows(), [C["blue"], C["orange"], C["green"]]):
+                axis.scatter(100 * pool["gain"], position + offset, color=color, s=18, zorder=4,
+                             label=str(int(pool["key_seed"])) if position == 0 else None)
+        axis.axvline(0, ls="--", color=C["grey"], lw=1)
+        axis.set_xlim(-27, 83)
+        axis.set_title(title, pad=12)
+        axis.set_xlabel("Paired top-1 difference (percentage points)")
+    labels = [f"{row.dataset} / {row.scheme} / {'A' if row.split_seed == 91831 else 'B'}"
+              for row in subset.itertuples()]
+    axes[0].set_yticks(range(len(labels)), labels)
+    axes[0].invert_yaxis()
+    axes[1].legend(title="Pool seed", loc="lower right", frameon=False, fontsize=7)
+    fig.subplots_adjust(left=0.24, right=0.98, top=0.88, bottom=0.26, wspace=0.16)
+    fig.text(0.03, 0.13, "Colored dots: individual pool draws, averaged over three model seeds. Black: mean and crossed pool/seed/identity 95% interval.", fontsize=8)
+    fig.text(0.03, 0.08, "IoM gains persist across draws; PolyProtect is pool-sensitive. Every direct baseline-comparison interval includes zero.", fontsize=8)
+    fig.text(0.03, 0.03, "Three pools only; pointwise uncertainty, no corrected significance claim. A/B: overlapping partitions 91831/91843.", fontsize=8)
+    save_figure(fig, out, "fig_pool_replication")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, default=ROOT / "reports/figures")
@@ -599,6 +659,8 @@ def main() -> None:
     fig_followup_native_controls(args.out)
     fig_native_norm_audit(args.out)
     fig_followup_failures(args.out)
+    fig_dataset_coverage(args.out)
+    fig_pool_replication(args.out)
     print(f"figures written to {args.out}")
 
 

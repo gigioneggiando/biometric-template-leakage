@@ -2,6 +2,15 @@
 
 This document separates tasks that need human authorization, licenses, hardware, or author contact from tasks that the repository can perform once those blockers are removed. Never commit biometric data, model weights, keys, tokens, credentials, or private paths to Git.
 
+## Pool and baseline revision: 2026-09-19
+
+- [x] Compare the complete author-thesis maximal-linkability chapter, including scenarios, composition assumptions and numerical tables; disclose blocked publisher PDF.
+- [x] Prospectively freeze and execute three recurring-pool draws: 24 cells, 144 fits and 72 prediction-mean evaluations in 254.188 seconds.
+- [x] Publish pool sensitivity and the competitive baseline without claiming input-pooling superiority; document joint transform/assignment randomization and training differences.
+- [x] Choose SCface as supporting historical/pilot evidence, not new matched cross-camera confirmation.
+- [x] Retain hashed source snapshots, compact aggregate exports and explicit same-pool access assumptions; add coverage and baseline figures to the 16-page/12-slide/19-figure package.
+- [ ] Final journal-version verification, independent human review and coauthor signoff remain external. Broader scientific extensions below are not silently marked completed.
+
 ## Revision audit: 2026-09-18
 
 - [x] Compare primary sources, correct Li/Hu DOI and FaceLinkGen v3, distinguish existing PolyProtect multiplicity/residual linkage from our hidden-pool experiment.

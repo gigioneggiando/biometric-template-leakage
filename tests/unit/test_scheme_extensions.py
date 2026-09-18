@@ -9,6 +9,88 @@ from biometrics_ai.protection.iomgrp import IoMGRPConfig, iomgrp, iomgrp_batch, 
 from biometrics_ai.protection.polyprotect import PolyProtectConfig, polyprotect, polyprotect_batch, polyprotect_parameters, polyprotect_with_parameters
 
 
+def test_pool_replication_statistics_and_prediction_mean():
+    import torch
+    from scripts.train.run_pool_replication import pool_interval, predict
+    from scripts.train.run_real_multiexposure import make_model
+
+    assert pool_interval(np.full((3, 3, 5), 0.2), 7, 100) == pytest.approx((0.2, 0.2))
+    scores = np.broadcast_to(np.array([-1, 0, 1])[:, None, None], (3, 3, 5))
+    lower, upper = pool_interval(scores, 7, 1000)
+    assert lower < -0.5 and upper > 0.5
+    with pytest.raises(ValueError):
+        pool_interval(np.ones((1, 3, 5)), 7, 100)
+    model = make_model("single_mlp", 4, 6, 8)
+    values = np.random.default_rng(7).normal(size=(3, 10, 4)).astype(np.float32)
+    expected = np.mean([predict(model, values[:, index:index + 1]) for index in range(10)], axis=0)
+    expected /= np.linalg.norm(expected, axis=1, keepdims=True)
+    np.testing.assert_allclose(predict(model, values, average_records=True), expected, atol=1e-6)
+    np.testing.assert_allclose(predict(model, values[:, :1], average_records=True), predict(model, values[:, :1]), atol=1e-6)
+
+
+def test_pool_replication_trainer_matches_frozen_trainer():
+    from scripts.train.run_pool_replication import fit_model, predict
+    from scripts.train import run_real_multiexposure as runner
+
+    rng = np.random.default_rng(3)
+    targets = rng.normal(size=(6, 8)).astype(np.float32)
+    targets /= np.linalg.norm(targets, axis=1, keepdims=True)
+    test_set = {"templates": rng.normal(size=(6, 1, 4)).astype(np.float32), "targets": targets,
+                "gallery": targets, "identity_ids": np.array(list("abcdef")),
+                "gallery_identity_ids": np.array(list("abcdef"))}
+    training = {"hidden_dim": 8, "learning_rate": 0.001, "weight_decay": 0.0001,
+                "mse_weight": 0.1, "epochs": 3, "patience": 30, "bootstrap_resamples": 10,
+                "bootstrap_confidence": 0.95, "retain_identity_scores": True}
+    for model_name in ("single_mlp", "mean_mlp"):
+        reference = runner.train_model(model_name, test_set, test_set, test_set, training, 601)
+        model, info = fit_model(model_name, test_set, test_set, training, 601)
+        assert info["best_epoch"] == reference["best_epoch"]
+        assert info["best_validation_loss"] == pytest.approx(reference["best_validation_loss"], abs=1e-7)
+        assert runner.identity_top1_scores(predict(model, test_set["templates"]), test_set) == reference["identity_top1_scores"]
+
+
+def test_pool_replication_exports_and_source_archive():
+    import csv
+    import hashlib
+    import zipfile
+
+    root = Path(__file__).resolve().parents[2] / "experiments/pool_replication_2026-09-19"
+    def table(name):
+        with (root / name).open(newline="", encoding="utf-8") as handle:
+            return list(csv.DictReader(handle))
+
+    runs = table("results_summary.csv")
+    assert len(runs) == 216
+    assert sum(row["model"] != "prediction_mean" for row in runs) == 144
+    assert {int(row["key_seed"]) for row in runs} == {91901, 91907, 91909}
+    assert {int(row["model_seed"]) for row in runs} == {601, 607, 613}
+    assert not any("identity" in key for row in runs for key in row)
+    keys = [tuple(row[key] for key in ("dataset", "scheme", "split_seed", "key_seed", "model_seed", "model")) for row in runs]
+    assert len(set(keys)) == 216
+    for contrast in table("pool_contrasts.csv"):
+        matched = [row for row in runs if all(row[key] == contrast[key] for key in ("dataset", "scheme", "split_seed", "key_seed"))]
+        reference = "single_mlp" if contrast["contrast"] == "mean10_minus_single1" else "prediction_mean"
+        after = [float(row["top1"]) for row in matched if row["model"] == "mean_mlp"]
+        before = [float(row["top1"]) for row in matched if row["model"] == reference]
+        assert len(after) == len(before) == 3
+        assert float(contrast["gain"]) == pytest.approx(np.mean(after) - np.mean(before))
+    summaries = table("crossed_contrasts.csv")
+    assert len(summaries) == 16
+    for row in summaries:
+        gains = [float(item["gain"]) for item in table("pool_contrasts.csv") if all(item[key] == row[key] for key in ("dataset", "scheme", "split_seed", "contrast"))]
+        assert len(gains) == 3
+        assert float(row["gain"]) == pytest.approx(np.mean(gains))
+        assert float(row["lower95"]) <= float(row["gain"]) <= float(row["upper95"])
+    manifest = json.loads((root / "execution_manifest.json").read_text())
+    assert manifest["status"] == "completed" and manifest["completed_cells"] == 24
+    assert manifest["wall_seconds"] < manifest["config"]["max_wall_seconds"]
+    with zipfile.ZipFile(root / "executed_sources.zip") as archive:
+        assert set(archive.namelist()) == set(manifest["source_sha256"])
+        for name, digest in manifest["source_sha256"].items():
+            assert hashlib.sha256(archive.read(name)).hexdigest() == digest
+            assert name.startswith(("src/", "scripts/train/", "configs/", "docs/protocols/"))
+
+
 def test_iom_hand_computed_argmax_and_one_hot(monkeypatch):
     config = IoMGRPConfig(input_dim=2, groups=2, group_size=3)
     matrix = np.array([[1, 2, 0, 4, 2, 1], [0, 0, 3, 0, 1, 6]], dtype=np.float32)

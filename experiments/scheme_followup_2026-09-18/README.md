@@ -37,11 +37,11 @@ Positive scales 0.5 and 2 were applied to 32 held-out unit embeddings per datase
 
 ### View the completed study
 
-- [14-page September report](../../reports/Sept_Dataset_Update.pdf): methods, results and scientific scope.
-- [Ten-slide PDF](../../reports/slides/research_review.pdf) and [editable PowerPoint](../../reports/slides/research_review.pptx).
+- [16-page September report](../../reports/Sept_Dataset_Update.pdf): methods, results and scientific scope, including the separate later pool study.
+- [12-slide PDF](../../reports/slides/research_review.pdf) and [editable PowerPoint](../../reports/slides/research_review.pptx).
 - [Architecture overview](../../reports/figures/fig_architecture.pdf) and [detailed attacker](../../reports/figures/fig_attack_detail.pdf).
 - [Primary amplification figure](../../reports/figures/fig_followup_amplification.pdf) and [native/radial controls](../../reports/figures/fig_followup_native_controls.pdf).
-- [Complete 17-figure appendix](../../reports/slides/figure_appendix.pdf), including historical studies and pilots reported separately.
+- [Complete 19-figure appendix](../../reports/slides/figure_appendix.pdf), including historical studies and pilots reported separately.
 - [Subsequent raw-norm/native audit and all 48 contrast failures](../norm_native_audit_2026-09-18/README.md): original primary results here remain unchanged; raw extraction and post-hoc correction have a separate freeze.
 
 ### Compact result artifacts

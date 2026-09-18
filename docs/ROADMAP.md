@@ -2,7 +2,13 @@
 
 This roadmap records Sani's requested next phase. It does not change the interpretation of existing results and does not authorize unsupported reproduction or SOTA claims.
 
-## Progress update: 2026-09-18
+## Progress update: 2026-09-19
+
+The [independent-pool/baseline study](../experiments/pool_replication_2026-09-19/README.md) completed 24 cells, 144 fits and 72 prediction-mean evaluations in 254.188 seconds. IoM gains persist across three tested pools; PolyProtect is pool-sensitive. No input-pooling superiority is established. The maximal-linkability full author-thesis chapter is compared, with final publisher-version verification still blocked. SCface remains explicitly supporting historical/pilot evidence because matched inputs were unavailable on the executing host. Same-pool paired access and baseline training differences are documented.
+
+Current package: [16-page report](../reports/Sept_Dataset_Update.pdf), 12-slide PDF/editable deck and 19-figure appendix, with an all-dataset coverage diagram and pool/baseline plot. The new 216 evaluated endpoints are indexed separately from the old inventory. Three pools, fixed exposure-set seed, stricter PolyProtect selection, wider confirmation and independent human review remain limitations. This finishes the bounded requested revision, not every item in the full roadmap.
+
+## Earlier progress: 2026-09-18
 
 FEI and SCface are both complete as added datasets beyond MOBIO/LFW: FEI has 200 identities, 2,378 successful embeddings; SCface has 130 identities, 2,851 successful embeddings from a mugshot-gallery/surveillance-probe protocol. Both cover BioHash endpoints 1 and 10 with three model seeds. The user reported approval of IoM-GRP/PolyProtect; both paper-specified implementations and one-seed pilot cells are complete on MOBIO/FEI (16 cells) and SCface (8 cells). This is pilot-grade, single-identity-assignment evidence, not the roadmap's cross-scheme confirmation requirement. Sani supplied the authorized SCface archive directly on 2026-09-18; AgeDB access remains unavailable, see the [request checklist](datasets/access_request_checklist.md).
 

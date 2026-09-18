@@ -1,5 +1,15 @@
 # Research log
 
+## 2026-09-19 (independent pools and prediction baseline)
+
+- User requested full-text maximal-leakage comparison, independent pool draws, a clear SCface role, matched baselines, reproducibility, revised graphics and a push after validation.
+- Froze a separate prospective protocol/configuration and 34 source hashes. Completed 24 cells, 144 fits and 72 reused-checkpoint prediction-mean evaluations in 254.188 seconds on CPU, below 3,600 seconds. Earlier executed sources/results remain unchanged.
+- IoM gains positive in 12/12 dataset/split/pool combinations (21.56-42.36 pp); PolyProtect positive in 9/12 (-3.23 to +72.40 pp). Pool seeds jointly change transforms and slot assignments. Three-pool crossed intervals are pointwise, not corrected tests or universal robustness guarantees.
+- All eight input-mean versus prediction-mean intervals include zero; no superiority/equivalence. Inference records/gallery are matched, training objectives and effective presentations differ.
+- Read the full author-thesis chapter 5.4, printed pp. 157-171, plus relevant definitions and appendix. Publisher PDF blocked (HTTP 418); journal-version identity and source-exact code reproduction remain unverified. Multiplicity, different-key templates and joint-score linkability are prior art.
+- SCface deliberately remains supporting historical/pilot evidence; its private inputs were unavailable for matched training. New all-dataset coverage and pool/baseline figures expand the report to 16 pages, deck to 12 slides and appendix to 19 figures. Manuscript/guide preserve negative outcomes and strong access assumptions.
+- Focused validation: 67 scheme/figure tests pass, including trainer parity, baseline semantics, aggregate consistency and source archive integrity. Independent human review and native PowerPoint rendering are not claimed.
+
 ## 2026-09-18 (raw-norm audit and manuscript revision)
 
 - User requested closest-work comparison, justified attacker access, implementation checks, genuine raw-input controls, complete follow-up inference/failures and revised PDF.

@@ -1,6 +1,10 @@
 # Final research status
 
-## Findings update: 2026-09-18
+## Findings update: 2026-09-19
+
+**Independent-pool revision completed:** [24 cells, 144 fits and 72 prediction-mean evaluations](../experiments/pool_replication_2026-09-19/README.md), three pools x three model seeds x two partitions, 254.188 seconds. IoM gains persist in all 12 dataset/split/pool combinations; PolyProtect has three reversals and gains from -3.23 to +72.40 points. All eight direct input-mean versus prediction-mean intervals include zero: neither superiority nor equivalence. Pool seeds change transforms and slot assignment jointly; only three draws and pointwise intervals limit inference. The historical fixed-pool corrected family remains unchanged.
+
+The [full author-thesis maximal-linkability chapter comparison](../docs/literature/closest_work_2026-09-18.md) is complete; publisher-PDF version verification remains blocked. SCface is deliberately retained as supporting historical/pilot evidence, not matched cross-camera confirmation. Same-pool paired access, output-visible queries, known grouping and a small closed gallery remain strong explicit assumptions. No general novelty, deployment prevalence or independent human review is claimed.
 
 **Subsequent revision completed:** [raw-norm/native audit](../experiments/norm_native_audit_2026-09-18/README.md), 254.157 seconds, 4,177 genuine raw extractions, 48 separate formula/matcher checks, 130 aggregate rows. No matching disagreements were found. Native raw matching rises descriptively, but only FEI raw-unit paired gains survive correction; raw-shuffled comparisons do not establish identity-specific norm leakage. All 48 follow-up contrasts now include corrected inference and seed sensitivity: eight pool-4 mean gains and four shared-key DeepSets losses survive the post-hoc family. The [closest-work review](../docs/literature/closest_work_2026-09-18.md) narrows novelty and explicitly requires training access to the same realized hidden pool. The manuscript has three supported claims, not a universal privacy conclusion.
 
@@ -16,7 +20,7 @@ Fresh-key uncertainty remains broad: no endpoint meets the illustrative +/-1-poi
 
 The subsequent authorized [MOBIO/FEI follow-up](../experiments/scheme_followup_2026-09-18/README.md) completed 24 cells / 216 endpoints in 859.63 seconds. IoM-GRP and PolyProtect were tested on two new identity partitions with three model seeds, fresh/shared/pool-4 conditions and matched 120-epoch caps. All eight primary pool-4 mean-pool amplification contrasts have positive crossed-bootstrap 95% intervals and Holm p = 0.004. All 12 fresh PolyProtect native matching tests exceed their gallery-label permutation null (Holm p = 0.006). IoM-GRP is unchanged by positive radial scaling; PolyProtect changes, but this synthetic sensitivity is not natural norm leakage or a causal explanation of native linkage. Fresh learned intervals include chance; no equivalence claim follows.
 
-The package contains three diagrams, fourteen result plots, a ten-slide editable deck/PDF, a 17-figure appendix and a [14-page September report](Sept_Dataset_Update.pdf), with a [page guide](Sept_Dataset_Update_guide.md). Trained follow-up base `4352eeb`; norm-audit base `15e4384`; exact executed hashes are recorded. Earlier 73 conditions, 72 pilots, 216 follow-up endpoints and 130 audit rows remain separate. The inventory retains 849 rows / 49 artifacts; its [coverage audit](../experiments/scheme_followup_2026-09-18/coverage_audit.csv) identifies legacy and unavailable SCface details. Native PowerPoint rendering remains a presenting-machine check.
+The package contains 19 figures, a 12-slide editable deck/PDF and a [16-page September report](Sept_Dataset_Update.pdf), with a [page guide](Sept_Dataset_Update_guide.md). Trained follow-up base `4352eeb`; norm-audit base `15e4384`; exact executed hashes are recorded. Earlier 73 conditions, 72 pilots, 216 follow-up endpoints, 130 audit rows and the new 216 evaluated pool-study endpoints remain separate. The historical inventory retains 849 rows / 49 artifacts; its [coverage audit](../experiments/scheme_followup_2026-09-18/coverage_audit.csv) identifies legacy and unavailable SCface details. Native PowerPoint rendering remains a presenting-machine check.
 
 | Remaining gate | Current status / next action |
 |---|---|
@@ -26,7 +30,7 @@ The package contains three diagrams, fourteen result plots, a ten-slide editable
 | Statistical inference | Follow-up crossed seed/identity intervals and prespecified Holm families complete. Approved equivalence margins, older-study inference and full historical coverage remain open. |
 | Theory and implementation | Separate formulas/matcher and genuine raw-norm controls complete. Learned raw-input retraining, stricter parameter policy, full causal explanation and independent human review remain open. |
 | Novelty and venue fit | Versioned closest-work comparison and deployment assumptions documented; exhaustive priority and independent human review are not claimed. |
-| Professor review | Review the revised manuscript and ten-slide package; record decisions before expanding experiments. |
+| Professor review | Review the revised manuscript and 12-slide package; record decisions before expanding experiments. |
 
 See [figures/README.md](figures/README.md), [slides/research_review.pdf](slides/research_review.pdf), and [../docs/ROADMAP.md](../docs/ROADMAP.md). No biometric images, templates, keys, or model weights are included in the presentation package.
 
