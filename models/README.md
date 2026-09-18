@@ -4,6 +4,8 @@
 
 Weights are intentionally ignored. InsightFace code is MIT licensed, but each checkpoint's training-data and redistribution terms must be independently checked. Arc2Face is optional; its official implementation and model download instructions are documented in `docs/literature/paper_notes/facelinkgen.md`.
 
+The [2026-09-18 follow-up](../experiments/scheme_followup_2026-09-18/README.md) trained 216 attack-model endpoints, not a new face backbone. Single-record MLP, mean-pool MLP and DeepSets reused fixed MOBIO/FEI embeddings with model seeds 601/607/613, two identity assignments, 120-epoch caps and patience 30. Training uses cosine loss plus 0.1 MSE against normalized means of exposed embeddings; the held-out gallery is not the training target. Exact layers and tensor dimensions are shown in the [detailed attacker diagram](../reports/figures/fig_attack_detail.pdf). No new face weights were downloaded or fine-tuned.
+
 The Month 1 real-dataset studies use the official InsightFace `buffalo_l` release asset (`ResNet50@WebFace600K`). InsightFace states that its provided pretrained models are available for non-commercial research only. Review those terms before running:
 
 ```powershell

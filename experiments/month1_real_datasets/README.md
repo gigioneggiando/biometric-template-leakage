@@ -1,6 +1,6 @@
 # Month 1 real-dataset evidence
 
-**Documentation checked: 2026-09-18. Month 1 milestone completed: 2026-08-26.** This historical single-template archive remains valid and separate from the current four-dataset multi-exposure table (73 conditions / 12 studies). The [September report](../../reports/Sept_Dataset_Update.pdf) includes later FEI/SCface evidence and additional-scheme pilots, not replacements for these protocols. Dataset archives and model hashes remain governed by the [data policy](../../data/README.md).
+**Documentation checked: 2026-09-18. Month 1 milestone completed: 2026-08-26.** This historical single-template archive remains separate from the current four-dataset multi-exposure table (73 conditions / 12 studies), 72 scheme pilot endpoints, and [216-endpoint MOBIO/FEI follow-up](../scheme_followup_2026-09-18/README.md). The [September report](../../reports/Sept_Dataset_Update.pdf) presents those later studies, not replacements for these protocols. No new Month 1 training was performed. Dataset archives and model hashes remain governed by the [data policy](../../data/README.md).
 
 Status: **COMPLETED ENGINEERING VALIDATION; NOT A PAPER REPRODUCTION**.
 

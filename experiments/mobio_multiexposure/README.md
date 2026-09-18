@@ -1,6 +1,6 @@
 # MOBIO multi-exposure study
 
-**Documentation checked: 2026-09-18. Initial studies completed: 2026-09-04.** Historical boundary studies below retain their original protocols and values. Current cross-dataset evidence includes LFW/FEI/[SCface](../scface_multiexposure/README.md), with 73 conditions from 12 studies. The [MOBIO/FEI additional-scheme results](../scheme_extension_pilot/README.md) are one-seed pilots, separate from this three-seed evidence; see the [September report](../../reports/Sept_Dataset_Update.pdf).
+**Documentation checked: 2026-09-18. Initial studies completed: 2026-09-04.** Historical boundary studies below retain their original protocols and values. Current cross-dataset evidence includes LFW/FEI/[SCface](../scface_multiexposure/README.md), with 73 conditions from 12 studies. The [one-seed scheme pilots](../scheme_extension_pilot/README.md) and [new MOBIO/FEI follow-up](../scheme_followup_2026-09-18/README.md) remain separate from this evidence. The follow-up adds 108 MOBIO endpoints across IoM-GRP/PolyProtect, two identity assignments and three model seeds. All four MOBIO primary pool-4 gains have positive crossed intervals and Holm p = 0.004 within the eight-test family; six MOBIO native controls have Holm p = 0.006 within the twelve-test family. See the [September report](../../reports/Sept_Dataset_Update.pdf).
 
 Classification: **exploratory independent study, not a `benchmark_cb` reproduction**.
 

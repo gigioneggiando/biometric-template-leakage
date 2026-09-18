@@ -1,6 +1,6 @@
 # MOBIO single-template baseline
 
-**Documentation checked: 2026-09-18. Baseline completed: 2026-09-04.** Retain this single-template evidence and acquisition provenance separately from the later [multi-exposure study](../mobio_multiexposure/README.md). Current results add FEI/SCface and 24 one-seed scheme pilot cells; see the [September update](../../reports/Sept_Dataset_Update.pdf). No new baseline training was performed for the report refresh.
+**Documentation checked: 2026-09-18. Baseline completed: 2026-09-04.** Retain this single-template evidence and acquisition provenance separately from the later [multi-exposure study](../mobio_multiexposure/README.md). Current results include FEI/SCface, 24 historical one-seed scheme pilot cells, and a separate [216-endpoint MOBIO/FEI follow-up](../scheme_followup_2026-09-18/README.md) across three model seeds and two identity assignments. See the [September update](../../reports/Sept_Dataset_Update.pdf). This Month 1 baseline was not rerun.
 
 Classification: **independent engineering validation, not a `benchmark_cb` reproduction**.
 

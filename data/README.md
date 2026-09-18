@@ -4,6 +4,12 @@
 
 `raw/`, `interim/`, and `processed/` are ignored. Never commit biometric images, templates, model weights, or access credentials.
 
+## Data used by the new follow-up
+
+The [216-endpoint MOBIO/FEI follow-up](../experiments/scheme_followup_2026-09-18/README.md) reused existing authorized, unit-normalized ArcFace embeddings: 1,799 MOBIO and 2,378 FEI records. It used two new identity assignments; no new acquisition or face-model extraction was performed. LFW embeddings were available but outside this run's selected scope. SCface results are tracked, but its embeddings and detailed run artifacts were unavailable on this host, so no new SCface training was run.
+
+Only compact aggregates and the [execution manifest](../experiments/scheme_followup_2026-09-18/execution_manifest.json) are shareable. Identity-level scores, keys and embeddings remain private. The radial control scales existing unit embeddings synthetically; it does not supply naturally non-normalized face embeddings or establish natural norm leakage.
+
 MOBIO is a manual-access dataset. Follow [MOBIO setup](../docs/setup/MOBIO.md), then run `python scripts/data/prepare_mobio.py --root <authorized-path>`.
 
 LFW, Olivetti faces, and CFP are real-data engineering fallbacks and must never be reported as MOBIO or paper reproductions. Their downloaders verify available source artifacts before use:

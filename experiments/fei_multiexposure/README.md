@@ -1,6 +1,6 @@
 # FEI multi-exposure key-pool study
 
-**Documentation checked: 2026-09-18. Study completed: 2026-09-12.** This retained third-dataset study now sits alongside [SCface](../scface_multiexposure/README.md) in the [73-condition comparison](../cross_dataset_key_pool_summary.csv). Additional FEI scheme findings are [one-seed pilots](../scheme_extension_pilot/README.md), not reruns of this BioHash study.
+**Documentation checked: 2026-09-18. Study completed: 2026-09-12.** This retained third-dataset study sits alongside [SCface](../scface_multiexposure/README.md) in the [73-condition comparison](../cross_dataset_key_pool_summary.csv). Additional FEI scheme findings include [one-seed pilots](../scheme_extension_pilot/README.md) and 108 endpoints in the [new MOBIO/FEI follow-up](../scheme_followup_2026-09-18/README.md): IoM-GRP/PolyProtect, two identity assignments, three model seeds and fresh/shared/pool-4 conditions. These are separate studies, not reruns of this BioHash study. All four FEI primary amplification contrasts have positive crossed intervals and Holm p = 0.004 within the eight-test family; six FEI native controls have Holm p = 0.006 within the twelve-test family.
 
 Status: **COMPLETED THIRD-DATASET REPLICATION; NOT A PAPER REPRODUCTION**.
 

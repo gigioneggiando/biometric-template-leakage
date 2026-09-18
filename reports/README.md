@@ -7,12 +7,14 @@ The subsequent [bounded MOBIO/FEI follow-up](../experiments/scheme_followup_2026
 ## Start here
 
 - [September dataset update: nine pages, defined architecture and latest results](Sept_Dataset_Update.pdf)
-- [Current evidence and submission gates](final_research_status.md)
+- [Current findings and scientific scope](final_research_status.md)
+- [Completed 216-endpoint follow-up: results, controls and provenance](../experiments/scheme_followup_2026-09-18/README.md)
+- [Architecture overview](figures/fig_architecture.pdf) and [detailed attacker](figures/fig_attack_detail.pdf)
 - [Working manuscript](paper_draft.md)
 - [Figure index, captions, and regeneration commands](figures/README.md)
 - [Eight-slide PDF](slides/research_review.pdf)
 - [Editable review deck](slides/research_review.pptx)
-- [Complete vector figure appendix](slides/figure_appendix.pdf)
+- [Complete 15-figure vector appendix](slides/figure_appendix.pdf)
 - [New scheme pilot results and caveats](../experiments/scheme_extension_pilot/README.md)
 - [SCface added-dataset study](../experiments/scface_multiexposure/README.md) and [SCface scheme pilots](../experiments/scface_scheme_extension_pilot/README.md)
 - [Local per-seed run inventory](../experiments/multiexposure_run_matrix.csv)
@@ -44,3 +46,5 @@ The local per-seed inventory has 849 rows from 49 artifacts, retaining all previ
 ## Approval and access
 
 On 2026-09-12 the user reported Sani's approval of paper-specified IoM-GRP and PolyProtect and authorized pilots first, with at most one hour of new local training in this session. On 2026-09-18 Sani supplied the authorized SCface archive directly; AgeDB access remains unavailable. Dataset acquisition and independent human scientific review remain external gates; a local audit cannot substitute for either.
+
+The later one-hour authorization selected available MOBIO/FEI embeddings for the bounded follow-up. All 24 cells completed in 859.63 seconds; no new SCface/LFW training was performed. The resulting exports passed 42 focused figure/scheme tests, README link checks and rendered-PDF inspection. These checks validate the package, not scientific equivalence, independent review or the unfinished full roadmap.

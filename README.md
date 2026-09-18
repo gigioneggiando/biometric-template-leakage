@@ -4,6 +4,19 @@
 
 **Navigation:** [Research package index](reports/README.md), [current evidence and gates](reports/final_research_status.md), [figure captions](reports/figures/README.md), and [review slides](reports/slides/research_review.pdf).
 
+## What we have now
+
+| Completed work | Available evidence |
+|---|---|
+| Four multi-exposure datasets: MOBIO, LFW, FEI, SCface | [73 key-pool conditions from 12 source-separated studies](experiments/cross_dataset_key_pool_summary.csv) |
+| IoM-GRP and PolyProtect historical pilots | 24 cells / 72 endpoints across MOBIO/FEI/SCface; one model seed per endpoint |
+| New MOBIO/FEI scheme follow-up | [24 cells / 216 endpoints](experiments/scheme_followup_2026-09-18/README.md), two identity assignments and three model seeds; 859.63 seconds total |
+| Follow-up statistical controls | Eight positive pool-4 amplification contrasts (Holm p = 0.004); twelve native permutation tests (Holm p = 0.006); separate synthetic radial sensitivity |
+| Local run inventory | [849 rows from 49 artifacts](experiments/multiexposure_run_matrix.csv), with [legacy/missing-detail coverage audit](experiments/scheme_followup_2026-09-18/coverage_audit.csv) |
+| Scientific presentation | Nine-page report, eight-slide PDF/editable deck, 15 figures including separate overview and detailed attacker diagrams |
+
+The follow-up is separately hash-frozen against base commit `4352eeb`; it is not part of that commit's results. Historical pilots and new endpoints are not pooled. SCface follow-up, the full exposure/dataset matrix, natural norm-leakage experiments and approved equivalence analysis remain incomplete. Fresh-key chance compatibility is not a privacy proof.
+
 ## Open results, images and diagrams
 
 No environment setup or experiment rerun is needed to view the existing outputs. Open PNG images directly, PDFs in a PDF viewer/browser, and the editable deck in PowerPoint. In VS Code, open this README's Markdown preview for clickable navigation.
@@ -166,12 +179,12 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 | -------------------- | ------------ | --------------------------------------------------------------------- | --------------------------------------------------- |
 | Synthetic identities | [x] Plumbing | CPU smoke pipeline only; excluded from scientific evidence            | Keep as test data only                              |
 | LFW funneled         | [x] Used     | Month 1 checks; 125 x 12 key-pool replication of the MOBIO protocol   | Preserve as second-dataset evidence                 |
-| FEI                  | [x] Used     | 200 x 12 pose-sweep key-pool replication of the MOBIO protocol        | Preserve as third-dataset evidence                  |
+| FEI                  | [x] Used     | BioHash key-pool study; IoM-GRP/PolyProtect pilots and 108 follow-up endpoints | Extend only beyond the documented bounded scope |
 | SCface               | [x] Used     | 130 identities; mugshot/surveillance BioHash study; IoM-GRP/PolyProtect pilots | Confirm across seeds and partitions |
 | AgeDB                | [ ] Optional | No authorized archive or experiments | Acquire only if the optional third addition is approved |
 | Olivetti faces       | [x] Used     | Full 40-identity protocol and dimension sweep                         | Preserve as cross-dataset evidence                  |
 | CFP                  | [x] Used     | Full frontal/profile protocols and crossed-seed sensitivity checks    | Preserve as large-scale/view evidence               |
-| MOBIO                | [x] Used     | BioHash/MLP-Hash boundary, three partitions, mechanism and correlation controls | Norm-leakage and equivalence controls |
+| MOBIO                | [x] Used     | BioHash/MLP-Hash boundary and controls; IoM-GRP/PolyProtect pilots and 108 follow-up endpoints | Natural norm-leakage and equivalence analysis |
 | CASIA-WebFace        | [ ] Not used | Reviewed as a possible FaceLinkGen training source                    | Use only after license and protocol verification    |
 | TPDNE                | [ ] Not used | Reviewed as optional FaceLinkGen evaluation data                      | Defer until core identity linkage works             |
 
@@ -190,9 +203,9 @@ Data, embeddings, keys, model weights, and detailed run artifacts are gitignored
 Sani requested the next generalization phase during the 2026-09-10 meeting. The full staged plan, selection gates, experiment matrix, and presentation deliverables are in [docs/ROADMAP.md](docs/ROADMAP.md).
 
 1. Review completed FEI/SCface added-dataset studies; decide whether optional AgeDB coverage is justified before requesting access.
-2. Review all 24 IoM-GRP/PolyProtect pilot cells and investigate the native PolyProtect fresh-key diagnostic.
-3. Approve and freeze the broader multi-seed confirmation matrix before new training.
-4. Approve equivalence margins, seed/multiplicity analysis and a justified norm-sensitive control.
+2. Review the 216-endpoint follow-up alongside the 72 historical pilot endpoints; investigate the mechanism behind native PolyProtect linkage after the completed permutation controls.
+3. Approve and freeze the remaining cross-dataset/exposure matrix before further training; SCface follow-up needs local embeddings.
+4. Approve equivalence margins and natural norm-leakage experiments; crossed seed/identity intervals and primary Holm corrections are already complete for the bounded follow-up.
 5. Obtain independent human theory/novelty review using the [review checklist](docs/review/scheme_pilot_review_2026-09-12.md).
 6. Review the regenerated deck and figures with Sani; reconcile historical artifacts with the local per-seed matrix.
 7. Recover the official `benchmark_cb` source before claiming source-exact reproduction.

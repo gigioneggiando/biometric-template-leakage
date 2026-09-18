@@ -1,6 +1,6 @@
 # MOBIO key-reuse mechanism controls
 
-**Documentation checked: 2026-09-18. Corrected controls reported: 2026-09-05.** These results remain the mechanism evidence in the [current September report](../../reports/Sept_Dataset_Update.pdf). The new [SCface study](../scface_multiexposure/README.md) adds cross-dataset evidence, not a replication of these controls. Original configurations and correction history are retained for auditability.
+**Documentation checked: 2026-09-18. Corrected controls reported: 2026-09-05.** These results remain the mechanism evidence in the [current September report](../../reports/Sept_Dataset_Update.pdf). The [SCface study](../scface_multiexposure/README.md) and [216-endpoint MOBIO/FEI scheme follow-up](../scheme_followup_2026-09-18/README.md) add separate evidence, not replications of these slot-known or shuffled-record controls. The follow-up's native permutation and radial diagnostics do not establish the mechanism behind PolyProtect native linkage. Original configurations, results and correction history are retained.
 
 Status: **COMPLETED EXPLORATORY CONTROLS; NOT A PAPER REPRODUCTION**.
 

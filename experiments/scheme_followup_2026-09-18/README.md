@@ -35,6 +35,16 @@ Positive scales 0.5 and 2 were applied to 32 held-out unit embeddings per datase
 
 ## Files and reproduction
 
+### View the completed study
+
+- [Nine-page September report](../../reports/Sept_Dataset_Update.pdf): methods, results and scientific scope.
+- [Eight-slide PDF](../../reports/slides/research_review.pdf) and [editable PowerPoint](../../reports/slides/research_review.pptx).
+- [Architecture overview](../../reports/figures/fig_architecture.pdf) and [detailed attacker](../../reports/figures/fig_attack_detail.pdf).
+- [Primary amplification figure](../../reports/figures/fig_followup_amplification.pdf) and [native/radial controls](../../reports/figures/fig_followup_native_controls.pdf).
+- [Complete 15-figure appendix](../../reports/slides/figure_appendix.pdf), including historical studies and pilots reported separately.
+
+### Compact result artifacts
+
 - [results_summary.csv](results_summary.csv): 216 trained endpoints, code/configuration references, model seeds and partition labels.
 - [seed_identity_endpoints.csv](seed_identity_endpoints.csv): 72 endpoint summaries with model-seed SD and crossed uncertainty.
 - [seed_identity_contrasts.csv](seed_identity_contrasts.csv): paired gains, crossed intervals and corrected primary tests.

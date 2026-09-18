@@ -1,6 +1,6 @@
 # LFW multi-exposure key-pool study
 
-**Documentation checked: 2026-09-18.** The historical second-dataset BioHash study is retained unchanged numerically. The current [73-condition comparison](../cross_dataset_key_pool_summary.csv) also includes FEI and [SCface](../scface_multiexposure/README.md); LFW has no IoM-GRP/PolyProtect pilot in the current package. See the [September report](../../reports/Sept_Dataset_Update.pdf).
+**Documentation checked: 2026-09-18.** The historical second-dataset BioHash study is retained unchanged numerically. The current [73-condition comparison](../cross_dataset_key_pool_summary.csv) also includes FEI and [SCface](../scface_multiexposure/README.md). The [216-endpoint IoM-GRP/PolyProtect follow-up](../scheme_followup_2026-09-18/README.md) covers MOBIO/FEI only; LFW has no added-scheme pilot or follow-up in the current package. No new LFW training was performed. See the [September report](../../reports/Sept_Dataset_Update.pdf).
 
 Status: **COMPLETED SECOND-DATASET REPLICATION; NOT A PAPER REPRODUCTION**.
 

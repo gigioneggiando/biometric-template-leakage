@@ -1,6 +1,6 @@
 # MOBIO fresh-key and correlated-key controls
 
-**Documentation checked: 2026-09-18. Controls reported: 2026-09-06.** These historical three-seed controls remain the source for the [current control figure](../../reports/figures/fig_controls.pdf). The [September update](../../reports/Sept_Dataset_Update.pdf) adds SCface results separately; no SCface correlation control or new MOBIO run is implied.
+**Documentation checked: 2026-09-18. Controls reported: 2026-09-06.** These historical three-seed controls remain the source for the [current control figure](../../reports/figures/fig_controls.pdf). The new [216-endpoint MOBIO/FEI follow-up](../scheme_followup_2026-09-18/README.md) studies IoM-GRP/PolyProtect and adds native permutation and synthetic radial controls. It does not rerun these BioHash correlation sweeps or provide a SCface correlation control. Original numerical results below are unchanged.
 
 Status: **COMPLETED EXPLORATORY CONTROLS; NOT A PAPER REPRODUCTION**.
 
