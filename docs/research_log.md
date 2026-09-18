@@ -1,5 +1,16 @@
 # Research log
 
+## 2026-09-18 (bounded multi-seed follow-up, after the visual refresh)
+
+- Authorization: user explicitly allowed up to one hour of local compute and selected available MOBIO/FEI data; SCface embeddings were unavailable on this host.
+- Freeze: [protocol](protocols/scheme_followup_2026-09-18.md), configuration and 32 source/configuration/protocol SHA-256 hashes recorded before execution against base `4352eeb`, with dirty-worktree status explicit. All hashes matched after execution.
+- Execution: `python scripts/train/run_scheme_followup.py` completed all 24 cells / 216 endpoints in 859.625 seconds total (848.657 seconds training), CPU, eight Torch threads. Two identity assignments, three model seeds, two schemes, fresh/shared/pool-4, single/mean/DeepSets, matched 120-epoch caps.
+- Result: eight primary pool-4 amplification contrasts have positive crossed seed/identity bootstrap intervals and Holm p = 0.004. Twelve fresh PolyProtect native gallery-label permutation tests have Holm p = 0.006. IoM-GRP is invariant to tested positive radial scales; PolyProtect is sensitive. Native matching is a distinct task, and radial stress is not natural norm leakage.
+- Inventory: all previous 633 rows compared unchanged before exporting 849 rows from 49 artifacts. Coverage audit identifies two legacy-schema MOBIO sources and unavailable SCface detailed artifacts; aggregate SCface results are retained.
+- Presentation: split architecture overview and detailed attacker; replace submission/A-ranking commentary with findings and scientific scope; add two follow-up plots, making 15 figures. Old pilots remain separate.
+- Reporting fix: new exports distinguish trained-model `seed` from `bootstrap_seed`; earlier pilot paired tables had bootstrap seed 91223 in their seed column. Historical numeric results were not rewritten.
+- Scope: overlapping partitions and fixed training key/set seeds; no new SCface/LFW training, natural norm extraction, full exposure matrix, approved equivalence margin or independent human review. [Complete results](../experiments/scheme_followup_2026-09-18/README.md).
+
 ## 2026-08-25
 
 - Task: initialized reproducible research repository from the master prompt.

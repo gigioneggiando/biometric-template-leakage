@@ -1,0 +1,17 @@
+dataset,split_seed,scheme,scale,sample_count,relative_l2_mean,cosine_mean,exactly_equal,interpretation
+MOBIO,91831,IoM-GRP,0.5,32,0.0,0.9999999999999998,True,synthetic radial stress; not natural norm leakage
+MOBIO,91831,IoM-GRP,2.0,32,0.0,0.9999999999999998,True,synthetic radial stress; not natural norm leakage
+MOBIO,91831,PolyProtect,0.5,32,0.5215498208999634,0.9932518005371094,False,synthetic radial stress; not natural norm leakage
+MOBIO,91831,PolyProtect,2.0,32,1.2122437953948975,0.9887031316757202,False,synthetic radial stress; not natural norm leakage
+FEI,91831,IoM-GRP,0.5,32,0.0,0.9999999999999998,True,synthetic radial stress; not natural norm leakage
+FEI,91831,IoM-GRP,2.0,32,0.0,0.9999999999999998,True,synthetic radial stress; not natural norm leakage
+FEI,91831,PolyProtect,0.5,32,0.5150973796844482,0.9944314956665039,False,synthetic radial stress; not natural norm leakage
+FEI,91831,PolyProtect,2.0,32,1.1574723720550537,0.988920271396637,False,synthetic radial stress; not natural norm leakage
+MOBIO,91843,IoM-GRP,0.5,32,0.0,0.9999999999999998,True,synthetic radial stress; not natural norm leakage
+MOBIO,91843,IoM-GRP,2.0,32,0.0,0.9999999999999998,True,synthetic radial stress; not natural norm leakage
+MOBIO,91843,PolyProtect,0.5,32,0.5098505020141602,0.9960833191871643,False,synthetic radial stress; not natural norm leakage
+MOBIO,91843,PolyProtect,2.0,32,1.1098554134368896,0.9893134236335754,False,synthetic radial stress; not natural norm leakage
+FEI,91843,IoM-GRP,0.5,32,0.0,0.9999999999999998,True,synthetic radial stress; not natural norm leakage
+FEI,91843,IoM-GRP,2.0,32,0.0,0.9999999999999998,True,synthetic radial stress; not natural norm leakage
+FEI,91843,PolyProtect,0.5,32,0.5236151218414307,0.9934161901473999,False,synthetic radial stress; not natural norm leakage
+FEI,91843,PolyProtect,2.0,32,1.2348695993423462,0.9881347417831421,False,synthetic radial stress; not natural norm leakage

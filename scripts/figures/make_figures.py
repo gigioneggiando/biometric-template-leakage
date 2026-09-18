@@ -470,6 +470,66 @@ def fig_pilot_equivalence(out: Path) -> None:
     save_figure(fig, out, "fig_pilot_equivalence")
 
 
+def fig_followup_amplification(out: Path) -> None:
+    table = pd.read_csv(EXP / "scheme_followup_2026-09-18/seed_identity_contrasts.csv")
+    table = table[table["primary"]].sort_values(["dataset", "scheme", "split_seed"]).reset_index(drop=True)
+    fig, ax = plt.subplots(figsize=(10.5, 5.0))
+    for position, row in table.iterrows():
+        color = C["blue"] if row["scheme"] == "IoM-GRP" else C["red"]
+        ax.errorbar(100 * row["gain"], position,
+                    xerr=[[100 * (row["gain"] - row["lower95"])], [100 * (row["upper95"] - row["gain"])]],
+                    fmt="o", color=color, capsize=3)
+        ax.text(57, position, f"{100 * row['gain']:.2f} pp; p={row['holm_p']:.3f}", fontsize=8, va="center")
+    labels = [f"{row.dataset} / {row.scheme} / split {row.split_seed}" for row in table.itertuples()]
+    ax.set_yticks(range(len(table)), labels)
+    ax.invert_yaxis()
+    ax.axvline(0, color=C["grey"], ls="--", lw=1)
+    ax.set_xlim(-2, 80)
+    ax.set_xlabel("Ten-record minus one-record top-1 (percentage points)")
+    ax.set_title("Pool-4 mean-pool amplification: three seeds, two identity partitions", pad=12)
+    fig.subplots_adjust(left=0.32, right=0.98, top=0.87, bottom=0.23)
+    fig.text(0.03, 0.09, "Bars: crossed model-seed / identity bootstrap 95% intervals. Tests: identity sign-flips, Holm family of 8.", fontsize=8)
+    fig.text(0.03, 0.045, "Matched 120-epoch caps; key/set seeds fixed. Partitions are separate sensitivity analyses, not independent replications.", fontsize=8)
+    save_figure(fig, out, "fig_followup_amplification")
+
+
+def fig_followup_native_controls(out: Path) -> None:
+    table = pd.read_csv(EXP / "scheme_followup_2026-09-18/native_null_controls.csv")
+    norm = pd.read_csv(EXP / "scheme_followup_2026-09-18/norm_sensitivity.csv")
+    fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.6), gridspec_kw={"width_ratios": [1.4, 1]})
+    for dataset, color, marker in (("MOBIO", C["blue"], "o"), ("FEI", C["green"], "s")):
+        subset = table[table["dataset"] == dataset].reset_index(drop=True)
+        offset = -0.12 if dataset == "MOBIO" else 0.12
+        positions = np.arange(len(subset)) + offset
+        axes[0].errorbar(positions, 100 * subset["identity_balanced_top1"],
+                         yerr=100 * np.vstack([subset["identity_balanced_top1"] - subset["lower95"],
+                                               subset["upper95"] - subset["identity_balanced_top1"]]),
+                         fmt=marker, color=color, capsize=3, label=dataset)
+        axes[0].axhline(100 * subset["chance"].iloc[0], color=color, ls="--", lw=0.8)
+    axes[0].set_xticks(range(6), ["A/1", "A/2", "A/3", "B/1", "B/2", "B/3"])
+    axes[0].set_ylim(0, 22)
+    axes[0].set_xlabel("Identity partition / fresh-key seed index")
+    axes[0].set_ylabel("Identity-balanced native top-1 (%)")
+    axes[0].set_title("(a) Fresh PolyProtect: protected-gallery matching")
+    axes[0].legend(frameon=False, loc="upper right")
+    for scheme, color, marker in (("IoM-GRP", C["blue"], "o"), ("PolyProtect", C["red"], "s")):
+        for position, scale in enumerate([0.5, 2.0]):
+            values = norm[(norm["scheme"] == scheme) & (norm["scale"] == scale)]["relative_l2_mean"]
+            offset = -0.07 if scheme == "IoM-GRP" else 0.07
+            axes[1].scatter(np.full(len(values), position + offset), values, color=color, marker=marker,
+                            label=scheme if position == 0 else None)
+    axes[1].set_xticks([0, 1], ["0.5 x input", "2 x input"])
+    axes[1].set_ylabel("Mean relative template L2 change")
+    axes[1].set_title("(b) Controlled radial stress")
+    axes[1].legend(frameon=False, loc="upper left")
+    axes[1].set_ylim(-0.08, 1.6)
+    fig.subplots_adjust(left=0.075, right=0.97, top=0.88, bottom=0.27, wspace=0.38)
+    fig.text(0.03, 0.13, f"Native tests: {len(table)} / {len(table)} Holm-adjusted p <= {table['holm_p'].max():.3f}; identity-clustered 95% intervals; dashed lines: chance.", fontsize=8)
+    fig.text(0.03, 0.075, "A/B: splits 91831/91843. Key seeds 1/2/3: 91873/91879/91883. Gallery-label permutations preserve probe clusters.", fontsize=8)
+    fig.text(0.03, 0.025, "Radial stress: 32 held-out records per dataset/partition, fixed keys; measures scale sensitivity, not natural norm leakage.", fontsize=8)
+    save_figure(fig, out, "fig_followup_native_controls")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, default=ROOT / "reports/figures")
@@ -485,6 +545,8 @@ def main() -> None:
     fig_pilot_uncertainty(args.out)
     fig_pilot_native_utility(args.out)
     fig_pilot_equivalence(args.out)
+    fig_followup_amplification(args.out)
+    fig_followup_native_controls(args.out)
     print(f"figures written to {args.out}")
 
 

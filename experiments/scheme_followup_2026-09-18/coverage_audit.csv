@@ -1,0 +1,16 @@
+summary_source,summary_rows,local_metrics_files,inventory_rows,coverage,scope
+experiments/mobio_multiexposure/key_pool_boundary_summary.csv,5,1,0,legacy_schema_not_inventoried,key-pool and scheme studies; not every historical control or single-template study
+experiments/mobio_multiexposure/random_key_pool_confirmation_summary.csv,5,1,0,legacy_schema_not_inventoried,key-pool and scheme studies; not every historical control or single-template study
+experiments/mobio_multiexposure/key_pool_split_replication_summary.csv,5,1,105,inventoried,key-pool and scheme studies; not every historical control or single-template study
+experiments/mobio_multiexposure/dense_key_pool_sweep_summary.csv,7,1,147,inventoried,key-pool and scheme studies; not every historical control or single-template study
+experiments/mobio_multiexposure/dense_key_pool_sweep_partition2_summary.csv,8,1,48,inventoried,key-pool and scheme studies; not every historical control or single-template study
+experiments/mobio_multiexposure/dense_key_pool_sweep_partition3_summary.csv,8,1,48,inventoried,key-pool and scheme studies; not every historical control or single-template study
+experiments/mobio_multiexposure/haar_corrected_key_pool_summary.csv,3,1,18,inventoried,key-pool and scheme studies; not every historical control or single-template study
+experiments/mobio_multiexposure/mlphash_key_pool_summary.csv,5,1,105,inventoried,key-pool and scheme studies; not every historical control or single-template study
+experiments/mobio_multiexposure/mlphash_key_pool_dense_summary.csv,3,1,18,inventoried,key-pool and scheme studies; not every historical control or single-template study
+experiments/lfw_multiexposure/key_pool_boundary_summary.csv,8,1,48,inventoried,key-pool and scheme studies; not every historical control or single-template study
+experiments/fei_multiexposure/key_pool_boundary_summary.csv,8,1,48,inventoried,key-pool and scheme studies; not every historical control or single-template study
+experiments/scface_multiexposure/key_pool_boundary_summary.csv,8,0,0,local_detail_unavailable,key-pool and scheme studies; not every historical control or single-template study
+experiments/scheme_extension_pilot/results_summary.csv,48,16,48,inventoried,key-pool and scheme studies; not every historical control or single-template study
+experiments/scface_scheme_extension_pilot/results_summary.csv,24,0,0,local_detail_unavailable,key-pool and scheme studies; not every historical control or single-template study
+experiments/scheme_followup_2026-09-18/results_summary.csv,216,24,216,inventoried,key-pool and scheme studies; not every historical control or single-template study

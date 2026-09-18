@@ -68,7 +68,66 @@ def test_nonfinite_input_rejected():
             transform(np.full(512, np.nan), 7)
 
 
-def test_pilot_driver_exports_aggregates_and_validates_resume(tmp_path):
+def test_followup_statistics_preserve_clusters_and_family_size():
+    from scripts.train.run_scheme_followup import crossed_interval, holm_adjust, native_null_test
+
+    np.testing.assert_allclose(holm_adjust([0.01, 0.04, 0.03], 3), [0.03, 0.06, 0.06])
+    np.testing.assert_allclose(holm_adjust([0.01], 8), [0.08])
+    assert holm_adjust([], 8) == []
+    assert crossed_interval(np.full((3, 10), 0.2), 7, 100) == pytest.approx((0.2, 0.2))
+    observed, probability, null = native_null_test(np.full((8, 8), 1 / 8), 7, 99)
+    assert observed == 1 / 8 and probability == 1
+    np.testing.assert_allclose(null, 1 / 8)
+    observed, probability, _ = native_null_test(np.eye(8), 7, 999)
+    assert observed == 1 and probability < 0.01
+    with pytest.raises(ValueError):
+        native_null_test(np.zeros((3, 3)), 7, 99)
+    with pytest.raises(ValueError):
+        crossed_interval(np.zeros((1, 4)), 7, 100)
+
+
+def test_followup_exports_are_complete_and_consistent():
+    import csv
+    from scripts.train.run_scheme_followup import holm_adjust
+
+    root = Path(__file__).resolve().parents[2] / "experiments/scheme_followup_2026-09-18"
+    def table(name):
+        with (root / name).open(newline="", encoding="utf-8") as handle:
+            return list(csv.DictReader(handle))
+
+    runs = table("results_summary.csv")
+    assert len(runs) == 216
+    assert {row["stage"] for row in runs} == {"bounded_validation"}
+    assert {int(row["seed"]) for row in runs} == {601, 607, 613}
+    assert {int(row["split_seed"]) for row in runs} == {91831, 91843}
+    keys = [(row["dataset"], row["scheme"], row["split_seed"], row["condition"], row["exposures"], row["model"], row["seed"]) for row in runs]
+    assert len(set(keys)) == 216
+    assert all(0 <= float(row["top1"]) <= 1 for row in runs)
+    endpoints = table("seed_identity_endpoints.csv")
+    assert len(endpoints) == 72
+    for endpoint in endpoints:
+        selected = [row for row in runs if all(row[key] == endpoint[key] for key in
+                    ("dataset", "scheme", "split_seed", "condition", "exposures", "model"))]
+        assert len(selected) == 3
+        assert float(endpoint["top1_mean"]) == pytest.approx(np.mean([float(row["top1"]) for row in selected]))
+    paired = table("paired_uncertainty.csv")
+    assert {int(row["seed"]) for row in paired} == {601, 607, 613}
+    assert {int(row["bootstrap_seed"]) for row in paired} == {91223}
+    primary = [row for row in table("seed_identity_contrasts.csv") if row["primary"] == "True"]
+    assert len(primary) == 8
+    np.testing.assert_allclose([float(row["holm_p"]) for row in primary], holm_adjust([float(row["signflip_p"]) for row in primary], 8))
+    native = table("native_null_controls.csv")
+    assert len(native) == 12
+    np.testing.assert_allclose([float(row["holm_p"]) for row in native], holm_adjust([float(row["permutation_p"]) for row in native], 12))
+    assert len(table("norm_sensitivity.csv")) == 16
+    status = json.loads((root / "matrix_status.json").read_text())
+    manifest = json.loads((root / "execution_manifest.json").read_text())
+    assert status["all_cells_complete"] and status["completed_cells"] == 24
+    assert manifest["status"] == "completed" and manifest["wall_seconds"] < manifest["budget_seconds"]
+
+
+@pytest.mark.parametrize("stage", ["pilot", "bounded_validation"])
+def test_pilot_driver_exports_aggregates_and_validates_resume(tmp_path, stage):
     from scripts.train.run_scheme_extension_pilot import run_pilots
 
     root = Path(__file__).resolve().parents[2]
@@ -91,12 +150,17 @@ def test_pilot_driver_exports_aggregates_and_validates_resume(tmp_path):
                   schemes=[config["schemes"][1]], conditions=["independent_unseen_keys"],
                   repeats_per_identity=1, output_root=str(tmp_path / "runs"), summary_dir=str(tmp_path / "summary"))
     config["training"].update(epochs=1, patience=1, hidden_dim=4, bootstrap_resamples=10)
+    config["stage"] = stage
+    if stage == "bounded_validation":
+        config["datasets"] = [{**config["datasets"][0], "split_reassignment_seed": seed} for seed in (11, 17)]
+        config["training"]["seeds"] = [419, 421, 431]
     result = run_pilots(config)
-    assert result["all_cells_complete"] and result["completed_cells"] == 1
+    expected_cells = len(config["datasets"])
+    assert result["all_cells_complete"] and result["completed_cells"] == expected_cells
     from scripts.figures.build_run_matrix import collect_runs
     matrix = collect_runs(tmp_path / "runs")
-    assert len(matrix) == 3
-    assert {row["stage"] for row in matrix} == {"pilot"}
+    assert len(matrix) == 3 * expected_cells * len(config["training"]["seeds"])
+    assert {row["stage"] for row in matrix} == {stage}
     assert all(row["identity_pairing_available"] for row in matrix)
     assert all(len(row["config_sha256"]) == 64 for row in matrix)
     assert "test_0" not in json.dumps(matrix)
@@ -108,6 +172,12 @@ def test_pilot_driver_exports_aggregates_and_validates_resume(tmp_path):
         text = (tmp_path / "summary" / filename).read_text()
         assert text.count("\n") > 1
         assert "train_0" not in text and "test_0" not in text
+    import csv
+    with (tmp_path / "summary" / "paired_uncertainty.csv").open() as handle:
+        paired = list(csv.DictReader(handle))
+    assert {int(row["seed"]) for row in paired} == set(config["training"]["seeds"])
+    assert {int(row["bootstrap_seed"]) for row in paired} == {91223}
+    assert len(paired) == 2 * expected_cells * len(config["training"]["seeds"])
     assert run_pilots(config, resume=True)["cells"][0]["status"] == "reused"
     with pytest.raises(FileExistsError):
         run_pilots(config)

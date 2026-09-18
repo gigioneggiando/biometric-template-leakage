@@ -169,11 +169,60 @@ def fig_architecture(out: Path) -> None:
     arrow(ax, 8.52, 2.86, 8.88, 2.86, color=GREEN)
     ax.text(0.4, 1.5, "KEY DESIGN", fontsize=8, weight="bold", color=INK)
     ax.text(2.25, 1.5, "Fresh: source-record keys are split-disjoint. Pool K: hidden transforms recur across identity splits.", fontsize=8, color=INK)
-    ax.text(0.4, 1.05, "UNCERTAINTY", fontsize=8, weight="bold", color=INK)
-    ax.text(2.25, 1.05, "Earlier studies: 3 model seeds. IoM-GRP / PolyProtect pilots: 1 seed; not confirmation.", fontsize=8, color=INK)
-    ax.text(0.4, 0.6, "SCOPE", fontsize=8, weight="bold", color=INK)
-    ax.text(2.25, 0.6, "Tests transform reuse and same-identity aggregation, not a new backbone or a universal privacy guarantee.", fontsize=8, color=INK)
+    ax.text(0.4, 1.05, "REPLICATION", fontsize=8, weight="bold", color=INK)
+    ax.text(2.25, 1.05, "MOBIO / FEI follow-up: 2 identity partitions x 3 model seeds; matched 120-epoch training caps.", fontsize=8, color=INK)
+    ax.text(0.4, 0.6, "DESIGN", fontsize=8, weight="bold", color=INK)
+    ax.text(2.25, 0.6, "Same-identity aggregation under controlled transform reuse; detailed attacker paths in the companion figure.", fontsize=8, color=INK)
     save_diagram(fig, ax, out, "fig_architecture")
+
+
+def fig_attack_detail(out: Path) -> None:
+    fig, ax = plt.subplots(figsize=(12, 7.3))
+    ax.set_xlim(0, 14)
+    ax.set_ylim(0, 10)
+    ax.axis("off")
+    ax.text(0.2, 9.65, "A  MATCHED EXPOSURE CONSTRUCTION", fontsize=11, weight="bold", color=BLUE)
+    ax.text(0.2, 9.15, "One identity, n source records; nested subsets from one fixed permutation per repeat; gallery excluded.", fontsize=9)
+    ax.text(0.2, 8.72, "Fresh: independent source-record keys. Pool K: hidden transforms recur across identity splits. No keys or slots in model input.", fontsize=8.5)
+    ax.text(0.2, 8.27, "T: B x n x d     d = 128 BioHash; 512 MLP-Hash; 4,800 one-hot IoM-GRP; 170 PolyProtect", fontsize=9, weight="bold")
+    ax.plot([0.2, 13.8], [8.05, 8.05], color=GREY, lw=0.7)
+    ax.text(0.2, 7.80, "B  TWO AGGREGATION PATHS", fontsize=11, weight="bold", color=GREEN)
+
+    nodes = [
+        (0.3, 5.86, 2.65, "Protected record set", "T: B x n x d\nBinary / one-hot / real\nOne identity per set", BLUE),
+        (3.4, 6.16, 3.0, "Template-level pooling", "Mean or max across n\nB x d\nSingle baseline: n = 1", GREEN),
+        (6.9, 6.16, 3.0, "Reconstruction MLP", "Linear d -> 256; ReLU\nLinear 256 -> 512\nB x 512", GREEN),
+        (3.4, 3.94, 3.0, "Shared record encoder", "phi: d -> 256 -> 256\nReLU after each layer\nB x n x 256", ORANGE),
+        (6.9, 3.94, 3.0, "Masked feature mean", "sum(m * phi(T)) / sum(m)\nB x 256\nPermutation-invariant", ORANGE),
+        (10.4, 3.94, 3.1, "Set decoder", "rho: 256 -> 256 -> 512\nHidden ReLU\nB x 512", ORANGE),
+    ]
+    for left, bottom, width, title, detail, color in nodes:
+        ax.add_patch(FancyBboxPatch((left, bottom), width, 1.45, boxstyle="round,pad=0,rounding_size=0.04", fc="white", ec=color, lw=1.2))
+        ax.text(left + width / 2, bottom + 1.18, title, ha="center", va="center", fontsize=9, weight="bold")
+        ax.text(left + width / 2, bottom + 0.84, detail, ha="center", va="top", fontsize=8, linespacing=1.35)
+    arrow(ax, 2.97, 6.88, 3.38, 6.88, color=GREEN)
+    arrow(ax, 6.42, 6.88, 6.88, 6.88, color=GREEN)
+    arrow(ax, 1.62, 5.84, 1.62, 4.66, color=ORANGE, style="-")
+    arrow(ax, 1.62, 4.66, 3.38, 4.66, color=ORANGE)
+    arrow(ax, 6.42, 4.66, 6.88, 4.66, color=ORANGE)
+    arrow(ax, 9.92, 4.66, 10.38, 4.66, color=ORANGE)
+    box(ax, 10.4, 6.16, 3.1, 1.45, "Unit embedding", "z = output / ||output||2", ec=INK, ts=9, ss=8)
+    arrow(ax, 9.92, 6.88, 10.38, 6.88, color=GREEN)
+    arrow(ax, 11.95, 5.41, 11.95, 6.14, color=ORANGE)
+    ax.text(0.3, 3.52, "Primary: mean-pool MLP. Secondary: DeepSets. m masks valid records; all n records are valid in these runs.", fontsize=8.5)
+    ax.plot([0.2, 13.8], [3.19, 3.19], color=GREY, lw=0.7)
+    ax.text(0.2, 2.76, "C  SUPERVISION", fontsize=10, weight="bold", color=BLUE)
+    ax.text(7.3, 2.76, "D  HELD-OUT IDENTITY LINKAGE", fontsize=10, weight="bold", color=GREEN)
+    ax.text(0.2, 2.31, "Target u = normalize(mean of exposed source embeddings).", fontsize=8.5)
+    ax.text(0.2, 1.87, "Loss = mean[1 - cosine(z, u)] + 0.1 x MSE(z, u).", fontsize=8.5)
+    ax.text(0.2, 1.43, "Adam: lr 0.001; weight decay 0.0001; hidden width 256.", fontsize=8.5)
+    ax.text(0.2, 0.99, "Train identities only; select minimum validation loss; freeze test.", fontsize=8.5)
+    ax.text(7.3, 2.31, "Scores = z G^T; G: N x 512 unprotected unit gallery.", fontsize=8.5)
+    ax.text(7.3, 1.87, "Rank identities; top-1/top-5, AUROC, EER, TAR at FAR.", fontsize=8.5)
+    ax.text(7.3, 1.43, "Follow-up: 3 model seeds x 2 identity partitions; 120 epochs.", fontsize=8.5)
+    ax.text(7.3, 0.99, "Crossed seed/identity intervals; paired primary contrasts.", fontsize=8.5)
+    ax.text(0.2, 0.37, "B: batch size; n: exposure count; d: template input width; N: test gallery identities. Source targets are not inference inputs.", fontsize=8.3, color=INK)
+    save_diagram(fig, ax, out, "fig_attack_detail")
 
 
 # ------------------------------------------------------ Figure: threat model
@@ -229,6 +278,7 @@ def main() -> None:
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     fig_architecture(args.out)
+    fig_attack_detail(args.out)
     fig_threat_model(args.out)
     print(f"diagrams written to {args.out}")
 

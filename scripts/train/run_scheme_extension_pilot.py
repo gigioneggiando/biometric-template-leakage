@@ -36,7 +36,8 @@ def export_summaries(completed: list[tuple[dict, dict]], destination: Path) -> N
     private_scores = {}
     for cell, result in completed:
         test_identities = result["split_identity_counts"]["test"]
-        common = {"stage": "pilot", "dataset": cell["dataset"], "scheme": cell["scheme_label"],
+        common = {"stage": cell.get("stage", "pilot"), "dataset": cell["dataset"], "scheme": cell["scheme_label"],
+              "split_seed": cell.get("split_reassignment_seed", "original"),
                   "condition": cell["conditions"][0], "test_identities": test_identities,
                   "chance": 1 / test_identities, "key_seed": cell["key_seed"], "set_seed": cell["set_seed"],
                   "config_sha256": result["pilot_config_sha256"], "git_commit": result["git_commit"]}
@@ -57,22 +58,23 @@ def export_summaries(completed: list[tuple[dict, dict]], destination: Path) -> N
                                  "upper95": interval["upper"], "best_epoch": run["best_epoch"],
                                  "elapsed_seconds": run["elapsed_seconds"],
                                  "oracle_top1": exposure_result["unprotected_oracle"]["top1_linkage"]})
-                    key = (common["dataset"], common["scheme"], common["condition"], int(exposures), model, run["seed"])
+                    key = (common["stage"], common["dataset"], common["split_seed"], common["scheme"], common["condition"], int(exposures), model, run["seed"])
                     private_scores[key] = run["identity_top1_scores"]
     paired, sensitivity = [], []
     for key, target in private_scores.items():
-        dataset, scheme, condition, exposures, model, seed = key
-        common = {"stage": "pilot", "dataset": dataset, "scheme": scheme, "condition": condition,
+        stage, dataset, split_seed, scheme, condition, exposures, model, seed = key
+        common = {"stage": stage, "dataset": dataset, "split_seed": split_seed, "scheme": scheme, "condition": condition,
                   "exposures": exposures, "model": model, "seed": seed}
         references = []
         if exposures == 10:
-            references.append(("ten_minus_one", (dataset, scheme, condition, 1, "single_mlp", seed)))
+            references.append(("ten_minus_one", (stage, dataset, split_seed, scheme, condition, 1, "single_mlp", seed)))
         if condition != "independent_unseen_keys":
-            references.append(("reuse_minus_fresh", (dataset, scheme, "independent_unseen_keys", exposures, model, seed)))
+            references.append(("reuse_minus_fresh", (stage, dataset, split_seed, scheme, "independent_unseen_keys", exposures, model, seed)))
         for contrast, reference_key in references:
             if reference_key in private_scores:
-                paired.append({**common, "contrast": contrast,
-                               **paired_identity_interval(private_scores[reference_key], target, seed=91223)})
+                interval = paired_identity_interval(private_scores[reference_key], target, seed=91223)
+                interval["bootstrap_seed"] = interval.pop("seed")
+                paired.append({**common, "contrast": contrast, **interval})
         if condition == "independent_unseen_keys":
             sensitivity.extend({**common, **row} for row in exploratory_equivalence_sensitivity(target, 1 / len(target)))
     write_table(destination / "results_summary.csv", rows)
@@ -82,8 +84,8 @@ def export_summaries(completed: list[tuple[dict, dict]], destination: Path) -> N
 
 
 def run_pilots(config: dict, *, resume: bool = False) -> dict:
-    if config.get("stage") != "pilot" or not 0 < float(config["max_wall_seconds"]) <= 3600:
-        raise ValueError("This driver permits only pilots with a budget of at most one hour")
+    if config.get("stage") not in {"pilot", "bounded_validation"} or not 0 < float(config["max_wall_seconds"]) <= 3600:
+        raise ValueError("This driver permits only bounded studies with a budget of at most one hour")
     started = time.monotonic()
     deadline = started + float(config["max_wall_seconds"])
     output_root = Path(config["output_root"])
@@ -96,12 +98,17 @@ def run_pilots(config: dict, *, resume: bool = False) -> dict:
                 cell = {key: copy.deepcopy(value) for key, value in config.items()
                         if key not in {"max_wall_seconds", "output_root", "summary_dir", "datasets", "schemes"}}
                 study = f"{dataset['name']}_{scheme['protection']['scheme']}"
+                if "split_reassignment_seed" in dataset:
+                    cell["split_reassignment_seed"] = int(dataset["split_reassignment_seed"])
+                    study += f"_split{cell['split_reassignment_seed']}"
                 cell.update(dataset=dataset["name"], embedding_dir=dataset["embedding_dir"],
                             protection=scheme["protection"], scheme_label=scheme["name"], template_dim=scheme["template_dim"],
                             conditions=[condition], results_dir=str(output_root / study / condition))
                 fingerprint = hashlib.sha256(yaml.safe_dump(cell, sort_keys=True).encode()).hexdigest()
                 metric_path = Path(cell["results_dir"]) / "metrics.json"
                 state = {"dataset": dataset["name"], "scheme": scheme["name"], "condition": condition}
+                if "split_reassignment_seed" in cell:
+                    state["split_seed"] = cell["split_reassignment_seed"]
                 if metric_path.exists():
                     if not resume:
                         raise FileExistsError("Pilot outputs exist; use --resume to validate and reuse them")
@@ -137,10 +144,11 @@ def run_pilots(config: dict, *, resume: bool = False) -> dict:
                     error_path.write_text(str(error), encoding="utf-8")
                     print(f"Stopped {study} / {condition}: {type(error).__name__}", flush=True)
     export_summaries(completed, summary_dir)
-    status = {"stage": "pilot", "planned_cells": len(states), "completed_cells": len(completed),
+    status = {"stage": config["stage"], "planned_cells": len(states), "completed_cells": len(completed),
               "all_cells_complete": len(completed) == len(states), "wall_seconds": time.monotonic() - started,
               "budget_seconds": float(config["max_wall_seconds"]), "cells": states,
-              "interpretation": "One-seed engineering pilots, not confirmation or proof of equivalence"}
+              "model_seeds": config["training"]["seeds"],
+              "interpretation": "Bounded independent study; stage and replication are explicit, not proof of equivalence"}
     (summary_dir / "matrix_status.json").write_text(json.dumps(status, indent=2) + "\n", encoding="utf-8")
     return status
 

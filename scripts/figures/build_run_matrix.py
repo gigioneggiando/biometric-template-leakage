@@ -52,10 +52,43 @@ def collect_runs(results_root: Path) -> list[dict]:
     return rows
 
 
+def coverage_audit(rows: list[dict], results_root: Path) -> list[dict]:
+    studies = {
+        "mobio_multiexposure/key_pool_boundary_summary.csv": "mobio_key_pool_boundary",
+        "mobio_multiexposure/random_key_pool_confirmation_summary.csv": "mobio_random_key_pool_confirmation",
+        "mobio_multiexposure/key_pool_split_replication_summary.csv": "mobio_key_pool_split_replication",
+        "mobio_multiexposure/dense_key_pool_sweep_summary.csv": "mobio_dense_key_pool_sweep",
+        "mobio_multiexposure/dense_key_pool_sweep_partition2_summary.csv": "mobio_dense_key_pool_sweep_partition2",
+        "mobio_multiexposure/dense_key_pool_sweep_partition3_summary.csv": "mobio_dense_key_pool_sweep_partition3",
+        "mobio_multiexposure/haar_corrected_key_pool_summary.csv": "mobio_haar_corrected_key_pool",
+        "mobio_multiexposure/mlphash_key_pool_summary.csv": "mobio_mlphash_key_pool",
+        "mobio_multiexposure/mlphash_key_pool_dense_summary.csv": "mobio_mlphash_key_pool_dense",
+        "lfw_multiexposure/key_pool_boundary_summary.csv": "lfw_key_pool_boundary",
+        "fei_multiexposure/key_pool_boundary_summary.csv": "fei_key_pool_boundary",
+        "scface_multiexposure/key_pool_boundary_summary.csv": "scface_key_pool_boundary",
+        "scheme_extension_pilot/results_summary.csv": "scheme_extension_pilot_2026-09-12",
+        "scface_scheme_extension_pilot/results_summary.csv": "scface_scheme_extension_pilot_2026-09-18",
+        "scheme_followup_2026-09-18/results_summary.csv": "scheme_followup_2026-09-18",
+    }
+    audit = []
+    for source, directory in studies.items():
+        prefix = f"results/{directory}/"
+        matched = [row for row in rows if row["source_metrics"].startswith(prefix)]
+        metrics = list((results_root / directory).rglob("metrics.json"))
+        with (ROOT / "experiments" / source).open(newline="", encoding="utf-8") as handle:
+            summary_count = len(list(csv.DictReader(handle)))
+        audit.append({"summary_source": f"experiments/{source}", "summary_rows": summary_count,
+                      "local_metrics_files": len(metrics), "inventory_rows": len(matched),
+                      "coverage": "inventoried" if matched else "legacy_schema_not_inventoried" if metrics else "local_detail_unavailable",
+                      "scope": "key-pool and scheme studies; not every historical control or single-template study"})
+    return audit
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--results", type=Path, default=ROOT / "results")
     parser.add_argument("--out", type=Path, default=ROOT / "experiments/multiexposure_run_matrix.csv")
+    parser.add_argument("--audit-out", type=Path)
     args = parser.parse_args()
     rows = collect_runs(args.results)
     if not rows:
@@ -65,6 +98,13 @@ def main() -> None:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
+    if args.audit_out:
+        audit = coverage_audit(rows, args.results)
+        args.audit_out.parent.mkdir(parents=True, exist_ok=True)
+        with args.audit_out.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=list(audit[0]), lineterminator="\n")
+            writer.writeheader()
+            writer.writerows(audit)
     print(f"{len(rows)} per-seed rows from {len({row['source_metrics'] for row in rows})} local artifacts -> {args.out}")
     print(f"Pilot rows: {sum(row['stage'] == 'pilot' for row in rows)}; unavailable configs: {sum(row['config_sha256'] == 'unavailable' for row in rows)}")
     print(f"Non-multi-exposure artifacts excluded: {len(list(args.results.rglob('metrics.json'))) - len({row['source_metrics'] for row in rows})}")

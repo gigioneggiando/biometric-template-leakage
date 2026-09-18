@@ -10,12 +10,14 @@ No environment setup or experiment rerun is needed to view the existing outputs.
 
 | What to view | Location |
 |---|---|
-| September dataset update: current results, defined architecture and submission gates | [reports/Sept_Dataset_Update.pdf](reports/Sept_Dataset_Update.pdf) |
-| All 12 figures together, including architecture and results | [reports/slides/figure_appendix.pdf](reports/slides/figure_appendix.pdf) |
+| September dataset update: findings, architecture overview and detailed attacker | [reports/Sept_Dataset_Update.pdf](reports/Sept_Dataset_Update.pdf) |
+| All 15 figures together, including architecture and results | [reports/slides/figure_appendix.pdf](reports/slides/figure_appendix.pdf) |
 | Eight-slide research overview | [reports/slides/research_review.pdf](reports/slides/research_review.pdf) |
 | Editable presentation | [reports/slides/research_review.pptx](reports/slides/research_review.pptx) |
 | Architecture diagram image | [reports/figures/fig_architecture.png](reports/figures/fig_architecture.png) |
 | Architecture diagram vector PDF | [reports/figures/fig_architecture.pdf](reports/figures/fig_architecture.pdf) |
+| Detailed attacker: tensors, layers, objective and linkage | [reports/figures/fig_attack_detail.pdf](reports/figures/fig_attack_detail.pdf) |
+| Three-seed, two-partition scheme follow-up | [experiments/scheme_followup_2026-09-18/README.md](experiments/scheme_followup_2026-09-18/README.md) |
 | Threat model and key regimes | [reports/figures/fig_threat_model.png](reports/figures/fig_threat_model.png) |
 | Earlier three-seed results overview | [reports/figures/fig_results_overview.png](reports/figures/fig_results_overview.png) |
 | New IoM-GRP and PolyProtect pilot results | [reports/figures/fig_scheme_pilots.png](reports/figures/fig_scheme_pilots.png) |
@@ -47,7 +49,9 @@ Contacts and procedures were checked against the official pages on **2026-09-12*
 
 LFW, Olivetti, CFP, and MOBIO results are **independent engineering studies, not paper reproduction**. Synthetic runs validate plumbing only and are excluded from the scientific evidence. No published result has been reproduced yet.
 
-**Latest extension:** SCface adds 130 identities and 2,851/2,860 valid embeddings, with 84.375% unprotected top-1 over 544 probes. Its BioHash pools 1/2/3 pass the all-seed interval rule; pool 4 is variable and fails. The combined table now has 73 conditions from 12 source-separated studies. Approved IoM-GRP/PolyProtect pilots total 24 cells and 72 model endpoints: 16 MOBIO/FEI cells on 2026-09-12 and 8 SCface cells on 2026-09-18. Fresh PolyProtect native top-1 is 12.73%/13.73%/10.66% on MOBIO/FEI/SCface, a separate above-chance diagnostic, not a privacy result. See [SCface results](experiments/scface_multiexposure/README.md), [SCface pilots](experiments/scface_scheme_extension_pilot/README.md), and the [12-figure appendix](reports/slides/figure_appendix.pdf). The [633-row local inventory](experiments/multiexposure_run_matrix.csv) has 25 source artifacts but no SCface rows; aggregate SCface evidence is tracked separately. Confirmation and independent human review remain open.
+**Latest extension:** The authorized one-hour MOBIO/FEI follow-up completed 24 cells / 216 endpoints in 859.63 seconds: IoM-GRP and PolyProtect, two new identity partitions, three model seeds, and fresh/shared/pool-4 keys. All eight primary pool-4 amplification contrasts have positive crossed-bootstrap intervals and Holm p = 0.004. Fresh PolyProtect native matching exceeds its permutation null in all 12 controls (Holm p = 0.006); synthetic radial sensitivity is not natural norm leakage. See the [follow-up results and scope](experiments/scheme_followup_2026-09-18/README.md). This bounded study does not complete the full roadmap.
+
+SCface adds 130 identities and 2,851/2,860 valid embeddings, with 84.375% unprotected top-1 over 544 probes. Its BioHash pools 1/2/3 pass the all-seed interval rule; pool 4 fails. The earlier table remains 73 conditions from 12 source-separated studies, and the earlier one-seed scheme pilots remain 24 cells / 72 endpoints. See [SCface results](experiments/scface_multiexposure/README.md), [SCface pilots](experiments/scface_scheme_extension_pilot/README.md), and the [15-figure appendix](reports/slides/figure_appendix.pdf). The [849-row local inventory](experiments/multiexposure_run_matrix.csv) contains 49 artifacts, preserves all previous 633 rows, and excludes unavailable SCface details; its [coverage audit](experiments/scheme_followup_2026-09-18/coverage_audit.csv) also identifies legacy-schema gaps.
 
 ## [x] Month 1 - Foundation and baselines
 
@@ -152,7 +156,7 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 
 **Proposal deliverable:** Reproducible attack framework, results, and paper.
 
-**[ ] Not met as of 2026-09-18.** The framework, four-dataset BioHash evidence, 24 additional-scheme pilot cells, mechanism controls, current figures and a working paper draft exist. Norm/native-PolyProtect controls, approved equivalence analysis, multi-seed confirmation, independent review, manuscript finalization and submission remain open. Source-exact reproduction is still blocked.
+**[ ] Not met as of 2026-09-18.** The framework, four-dataset BioHash evidence, 24 additional-scheme pilot cells, 216 follow-up endpoints, native permutation/radial controls, current figures and a working paper draft exist. Natural norm-leakage experiments, the full cross-dataset confirmation matrix, approved equivalence analysis, independent review, manuscript finalization and submission remain open. Source-exact reproduction is still blocked.
 
 **Fourth dataset (SCface, 2026-09-18).** On a 78/26/26 identity split, ten-record BioHash top-1 is `81.57/61.06/33.17/20.51/5.93/1.92/3.04%` for pools 1/2/3/4/5/7/10; fresh keys give `3.85%` against `3.846%` chance. Pools 1-3 pass the all-seed interval criterion. SCface pool-4 pilot paired gains are `+34.62` points for IoM-GRP and `+41.83` for PolyProtect, conditional on one seed. These are independent studies, not benchmark reproductions or confirmation of the complete roadmap.
 

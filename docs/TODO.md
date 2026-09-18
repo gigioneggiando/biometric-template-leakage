@@ -12,8 +12,8 @@ This document separates tasks that need human authorization, licenses, hardware,
 - [x] Correct the theory's side-information corollary and document PolyProtect's existing multiplicity literature.
 - [x] Prepare the [official access checklist](datasets/access_request_checklist.md) and [independent review checklist](review/scheme_pilot_review_2026-09-12.md).
 - [x] Complete the second additional dataset: authorized SCface received and evaluated on 2026-09-18 (see update below); AgeDB remains optional.
-- [ ] Approve and freeze full multi-seed confirmation; no such training was authorized in this session.
-- [ ] Investigate fresh PolyProtect native protected-gallery identification; do not claim privacy from learned attacks near chance.
+- [ ] Approve and freeze full cross-dataset confirmation beyond the bounded follow-up below.
+- [x] Test fresh PolyProtect native identification against gallery-label permutation nulls on MOBIO/FEI; completed in the follow-up below. Causal explanation remains open.
 - [ ] Approve equivalence margins, seed uncertainty and multiplicity analysis; reconcile all historical sources with the local inventory.
 - [ ] Obtain independent human theory, implementation and novelty review, plus Sani's scientific/visual approval.
 
@@ -27,7 +27,17 @@ This document separates tasks that need human authorization, licenses, hardware,
 - [x] Extend the cross-dataset comparison table, figures, and eight-slide presentation to include SCface.
 - [x] Refresh the September dataset report and all 20 tracked READMEs against `4352eeb`; distinguish current aggregate SCface evidence from the 633-row local inventory, which has no SCface rows.
 - [ ] Obtain authorized AgeDB access if pursued as an optional third dataset.
-- [ ] Approve and freeze full multi-seed confirmation across MOBIO/FEI/SCface; no such training was authorized in this session.
+- [ ] Approve and freeze full multi-seed confirmation across MOBIO/FEI/SCface beyond the bounded follow-up below.
+
+## Bounded follow-up: 2026-09-18
+
+- [x] Record explicit one-hour authorization and available MOBIO/FEI scope; freeze protocol, configuration and source hashes before execution.
+- [x] Complete 24 cells / 216 endpoints across IoM-GRP/PolyProtect, two new partitions, three model seeds and fresh/shared/pool-4 conditions in 859.63 seconds.
+- [x] Export crossed model-seed/identity intervals and eight primary Holm-adjusted tests; all primary gains positive with p = 0.004.
+- [x] Complete twelve native permutation controls (Holm p = 0.006) and synthetic radial sensitivity diagnostics; do not label these natural norm leakage.
+- [x] Preserve all 633 historical inventory rows and add 216 new rows; export a scoped legacy/missing-detail coverage audit.
+- [x] Split overview and detailed attacker figures; replace presentation submission checklists with scientific findings; expand appendix to 15 figures.
+- [ ] Complete the remaining cross-dataset/exposure matrix, natural norm experiments, approved equivalence analysis and independent review. See [results and scope](../experiments/scheme_followup_2026-09-18/README.md).
 
 Historical milestones below retain their dates; current host CUDA availability must be checked separately. The new pilots ran on CPU.
 

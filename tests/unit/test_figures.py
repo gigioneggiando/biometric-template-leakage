@@ -58,15 +58,31 @@ def test_comparison_rejects_invalid_sources(tmp_path, monkeypatch, fault):
 
 
 def test_diagrams_export_without_text_collisions(tmp_path):
-    for name in ("fig_architecture", "fig_threat_model"):
+    for name in ("fig_architecture", "fig_attack_detail", "fig_threat_model"):
         DIAGRAMS[name](tmp_path)
         assert (tmp_path / f"{name}.pdf").stat().st_size > 1000
         assert (tmp_path / f"{name}.png").stat().st_size > 1000
 
 
+def test_detail_section_heading_does_not_touch_nodes(tmp_path, monkeypatch):
+    from matplotlib.patches import FancyBboxPatch
+
+    def inspect(fig, ax, out, name):
+        fig.canvas.draw()
+        renderer = fig.canvas.get_renderer()
+        heading = next(text for text in ax.texts if text.get_text() == "B  TWO AGGREGATION PATHS")
+        bounds = heading.get_window_extent(renderer).padded(2)
+        assert not any(bounds.overlaps(patch.get_window_extent(renderer)) for patch in ax.patches if isinstance(patch, FancyBboxPatch))
+        DIAGRAMS["plt"].close(fig)
+
+    monkeypatch.setitem(DIAGRAMS["fig_attack_detail"].__globals__, "save_diagram", inspect)
+    DIAGRAMS["fig_attack_detail"](tmp_path)
+
+
 @pytest.mark.parametrize("name", ["fig_results_overview", "fig_pool_curves", "fig_amplification",
                                  "fig_pooled_boundary", "fig_controls", "fig_fresh_exposures",
-                                 "fig_scheme_pilots", "fig_pilot_uncertainty", "fig_pilot_native_utility", "fig_pilot_equivalence"])
+                                 "fig_scheme_pilots", "fig_pilot_uncertainty", "fig_pilot_native_utility", "fig_pilot_equivalence",
+                                 "fig_followup_amplification", "fig_followup_native_controls"])
 def test_result_figures_export_without_text_collisions(tmp_path, name):
     FIGURES[name](tmp_path)
     assert (tmp_path / f"{name}.pdf").stat().st_size > 1000
@@ -101,14 +117,18 @@ def test_dataset_update_contains_current_evidence_and_vector_figures(tmp_path):
     document = pypdf.PdfReader(destination)
     assert len(document.pages) == 9
     text = "\n".join(page.extract_text() for page in document.pages)
-    for expected in ("4352eeb", "SCface", "73", "72", "33.17%", "10.66%", "not confirmation"):
+    for expected in ("4352eeb", "SCface", "73", "72", "216", "33.17%", "10.66%", "not confirmation", "0.004", "0.006"):
         assert expected in text
     assert "we have not tested it yet" not in text.lower()
     assert "luigi" not in text.lower()
     assert "colluto" not in text.lower()
+    assert "REQUIRED BEFORE SUBMISSION" not in text
+    assert "A/A*" not in text
     for page in document.pages:
         assert len(page.extract_text()) > 100
     assert not list(document.pages[1].images)
+    assert not list(document.pages[2].images)
+    assert "Shared record encoder" in document.pages[2].extract_text()
     assert "Key" in document.pages[1].extract_text()
     with pdfium.PdfDocument(destination) as rendered:
         for page in rendered:
@@ -144,7 +164,7 @@ def test_presentation_has_eight_nonblank_pages_and_editable_text(tmp_path):
             bitmap.close()
             page.close()
     with pdfium.PdfDocument(tmp_path / "figure_appendix.pdf") as appendix:
-        assert len(appendix) == 12
+        assert len(appendix) == 15
         for page in appendix:
             text_page = page.get_textpage()
             try:

@@ -74,11 +74,11 @@ def build_presentation(out: Path) -> None:
             "Hidden keys and repeated biometric records",
             "Experimental architecture",
             "Dataset and protection coverage",
-            "What changes between key regimes?",
+            "Set reconstruction and gallery linkage",
             "Earlier three-seed key-pool studies",
             "Mechanism and correlation controls",
-            "Approved scheme pilots: one seed",
-            "Ready to draft; not yet ready to submit",
+            "Replicated multi-record amplification",
+            "Native linkage and radial sensitivity",
         ], start=1):
             slide = presentation.slides.add_slide(presentation.slide_layouts[6])
             fig = plt.figure(figsize=(WIDTH, HEIGHT), dpi=120, facecolor="white")
@@ -91,12 +91,12 @@ def build_presentation(out: Path) -> None:
                          "Recurring transforms: large gains from multiple same-identity records.\n\n"
                          "Boundary location changes with the dataset and identity partition.",
                          0.6, 2.55, 12.1, 3.1, size=19)
-                add_text(slide, fig, "Independent study. No exact benchmark reproduction or universal privacy claim.",
+                add_text(slide, fig, "Four datasets; hidden-key protocols; matched MOBIO/FEI follow-up with 216 trained endpoints.",
                          0.6, 6.3, 12.1, 0.45, size=13)
             elif number in (2, 4, 5, 6):
                 name, caption = {
                     2: ("fig_architecture", "Train on separate identities. Reconstruct an embedding, then link to a held-out gallery."),
-                    4: ("fig_threat_model", "Key values stay hidden in every regime. Recurring transforms are shared across identity splits."),
+                    4: ("fig_attack_detail", "Two aggregation paths; shared training objective; held-out identity linkage. Key values remain hidden."),
                     5: ("fig_results_overview", f"{len(table)} conditions from {table['source_file'].nunique()} earlier studies. New one-seed pilots are reported separately."),
                     6: ("fig_controls", "Slot identifiers are not key values. Coarse and fine correlation sweeps use separate partitions."),
                 }[number]
@@ -116,35 +116,19 @@ def build_presentation(out: Path) -> None:
                                  [1.8, 1.8, 2.3, 2.7, 2.7][column], 0.5, size=15, bold=row_index == 0)
                 add_text(slide, fig, "BioHash: 128 bits; four datasets; includes a Haar-sign control on MOBIO.\n"
                          "MLP-Hash: 512 bits; MOBIO; paper-specified, not source-exact.\n"
-                         "IoM-GRP: 300 categorical codes (q=16); MOBIO/FEI/SCface pilots.\n"
-                         "PolyProtect: 170 real values (m=5, overlap=2); MOBIO/FEI/SCface pilots.",
+                         "IoM-GRP: 300 codes (q=16); PolyProtect: 170 reals (m=5, overlap=2).\n"
+                         "Both: MOBIO/FEI three-seed, two-partition follow-up; SCface one-seed pilots.",
                          0.6, 4.15, 12.1, 1.85, size=16)
                 add_text(slide, fig, "SCface: mugshot gallery and visible surveillance probes; 9 detection failures, all identities eligible.",
                          0.6, 6.3, 12.1, 0.45, size=13)
             elif number == 7:
-                add_figure(slide, fig, "fig_scheme_pilots")
-                native = pd.read_csv(ROOT / "experiments/scheme_extension_pilot/native_utility.csv")
-                native = native[(native["scheme"] == "PolyProtect") & (native["condition"] == "independent_unseen_keys")].set_index("dataset")
-                scface_native = pd.read_csv(ROOT / "experiments/scface_scheme_extension_pilot/native_utility.csv")
-                scface_native = scface_native[(scface_native["scheme"] == "PolyProtect") &
-                                              (scface_native["condition"] == "independent_unseen_keys")].iloc[0]
-                caveat = (f"Fresh PolyProtect native top-1: MOBIO {100 * native.loc['MOBIO', 'native_top1']:.2f}%, "
-                          f"FEI {100 * native.loc['FEI', 'native_top1']:.2f}%, "
-                          f"SCface {100 * scface_native['native_top1']:.2f}%; separate diagnostic.")
-                add_text(slide, fig, caveat,
+                add_figure(slide, fig, "fig_followup_amplification")
+                add_text(slide, fig, "MOBIO / FEI; IoM-GRP / PolyProtect; 3 model seeds x 2 identity partitions; matched 120-epoch caps.",
                          0.6, 6.58, 12.1, 0.4, size=12)
             else:
-                add_text(slide, fig, "Completed: two added datasets, two new schemes, 24 pilot cells, paired intervals.",
-                         0.6, 1.4, 12.1, 0.6, size=17)
-                add_text(slide, fig, "Before submission:\n"
-                         "1. Freeze and authorize staged confirmation; one-seed pilots are not confirmation.\n"
-                         "2. Decide whether AgeDB adds enough value for a third added dataset.\n"
-                         "3. Approve statistical margins and a multiple-comparison plan.\n"
-                         "4. Independently review the corrected theorem and related work.\n"
-                         "5. Obtain Sani's scientific and presentation review.",
-                         0.6, 2.35, 12.1, 3.4, size=17)
-                add_text(slide, fig, "A/A* is a venue ambition, not an established property or an acceptance prediction.",
-                         0.6, 6.3, 12.1, 0.45, size=13)
+                add_figure(slide, fig, "fig_followup_native_controls")
+                add_text(slide, fig, "Protected-gallery matching is distinct from learned linkage. Radial sensitivity does not establish natural norm leakage.",
+                         0.6, 6.58, 12.1, 0.4, size=12)
             slide.notes_slide.notes_text_frame.text = (
                 "Evidence baseline: commit 655ae1ecc2c9fc0aa80c828fe0303753296f66df. "
                 "FEI run recorded base commit d1e4ceb3f975fb47d9a8321c47484bb1411f5239 with FEI additions uncommitted.\n"
@@ -158,6 +142,9 @@ def build_presentation(out: Path) -> None:
                 "experiments/scface_scheme_extension_pilot. "
                 "One-seed CPU pilots, 120-epoch cap; not a controlled ranking against earlier 400-epoch, three-seed studies. "
                 "See figure_appendix.pdf for all figures, including native matching and uncertainty."
+                " Follow-up: experiments/scheme_followup_2026-09-18; 216 endpoints, two identity partitions, three model seeds. "
+                "Pre-execution source/config hashes: execution_manifest.json; base commit 4352eeb, dirty working tree recorded. "
+                "Primary sign-flip tests: Holm family 8; native gallery-label permutations: Holm family 12."
             )
             pdf.savefig(fig)
             plt.close(fig)
@@ -184,24 +171,29 @@ def build_dataset_update(destination: Path) -> None:
     native = pd.concat([pd.read_csv(folder / "native_utility.csv") for folder in pilot_dirs])
     fresh_native = native[(native["scheme"] == "PolyProtect") &
                           (native["condition"] == "independent_unseen_keys")].set_index("dataset")
-    inventory = pd.read_csv(ROOT / "experiments/multiexposure_run_matrix.csv")
+    followup = ROOT / "experiments/scheme_followup_2026-09-18"
+    contrasts = pd.read_csv(followup / "seed_identity_contrasts.csv")
+    primary = contrasts[contrasts["primary"]]
+    native_controls = pd.read_csv(followup / "native_null_controls.csv")
+    endpoints = pd.read_csv(followup / "seed_identity_endpoints.csv")
+    model_runs = pd.read_csv(followup / "results_summary.csv")
     titles = ["September dataset and experiment update", "Experimental architecture",
-              "Model definitions and evaluation protocol", "Cross-dataset key-reuse boundary",
-              "Mechanism controls and interpretation", "Additional schemes: one-seed pilots",
-              "Paired multi-record gains and uncertainty", "Native matching is a separate diagnostic",
-              "Evidence provenance and submission gates"]
-    figure_names = {2: "fig_architecture", 4: "fig_results_overview", 5: "fig_controls",
-                    6: "fig_scheme_pilots", 7: "fig_pilot_uncertainty", 8: "fig_pilot_native_utility"}
+              "Detailed attacker: aggregation and reconstruction", "Cross-dataset key-reuse boundary",
+              "Mechanism controls and interpretation", "Multi-seed, multi-partition validation",
+              "Native linkage and radial sensitivity", "Earlier cross-dataset scheme pilots",
+              "Findings and study scope"]
+    figure_names = {2: "fig_architecture", 3: "fig_attack_detail", 4: "fig_results_overview", 5: "fig_controls",
+                    6: "fig_followup_amplification", 7: "fig_followup_native_controls", 8: "fig_scheme_pilots"}
     presentation = Presentation()
     writer = PdfWriter()
     for number, title in enumerate(titles, start=1):
         slide = presentation.slides.add_slide(presentation.slide_layouts[6])
         fig = plt.figure(figsize=(WIDTH, HEIGHT), dpi=120, facecolor="white")
         add_text(slide, fig, title, 0.6, 0.3, 12.1, 0.6, size=25, bold=True)
-        add_text(slide, fig, f"18 September 2026 | Commit: 4352eeb | Research draft | {number}/{len(titles)}",
+        add_text(slide, fig, f"18 September 2026 | Base commit: 4352eeb; follow-up source/config hashes recorded | {number}/{len(titles)}",
                  0.6, 7.07, 12.1, 0.3, size=11, color="#666666")
         if number == 1:
-            add_text(slide, fig, "Four multi-exposure datasets; FEI and SCface complete the two-added-dataset target.",
+            add_text(slide, fig, "Identity-disjoint evaluation across session, pose and camera variation.",
                      0.6, 1.15, 12.1, 0.5, size=17)
             rows = [
                 ["Dataset", "Identities", "Train / val / test", "Valid / selected", "Variation"],
@@ -215,36 +207,19 @@ def build_dataset_update(destination: Path) -> None:
                     add_text(slide, fig, value, [0.6, 2.4, 4.15, 7.2, 9.9][column], 1.95 + row_index * 0.48,
                              [1.7, 1.7, 2.9, 2.6, 2.8][column], 0.45, size=14, bold=row_index == 0)
             add_text(slide, fig,
-                     "SCface access supplied by Sani on 2026-09-18; acquisition is complete.\n"
+                     "SCface: mugshot-to-surveillance linkage under capture-domain shift.\n"
                      "Mugshot gallery / surveillance exposures; all 130 identities remain eligible after 9 detection failures.\n"
                      "Unprotected SCface top-1: 84.375% over 544 test probes; chance: 1/26 = 3.846%.\n"
                      f"Evidence: {len(table)} key-pool conditions / {table['source_file'].nunique()} studies; "
                      f"{len(pilots)} one-seed model endpoints / 24 scheme pilot cells.\n"
-                     "AgeDB is optional and not acquired. Multi-seed scheme confirmation remains open.",
+                     f"New MOBIO/FEI follow-up: {len(model_runs)} trained endpoints; 3 model seeds x 2 identity partitions.",
                      0.6, 4.55, 12.1, 1.95, size=15)
         elif number == 2:
-            add_text(slide, fig, "Icons are schematic; no biometric images or secret keys are included. Detailed model definitions follow.",
+            add_text(slide, fig, "System overview: fixed encoder, hidden-key protection, same-identity exposure sets and held-out gallery linkage.",
                      0.6, 6.58, 12.1, 0.4, size=12)
         elif number == 3:
-            add_text(slide, fig,
-                     "INPUTS AND MODELS\n"
-                     "T: batch x n x d. Single MLP: d -> 256 -> ReLU -> 512 -> L2 normalization.\n"
-                     "Mean / max MLP: pool records first, then the same MLP. Key-pool endpoint: mean MLP.\n"
-                     "DeepSets phi: d -> 256 -> ReLU -> 256 -> ReLU; masked mean across records.\n"
-                     "DeepSets rho: 256 -> 256 -> ReLU -> 512 -> L2 normalization; permutation-invariant.\n"
-                     "BioHash: 128 bits. MLP-Hash: 512 bits. IoM-GRP: 300 codes, q=16, one-hot d=4,800.\n"
-                     "PolyProtect: 170 real values; window 5, overlap 2; outside the rotational-invariance theorem.\n\n"
-                     "TRAINING AND EVALUATION\n"
-                     "Paired source embeddings supervise training; loss = mean(1 - cosine) + 0.1 x MSE.\n"
-                     "Adam: learning rate 0.001, weight decay 0.0001; best validation-loss checkpoint.\n"
-                     "SCface BioHash: 3 seeds, 400-epoch cap, patience 60. Scheme pilots: 1 seed, 120 / 30.\n"
-                     "Eight nested sets per identity; gallery image excluded. Test identities never used for training.\n"
-                     "Fresh keys: source-record and split-disjoint. Recurring pools deliberately reuse hidden transforms.\n"
-                     "Cosine gallery linkage; top-1/top-5, AUROC, EER, TAR; 2,000 identity-bootstrap resamples.\n"
-                     "95% intervals condition on the identity partition/model seed; no multiplicity adjustment.",
-                     0.6, 1.15, 12.1, 5.25, size=14)
-            add_text(slide, fig, "Sources: src/biometrics_ai/aggregation/models.py; scripts/train/run_real_multiexposure.py; configs/attacks/scface*.yaml",
-                     0.6, 6.58, 12.1, 0.4, size=10)
+            add_text(slide, fig, "Mean pooling is the primary endpoint; DeepSets is secondary. Target is the normalized mean of exposed embeddings, not the gallery.",
+                     0.6, 6.58, 12.1, 0.4, size=12)
         elif number == 4:
             add_text(slide, fig,
                      f"SCface: pool 3 rises from {100 * scface.loc['3', 'one_record_top1_mean']:.2f}% to "
@@ -261,41 +236,42 @@ def build_dataset_update(destination: Path) -> None:
             add_text(slide, fig, "Sources: experiments/mobio_mechanism_controls and mobio_correlation_controls. Three model seeds; chance 1/30.",
                      0.6, 6.58, 12.1, 0.4, size=12)
         elif number == 6:
-            add_text(slide, fig, f"{len(pilots)} model endpoints: MOBIO / FEI / SCface; IoM-GRP / PolyProtect; pools 1/4/8 and fresh keys.",
-                     0.6, 1.05, 12.1, 0.4, size=14)
-            add_text(slide, fig, "One seed per endpoint, 120-epoch cap. No controlled ranking against earlier three-seed, 400-epoch studies.",
+            add_text(slide, fig, f"{len(model_runs)} trained endpoints; fresh, shared and pool-4 keys; 3 model seeds x 2 identity partitions.\n"
+                     f"All {len(primary)} planned pool-4 amplification tests pass Holm correction (maximum adjusted p = {primary['holm_p'].max():.3f}).",
+                     0.6, 1.05, 12.1, 0.65, size=14)
+            add_text(slide, fig, "Matched 120-epoch caps. Crossed-bootstrap intervals include model-seed and identity resampling within each partition.",
                      0.6, 6.58, 12.1, 0.4, size=12)
         elif number == 7:
-            values = gains[gains["dataset"] == "SCface"].set_index("scheme")
             add_text(slide, fig,
-                     f"SCface pool-4 mean-pool gains: IoM-GRP +{100 * values.loc['IoM-GRP', 'estimate']:.2f} points; "
-                     f"PolyProtect +{100 * values.loc['PolyProtect', 'estimate']:.2f} points.",
-                     0.6, 1.05, 12.1, 0.4, size=14)
-            add_text(slide, fig, "Paired 95% identity-bootstrap intervals, conditional on one seed/partition; unadjusted. These are pilots, not confirmation.",
+                     f"Fresh PolyProtect native identification exceeds the gallery-label null in {len(native_controls)} / {len(native_controls)} tests.\n"
+                     f"Maximum Holm-adjusted p = {native_controls['holm_p'].max():.3f}; three fresh-key seeds per dataset and identity partition.",
+                     0.6, 1.05, 12.1, 0.65, size=14)
+            add_text(slide, fig, "IoM-GRP is invariant to the tested positive scales. PolyProtect is scale-sensitive; natural norm leakage was not tested.",
                      0.6, 6.58, 12.1, 0.4, size=12)
         elif number == 8:
             values = " / ".join(f"{100 * fresh_native.loc[dataset, 'native_top1']:.2f}%" for dataset in ("MOBIO", "FEI", "SCface"))
-            add_text(slide, fig, f"Fresh-key PolyProtect native top-1: {values} on MOBIO / FEI / SCface.\n"
-                     "Above-chance native identification needs investigation; learned attacks near chance do not imply unlinkability.",
+            add_text(slide, fig, f"Earlier one-seed pilots: {len(pilots)} model endpoints on MOBIO / FEI / SCface, including pool 8.\n"
+                     f"Separate native fresh-key PolyProtect diagnostic: {values} top-1, respectively.",
                      0.6, 1.05, 12.1, 0.65, size=14)
-            add_text(slide, fig, "Protected-gallery diagnostic with different probes; not the learned unprotected-gallery endpoint. No universal privacy claim.",
+            add_text(slide, fig, "Pilot intervals condition on one seed and partition; not confirmation. New replicated MOBIO/FEI results are on page 6.",
                      0.6, 6.58, 12.1, 0.4, size=12)
         else:
             add_text(slide, fig,
-                     "PROVENANCE\n"
-                     "Latest result integration: 4352eeb (2026-09-18). SCface protocol freeze: 69a93e4.\n"
-                     "MOBIO / FEI scheme pilot freeze: d5f4e89 (2026-09-12). Original run dates remain unchanged.\n"
-                     "Sources: experiments/cross_dataset_key_pool_summary.csv and both scheme pilot directories.\n"
-                     f"Local per-seed inventory: {len(inventory)} rows / {inventory['source_metrics'].nunique()} artifacts; SCface absent locally.\n"
-                     "All 12 current vector figures: reports/slides/figure_appendix.pdf; regenerators: scripts/figures/.\n\n"
-                     "REQUIRED BEFORE SUBMISSION\n"
-                     "1. Authorize and freeze multi-seed, multi-partition confirmation with matched training budgets.\n"
-                     "2. Approve equivalence margins and a seed-uncertainty / multiple-comparison plan.\n"
-                     "3. Investigate native PolyProtect linkage and norm-sensitive controls; reconcile historical coverage.\n"
-                     "4. Obtain independent novelty, theorem and implementation review, then Sani's scientific review.\n"
-                     "5. Select a venue and check its reporting, reproducibility, ethics and dataset-use requirements.\n\n"
-                     "A/A* is a venue ambition, not a verified quality label or acceptance prediction.\n"
-                     "No source-exact benchmark reproduction, confirmation, or universal privacy result is claimed.",
+                     "TRANSFORM REUSE AND RECORD MULTIPLICITY\n"
+                     "Recurring hidden transforms support substantial identity linkage from multiple protected records.\n"
+                     "The transition depends on dataset and identity partition, rather than a universal pool-size threshold.\n"
+                     "SCface pool 3: 5.29% single-record versus 33.17% ten-record top-1; chance is 3.846%.\n\n"
+                     "MECHANISM\n"
+                     "Shuffled-identity sets remove the MOBIO gain; record count alone does not explain the effect.\n"
+                     "Slot-label controls and partial projection sharing separate transform reuse from key disclosure.\n"
+                     "Mean pooling and DeepSets test aggregation at the template and learned-feature levels.\n\n"
+                     "STATISTICAL AND THREAT-MODEL SCOPE\n"
+                     "BioHash evidence spans four datasets and three model seeds per study.\n"
+                     f"New scheme follow-up: {len(model_runs)} endpoints; all {len(primary)} primary contrasts pass Holm correction.\n"
+                     "Native protected-gallery matching and learned embedding linkage measure different attack surfaces.\n"
+                     "Fresh-key learned intervals include chance; they do not establish equivalence or general unlinkability.\n\n"
+                     "Scope: fixed key/set seeds for training; two overlapping identity assignments; SCface remains one-seed for new schemes.\n"
+                     "Follow-up protocol and pre-execution hashes: experiments/scheme_followup_2026-09-18/execution_manifest.json.",
                      0.6, 1.15, 12.1, 5.45, size=14)
         buffer = BytesIO()
         fig.savefig(buffer, format="pdf")
@@ -304,14 +280,14 @@ def build_dataset_update(destination: Path) -> None:
         page = writer.add_page(PdfReader(buffer).pages[0])
         if number in figure_names:
             source = PdfReader(FIGURES / f"{figure_names[number]}.pdf").pages[0]
-            top = 1.05 if number == 2 else 1.9
-            available_height = 5.3 if number == 2 else 4.5
+            top = 1.05 if number in (2, 3) else 1.9
+            available_height = 5.3 if number in (2, 3) else 4.5
             scale = min(12.1 * 72 / float(source.mediabox.width), available_height * 72 / float(source.mediabox.height))
             left = 0.6 * 72 + (12.1 * 72 - float(source.mediabox.width) * scale) / 2
             bottom = (HEIGHT - top - available_height) * 72 + (available_height * 72 - float(source.mediabox.height) * scale) / 2
             page.merge_transformed_page(source, Transformation().scale(scale).translate(left, bottom))
     writer.add_metadata({"/Title": "September Dataset Update - 18 September 2026",
-                         "/Subject": "Four-dataset evidence update; one-seed pilots; submission gates"})
+                         "/Subject": "Identity-disjoint multi-record linkage: architecture, results and study scope"})
     destination.parent.mkdir(parents=True, exist_ok=True)
     temporary = destination.with_suffix(".tmp.pdf")
     writer.write(temporary)

@@ -1,8 +1,8 @@
 # Final research status
 
-## Readiness audit: 2026-09-18
+## Findings update: 2026-09-18
 
-**Ready to write a research draft; not yet ready to claim submission readiness or A/A* quality.** Venue rankings and acceptance are not properties established by an effect size, a figure package, or this audit. Sani's scientific and visual approval has not been obtained.
+**Recurring hidden transforms permit substantial multi-record linkage in the tested protocols; fresh-key learned endpoints remain chance-compatible.** The completed bounded follow-up adds model-seed and identity-partition sensitivity, not a universal privacy result or a complete cross-dataset confirmation matrix.
 
 Completed: FEI adds a third multi-exposure dataset to MOBIO/LFW, with 200 identities, 2,378 usable embeddings, and three model seeds. Its ten-record fresh-key top-1 is 1.77% versus 2.50% chance; tested recurring pools 1/2/3/4/5/7 pass, while pool 10 fails. No additional training was needed for this presentation audit because the completed run and compact summary already exist.
 
@@ -12,15 +12,17 @@ The user subsequently reported Sani's approval of paper-specified IoM-GRP and Po
 
 Fresh-key uncertainty remains broad: no endpoint meets the illustrative +/-1-point equivalence band. Native fresh-key PolyProtect protected-gallery top-1 reaches 12.73%/13.73%/10.66% against 3.33%/2.50%/3.846% chance on MOBIO/FEI/SCface. This is distinct from learned unprotected-gallery linkage and prevents a general privacy claim. PolyProtect is outside the rotational-invariance theorem.
 
-The presentation contains two diagrams, ten result plots, an eight-slide editable deck/PDF, a complete figure appendix and a [nine-page September update](Sept_Dataset_Update.pdf) with a defined, icon-supported architecture. The current evidence integration is `4352eeb` (2026-09-18). Earlier 73-condition/12-study evidence and 24 one-seed pilot cells (72 model endpoints) remain separate. The per-seed inventory contains 633 rows from 25 local artifacts and has no SCface rows; tracked SCface aggregate tables feed figures directly. Full historical coverage reconciliation is pending. Export checks cover text overlap, bounds, box padding and unsupported dashes. Native PowerPoint rendering still needs a check on the presenting machine. No training was performed for this report refresh.
+The subsequent authorized [MOBIO/FEI follow-up](../experiments/scheme_followup_2026-09-18/README.md) completed 24 cells / 216 endpoints in 859.63 seconds. IoM-GRP and PolyProtect were tested on two new identity partitions with three model seeds, fresh/shared/pool-4 conditions and matched 120-epoch caps. All eight primary pool-4 mean-pool amplification contrasts have positive crossed-bootstrap 95% intervals and Holm p = 0.004. All 12 fresh PolyProtect native matching tests exceed their gallery-label permutation null (Holm p = 0.006). IoM-GRP is unchanged by positive radial scaling; PolyProtect changes, but this synthetic sensitivity is not natural norm leakage or a causal explanation of native linkage. Fresh learned intervals include chance; no equivalence claim follows.
+
+The presentation contains three diagrams, twelve result plots, an eight-slide editable deck/PDF, a 15-figure appendix and a [nine-page September update](Sept_Dataset_Update.pdf). Architecture overview and attacker details are separate. Base integration is `4352eeb`; the new run records separate source/configuration hashes. Earlier 73-condition/12-study results, 72 pilot endpoints and 216 follow-up endpoints remain distinct. The inventory contains 849 rows from 49 artifacts, preserving all previous 633 rows. The [coverage audit](../experiments/scheme_followup_2026-09-18/coverage_audit.csv) identifies two legacy-schema sources and unavailable SCface details; tracked SCface aggregates still feed figures directly. Export checks cover text overlap, bounds, box padding and unsupported dashes. Native PowerPoint rendering still needs a check on the presenting machine.
 
 | Remaining gate | Current status / next action |
 |---|---|
 | Second additional dataset beyond MOBIO/LFW | FEI and SCface are both complete as added-dataset BioHash key-pool studies (pilot-grade, one identity assignment each). AgeDB remains an optional third addition; access is not yet available. |
-| Two additional protection families | User-reported approval, paper-specified implementation and one-seed MOBIO/FEI/SCface pilots complete; multi-seed confirmation remains open. |
+| Two additional protection families | Paper-specified implementations, MOBIO/FEI/SCface pilots and three-seed/two-partition MOBIO/FEI follow-up complete; full cross-dataset confirmation remains open. |
 | Confirmatory matrix | Current LFW/FEI/SCface studies cover BioHash endpoints 1 and 10, not all schemes, attackers, exposures, and partitions requested in the roadmap. |
-| Statistical inference | Paired identity intervals, exploratory equivalence sensitivity and local per-seed matrix implemented. Approved margins, seed uncertainty, multiplicity and historical coverage remain open. |
-| Theory and implementation | Side-information corollary corrected with a counterexample; local source/novelty audit complete. Independent human review and norm-sensitive/native-PolyProtect controls remain open. |
+| Statistical inference | Follow-up crossed seed/identity intervals and prespecified Holm families complete. Approved equivalence margins, older-study inference and full historical coverage remain open. |
+| Theory and implementation | Native permutation and synthetic radial controls complete; natural norm leakage, causal explanation and independent human review remain open. |
 | Novelty and venue fit | Independent related-work review, realistic key-reuse motivation, and comparison to the selected venue's closest work. An unavailable benchmark blocks an exact reproduction claim, not every possible high-tier independent paper. |
 | Professor review | Review the manuscript and eight-slide package; record decisions before expanding experiments. |
 
@@ -76,7 +78,7 @@ The same-image control removed the remaining image/session-variation explanation
 
 ## Limitations and next work
 
-These studies use one ArcFace checkpoint and a local BioHash reference not cross-checked against unavailable official code. The primary cross-dataset table uses one identity assignment, while larger LFW and CFP add three identity assignments, three key seeds, and three model seeds. Those cells share fixed datasets and pipeline components, so they are dependent sensitivity checks rather than independent replications. Identity-clustered percentile intervals are descriptive, can under-cover, and were inspected without familywise error correction. Chance inclusion does not prove equivalence or irreversibility. None of the protocols is comparable to the paper's MOBIO protocol or official implementation.
+These studies use one ArcFace checkpoint and a local BioHash reference not cross-checked against unavailable official code. The primary cross-dataset table uses one identity assignment, while larger LFW and CFP add three identity assignments, three key seeds, and three model seeds. The new MOBIO/FEI follow-up uses two overlapping assignments and three model seeds with fixed training key/set seeds. These cells share datasets and pipeline components, so they are sensitivity checks rather than independent populations. Older identity-clustered intervals were inspected without familywise correction; the follow-up corrects only its prespecified primary and native families. Bootstrap intervals can under-cover, and chance inclusion does not prove equivalence or irreversibility. None of the protocols is an exact reproduction of the paper's MOBIO protocol or official implementation.
 
 Continue requesting a corrected `benchmark_cb` source; keep its exact reproduction blocked until then. Strengthen transform-source validation, independent proof and literature review, statistical equivalence analysis, and uncertainty around the correlation transition. These are concrete evidence improvements, not a guarantee of any venue rank or acceptance. The dated readiness audit above separates approval/access gates from executable follow-up work.
 

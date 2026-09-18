@@ -12,6 +12,7 @@ dependencies = [
 	"torch>=2.2,<2.9; platform_system == 'Windows'",
 	"torch>=2.2; platform_system != 'Windows'",
 	"scikit-learn>=1.4",
+	"scipy>=1.11",
 	"PyYAML>=6.0",
 	"Pillow>=10.0",
 ]

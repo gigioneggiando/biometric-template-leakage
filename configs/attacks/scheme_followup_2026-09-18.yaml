@@ -1,0 +1,60 @@
+classification: exploratory independent study, not benchmark_cb reproduction
+stage: bounded_validation
+max_wall_seconds: 3600
+output_root: results/scheme_followup_2026-09-18
+summary_dir: experiments/scheme_followup_2026-09-18
+datasets:
+  - name: MOBIO
+    embedding_dir: data/processed/embeddings/mobio/buffalo_l_yunet
+    split_reassignment_seed: 91831
+  - name: FEI
+    embedding_dir: data/processed/embeddings/fei_multiexposure/buffalo_l_yunet
+    split_reassignment_seed: 91831
+  - name: MOBIO
+    embedding_dir: data/processed/embeddings/mobio/buffalo_l_yunet
+    split_reassignment_seed: 91843
+  - name: FEI
+    embedding_dir: data/processed/embeddings/fei_multiexposure/buffalo_l_yunet
+    split_reassignment_seed: 91843
+schemes:
+  - name: IoM-GRP
+    template_dim: 4800
+    protection:
+      scheme: iomgrp_paper_specified
+      groups: 300
+      group_size: 16
+  - name: PolyProtect
+    template_dim: 170
+    protection:
+      scheme: polyprotect_paper_specified
+      window_size: 5
+      overlap: 2
+      coefficient_bound: 50
+conditions: [independent_unseen_keys, random_key_pool_1, random_key_pool_4]
+key_seed: 91861
+set_seed: 91867
+repeats_per_identity: 8
+exposures: [1, 10]
+models: [mean_mlp, deepsets]
+primary_analysis: descriptive_control
+control_model: mean_mlp
+record_template_diagnostics: true
+training:
+  seeds: [601, 607, 613]
+  epochs: 120
+  patience: 30
+  hidden_dim: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  mse_weight: 0.1
+  bootstrap_resamples: 2000
+  bootstrap_confidence: 0.95
+  retain_identity_scores: true
+analysis:
+  seed: 91871
+  native_key_seeds: [91873, 91879, 91883]
+  permutations: 1999
+  bootstrap_resamples: 2000
+  norm_scales: [0.5, 2.0]
+  norm_probe_count: 32
+  primary_family_size: 8
