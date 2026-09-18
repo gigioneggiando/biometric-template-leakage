@@ -18,6 +18,7 @@ results/*
 !results/.gitkeep
 MOBIO_datasets/
 MOBIO/
+SCFace/
 external/benchmark_cb/
 external/gafar/
 *.onnx

@@ -1,0 +1,42 @@
+classification: exploratory independent study, not benchmark_cb reproduction
+stage: pilot
+max_wall_seconds: 3600
+output_root: results/scface_scheme_extension_pilot_2026-09-18
+summary_dir: experiments/scface_scheme_extension_pilot
+datasets:
+  - name: SCface
+    embedding_dir: data/processed/embeddings/scface_multiexposure/buffalo_l_yunet
+schemes:
+  - name: IoM-GRP
+    template_dim: 4800
+    protection:
+      scheme: iomgrp_paper_specified
+      groups: 300
+      group_size: 16
+  - name: PolyProtect
+    template_dim: 170
+    protection:
+      scheme: polyprotect_paper_specified
+      window_size: 5
+      overlap: 2
+      coefficient_bound: 50
+conditions: [random_key_pool_1, independent_unseen_keys, random_key_pool_4, random_key_pool_8]
+key_seed: 91817
+set_seed: 91819
+repeats_per_identity: 8
+exposures: [1, 10]
+models: [mean_mlp, deepsets]
+primary_analysis: descriptive_control
+control_model: mean_mlp
+record_template_diagnostics: true
+training:
+  seeds: [509]
+  epochs: 120
+  patience: 30
+  hidden_dim: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  mse_weight: 0.1
+  bootstrap_resamples: 2000
+  bootstrap_confidence: 0.95
+  retain_identity_scores: true
