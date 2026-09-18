@@ -1,5 +1,7 @@
 # Model weights
 
+**Status checked: 2026-09-18**, against `4352eeb`. The four-dataset multi-exposure evidence uses the same fixed YuNet / ArcFace extraction pipeline; SCface adds 2,851 usable embeddings, not a newly trained face backbone. Current results are indexed in the [research package](../reports/README.md).
+
 Weights are intentionally ignored. InsightFace code is MIT licensed, but each checkpoint's training-data and redistribution terms must be independently checked. Arc2Face is optional; its official implementation and model download instructions are documented in `docs/literature/paper_notes/facelinkgen.md`.
 
 The Month 1 real-dataset studies use the official InsightFace `buffalo_l` release asset (`ResNet50@WebFace600K`). InsightFace states that its provided pretrained models are available for non-commercial research only. Review those terms before running:
@@ -16,4 +18,4 @@ Olivetti and CFP require the Apache-2.0 OpenCV Zoo YuNet detector because the bu
 python scripts\setup\download_yunet.py
 ```
 
-YuNet model SHA-256 is `8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4`. The same model was used for the LFW preprocessing robustness checks.
+YuNet model SHA-256 is `8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4`. The same model was used for the LFW preprocessing robustness checks and MOBIO/FEI/SCface multi-exposure studies. Model hash verification was recorded on 2026-08-26; this documentation refresh does not represent a new download or license grant. Keep verified weights and their manifests; they are not obsolete report artifacts.

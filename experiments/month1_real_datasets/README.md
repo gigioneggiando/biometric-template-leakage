@@ -1,5 +1,7 @@
 # Month 1 real-dataset evidence
 
+**Documentation checked: 2026-09-18. Month 1 milestone completed: 2026-08-26.** This historical single-template archive remains valid and separate from the current four-dataset multi-exposure table (73 conditions / 12 studies). The [September report](../../reports/Sept_Dataset_Update.pdf) includes later FEI/SCface evidence and additional-scheme pilots, not replacements for these protocols. Dataset archives and model hashes remain governed by the [data policy](../../data/README.md).
+
 Status: **COMPLETED ENGINEERING VALIDATION; NOT A PAPER REPRODUCTION**.
 
 This package consolidates single-template experiments on three real face datasets: LFW, Olivetti faces, and CFP. Six protocol variants test detector/alignment choice, sample size, and frontal/profile views. A separate 64/128/256-bit sweep tests BioHash dimension on LFW and Olivetti. Larger LFW and CFP frontal also use a crossed `3 identity assignments x 3 key seeds x 3 model seeds` sensitivity design with identity-clustered top-1 intervals. Synthetic data is excluded from the scientific evidence.

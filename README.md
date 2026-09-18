@@ -1,6 +1,6 @@
 # Key-agnostic multi-exposure biometric template leakage
 
-**Last status update:** 2026-09-12
+**Last status update:** 2026-09-18. Evidence integration: `4352eeb`; SCface protocol/pilot freeze: `69a93e4`.
 
 **Navigation:** [Research package index](reports/README.md), [current evidence and gates](reports/final_research_status.md), [figure captions](reports/figures/README.md), and [review slides](reports/slides/research_review.pdf).
 
@@ -10,6 +10,7 @@ No environment setup or experiment rerun is needed to view the existing outputs.
 
 | What to view | Location |
 |---|---|
+| September dataset update: current results, defined architecture and submission gates | [reports/Sept_Dataset_Update.pdf](reports/Sept_Dataset_Update.pdf) |
 | All 12 figures together, including architecture and results | [reports/slides/figure_appendix.pdf](reports/slides/figure_appendix.pdf) |
 | Eight-slide research overview | [reports/slides/research_review.pdf](reports/slides/research_review.pdf) |
 | Editable presentation | [reports/slides/research_review.pptx](reports/slides/research_review.pptx) |
@@ -23,16 +24,16 @@ No environment setup or experiment rerun is needed to view the existing outputs.
 
 Individual plots, including paired uncertainty, equivalence sensitivity and native matching, are in `reports/figures/`, each as a `.png` and `.pdf` pair. Combined PDFs and the PowerPoint are in `reports/slides/`. These are generated research graphics, not raw face photographs; private biometric data and detailed run artifacts are deliberately excluded.
 
-## Datasets still requiring access
+## Dataset access and archives
 
-**Request SCface first.** MOBIO, LFW and FEI are already available and used. FEI supplies the first additional multi-exposure dataset beyond MOBIO/LFW; one more accepted dataset is needed for the two-additional-dataset target. AgeDB is the contingency if SCface is unavailable or unsuitable, or an optional third addition if approved. Access to both is not mandatory for the minimum target. Neither currently has authorized access in this project.
+**MOBIO, LFW, FEI and SCface are available and used.** Sani supplied the authorized SCface archive on 2026-09-18; its BioHash study and one-seed scheme pilots are complete. FEI and SCface satisfy the two-added-dataset coverage target beyond MOBIO/LFW, but do not complete the broader confirmatory matrix. AgeDB remains an optional third addition without authorized access.
 
 | Dataset and role | Official contact | Who should request access and what to send |
 |---|---|---|
-| **SCface: next primary dataset**, camera/distance/pose variation | **Prof. Mislav Grgic**, University of Zagreb: [mislav.grgic@fer.hr](mailto:mislav.grgic@fer.hr). [Official page](https://www.scface.org/) | Ask **Sani or another full-time staff member** to send an institutional-letterhead cover letter and the signed [release agreement](https://www.scface.org/SCface_release_agreement.pdf). A student signature is not accepted. Name all collaborators and ask permission for the intended institutions/machines and aggregate publication. |
+| **SCface: acquired and evaluated**, camera/distance variation | [Official page](https://www.scface.org/) | Authorized archive received 2026-09-18. Preserve license restrictions; local archive hash, layout and commands are in [SCface setup](docs/setup/SCFACE_LOCAL_DATA.md). No new access request is needed for the completed study. |
 | **AgeDB: backup or optional third addition**, age variation | **Stylianos Moschoglou**, contact listed by Imperial College iBUG: [s.moschoglou@imperial.ac.uk](mailto:s.moschoglou@imperial.ac.uk). [Official page](https://ibug.doc.ic.ac.uk/resources/agedb/) | An authorized project member should email from an **academic address**, state affiliation and non-commercial research purpose, and request the archive password. Clarify collaborator/site and derived-result publication permissions. Keep the password private, outside chat and Git. |
 
-Contacts and procedures were checked against the official pages on **2026-09-12**; no request has been sent on your behalf. After access is granted, each included identity must retain a gallery image plus at least ten valid source embeddings, and the unprotected baseline must pass before new experiments. See the [full access checklist](docs/datasets/access_request_checklist.md). Access does not itself complete confirmation or authorize new training.
+Contacts and procedures were checked against the official pages on **2026-09-12**; SCface acquisition was recorded on **2026-09-18**. FEI's four official archives were acquired on 2026-09-12; MOBIO acquisition is documented in the [local handoff](docs/setup/MOBIO_LOCAL_DATA.md). Archives, faces, embeddings and keys remain private and are not cleanup targets. Each included identity must retain a gallery image plus ten usable exposures. See the [full access checklist](docs/datasets/access_request_checklist.md). Access does not itself authorize new training.
 
 **Research question:** Can a key-agnostic attacker recover identity information from multiple independently protected face templates without their secret keys?
 
@@ -46,7 +47,7 @@ Contacts and procedures were checked against the official pages on **2026-09-12*
 
 LFW, Olivetti, CFP, and MOBIO results are **independent engineering studies, not paper reproduction**. Synthetic runs validate plumbing only and are excluded from the scientific evidence. No published result has been reproduced yet.
 
-**Latest extension:** user-approved paper-specified IoM-GRP and PolyProtect are implemented. All 16 MOBIO/FEI one-seed pilot cells (48 model runs) completed in 277.89 seconds, within the authorized hour. Pool-4 paired gains are positive; fresh-key uncertainty does not establish equivalence, and fresh PolyProtect protected-gallery matching is above chance. See the [pilot report](experiments/scheme_extension_pilot/README.md), [12-figure PDF appendix](reports/slides/figure_appendix.pdf), and [633-row local per-seed inventory](experiments/multiexposure_run_matrix.csv). New dataset access, full confirmation and independent human review remain open.
+**Latest extension:** SCface adds 130 identities and 2,851/2,860 valid embeddings, with 84.375% unprotected top-1 over 544 probes. Its BioHash pools 1/2/3 pass the all-seed interval rule; pool 4 is variable and fails. The combined table now has 73 conditions from 12 source-separated studies. Approved IoM-GRP/PolyProtect pilots total 24 cells and 72 model endpoints: 16 MOBIO/FEI cells on 2026-09-12 and 8 SCface cells on 2026-09-18. Fresh PolyProtect native top-1 is 12.73%/13.73%/10.66% on MOBIO/FEI/SCface, a separate above-chance diagnostic, not a privacy result. See [SCface results](experiments/scface_multiexposure/README.md), [SCface pilots](experiments/scface_scheme_extension_pilot/README.md), and the [12-figure appendix](reports/slides/figure_appendix.pdf). The [633-row local inventory](experiments/multiexposure_run_matrix.csv) has 25 source artifacts but no SCface rows; aggregate SCface evidence is tracked separately. Confirmation and independent human review remain open.
 
 ## [x] Month 1 - Foundation and baselines
 
@@ -113,7 +114,7 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 
 **Proposal period:** Weeks 9-12
 
-**Status checked:** 2026-09-06
+**Status checked:** 2026-09-18
 
 - [x] Run a preregistered paper-specified MLP-Hash cross-scheme test with new key/set/model seeds.
 - [x] Run session-aligned and sample-randomized key-reuse boundary ablations (pools 1/2/5/10 versus fresh keys).
@@ -151,7 +152,9 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 
 **Proposal deliverable:** Reproducible attack framework, results, and paper.
 
-**[ ] Not met as of 2026-09-06.** The framework, MOBIO/LFW evidence, cross-scheme confirmation, mechanism controls, and a paper draft exist. Norm leakage, equivalence testing, independent literature/proof review, final figures, and source-exact reproduction remain open.
+**[ ] Not met as of 2026-09-18.** The framework, four-dataset BioHash evidence, 24 additional-scheme pilot cells, mechanism controls, current figures and a working paper draft exist. Norm/native-PolyProtect controls, approved equivalence analysis, multi-seed confirmation, independent review, manuscript finalization and submission remain open. Source-exact reproduction is still blocked.
+
+**Fourth dataset (SCface, 2026-09-18).** On a 78/26/26 identity split, ten-record BioHash top-1 is `81.57/61.06/33.17/20.51/5.93/1.92/3.04%` for pools 1/2/3/4/5/7/10; fresh keys give `3.85%` against `3.846%` chance. Pools 1-3 pass the all-seed interval criterion. SCface pool-4 pilot paired gains are `+34.62` points for IoM-GRP and `+41.83` for PolyProtect, conditional on one seed. These are independent studies, not benchmark reproductions or confirmation of the complete roadmap.
 
 ## Dataset status
 
@@ -160,6 +163,8 @@ Evidence: [preregistered protocol](docs/protocols/multi_exposure.md) and [MOBIO 
 | Synthetic identities | [x] Plumbing | CPU smoke pipeline only; excluded from scientific evidence            | Keep as test data only                              |
 | LFW funneled         | [x] Used     | Month 1 checks; 125 x 12 key-pool replication of the MOBIO protocol   | Preserve as second-dataset evidence                 |
 | FEI                  | [x] Used     | 200 x 12 pose-sweep key-pool replication of the MOBIO protocol        | Preserve as third-dataset evidence                  |
+| SCface               | [x] Used     | 130 identities; mugshot/surveillance BioHash study; IoM-GRP/PolyProtect pilots | Confirm across seeds and partitions |
+| AgeDB                | [ ] Optional | No authorized archive or experiments | Acquire only if the optional third addition is approved |
 | Olivetti faces       | [x] Used     | Full 40-identity protocol and dimension sweep                         | Preserve as cross-dataset evidence                  |
 | CFP                  | [x] Used     | Full frontal/profile protocols and crossed-seed sensitivity checks    | Preserve as large-scale/view evidence               |
 | MOBIO                | [x] Used     | BioHash/MLP-Hash boundary, three partitions, mechanism and correlation controls | Norm-leakage and equivalence controls |
@@ -180,8 +185,8 @@ Data, embeddings, keys, model weights, and detailed run artifacts are gitignored
 
 Sani requested the next generalization phase during the 2026-09-10 meeting. The full staged plan, selection gates, experiment matrix, and presentation deliverables are in [docs/ROADMAP.md](docs/ROADMAP.md).
 
-1. Obtain authorized SCface or AgeDB access using the [official request checklist](docs/datasets/access_request_checklist.md); FEI is complete.
-2. Review the completed IoM-GRP/PolyProtect pilots and investigate the native PolyProtect fresh-key diagnostic.
+1. Review completed FEI/SCface added-dataset studies; decide whether optional AgeDB coverage is justified before requesting access.
+2. Review all 24 IoM-GRP/PolyProtect pilot cells and investigate the native PolyProtect fresh-key diagnostic.
 3. Approve and freeze the broader multi-seed confirmation matrix before new training.
 4. Approve equivalence margins, seed/multiplicity analysis and a justified norm-sensitive control.
 5. Obtain independent human theory/novelty review using the [review checklist](docs/review/scheme_pilot_review_2026-09-12.md).

@@ -1,5 +1,7 @@
 # SCface multi-exposure key-pool study
 
+**Study and documentation date: 2026-09-18.** Protocol freeze: `69a93e4`; results integrated in `4352eeb`. This fourth dataset adds eight conditions to the [73-condition / 12-study table](../cross_dataset_key_pool_summary.csv). The [September report](../../reports/Sept_Dataset_Update.pdf) and all current figures include these results.
+
 Status: **COMPLETED ADDED-DATASET STUDY; NOT A PAPER REPRODUCTION**.
 
 Sani supplied the authorized SCface archive on 2026-09-18. The archive contains 130 identities with a visible frontal mugshot, 21 visible surveillance images from seven cameras at three distances, nine pose mugshots, and one infrared image per identity. This protocol uses the frontal mugshot as the held-out gallery record and the 21 visible surveillance images as exposure candidates; pose mugshots and infrared images are excluded.
@@ -26,3 +28,5 @@ BioHash 128-bit, randomized pool assignment, key seed `91897`, set seed `91903`,
 Fresh-key ten-record top-1 equals chance and AUROC is near 0.5. Pools 1-3 show clear reuse leakage and multi-record amplification. Pool 4 has a large mean gain but high seed variability and fails the all-interval criterion; pools 5, 7, and 10 do not show useful mean-pool linkage. This locates the transition near pools 3-5 for this protocol, without establishing equivalence in the failed conditions.
 
 The tracked [summary](key_pool_boundary_summary.csv) contains only aggregate statistics. Images, embeddings, protocol manifests with local paths, keys, and detailed results remain ignored under `data/`, `results/`, and `SCFace/`.
+
+Archive checksum and acquisition steps are retained in the [SCface setup record](../../docs/setup/SCFACE_LOCAL_DATA.md). The 633-row local per-seed inventory does not yet include SCface; do not infer its run-level coverage from the aggregate figures. Separate [IoM-GRP/PolyProtect pilots](../scface_scheme_extension_pilot/README.md) use one model seed and cannot establish full confirmation. No additional training was run for the report refresh.

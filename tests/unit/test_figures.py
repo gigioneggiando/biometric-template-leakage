@@ -91,6 +91,35 @@ def test_plot_validator_rejects_overlapping_text(tmp_path):
         plt.close(fig)
 
 
+def test_dataset_update_contains_current_evidence_and_vector_figures(tmp_path):
+    pytest.importorskip("pptx")
+    pdfium = pytest.importorskip("pypdfium2")
+    pypdf = pytest.importorskip("pypdf")
+    presentation = runpy.run_path(str(ROOT / "scripts/figures/make_presentation.py"))
+    destination = tmp_path / "Sept_Dataset_Update.pdf"
+    presentation["build_dataset_update"](destination)
+    document = pypdf.PdfReader(destination)
+    assert len(document.pages) == 9
+    text = "\n".join(page.extract_text() for page in document.pages)
+    for expected in ("4352eeb", "SCface", "73", "72", "33.17%", "10.66%", "not confirmation"):
+        assert expected in text
+    assert "we have not tested it yet" not in text.lower()
+    assert "luigi" not in text.lower()
+    assert "colluto" not in text.lower()
+    for page in document.pages:
+        assert len(page.extract_text()) > 100
+    assert not list(document.pages[1].images)
+    assert "Key" in document.pages[1].extract_text()
+    with pdfium.PdfDocument(destination) as rendered:
+        for page in rendered:
+            bitmap = page.render(scale=0.75)
+            pixels = np.asarray(bitmap.to_pil())
+            assert (pixels[..., :3] < 240).any(axis=2).mean() > 0.01
+            bitmap.close()
+            page.close()
+    assert not destination.with_suffix(".tmp.pdf").exists()
+
+
 def test_presentation_has_eight_nonblank_pages_and_editable_text(tmp_path):
     pptx = pytest.importorskip("pptx")
     pdfium = pytest.importorskip("pypdfium2")

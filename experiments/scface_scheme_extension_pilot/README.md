@@ -1,5 +1,7 @@
 # SCface IoM-GRP and PolyProtect pilots
 
+**Study and documentation date: 2026-09-18.** Integrated in `4352eeb`, with protocol freeze `69a93e4`. Together with the [2026-09-12 MOBIO/FEI pilots](../scheme_extension_pilot/README.md), the current package has 24 cells / 72 model endpoints, shown in the [September update](../../reports/Sept_Dataset_Update.pdf).
+
 Status: **COMPLETED ONE-SEED ENGINEERING PILOTS; NOT CONFIRMATION**.
 
 The frozen `69a93e4` configuration evaluates paper-specified IoM-GRP and PolyProtect on the authorized SCface embeddings. All eight scheme/key-regime cells completed in 128.22 seconds, producing 24 trained-model endpoints. The test gallery has 26 identities and `3.846%` chance. Model seed `509`, key seed `91817`, set seed `91819`, a 120-epoch cap, and eight nested repeats are fixed.
@@ -20,3 +22,5 @@ Fresh-key learned linkage remains chance-compatible for both schemes in this pil
 Native protected-gallery matching is a separate diagnostic. Under fresh parameters it gives `4.60%` top-1 for IoM-GRP and `10.66%` for PolyProtect, with AUROC `0.5110/0.5075`. The PolyProtect value is above chance and requires its own multi-seed uncertainty and null-calibration study; learned unprotected-gallery results near chance do not imply unlinkability.
 
 Tracked files contain aggregate results only. See `results_summary.csv`, `paired_uncertainty.csv`, `equivalence_sensitivity.csv`, `native_utility.csv`, and `matrix_status.json`.
+
+The 633-row local per-seed inventory still excludes SCface because the detailed SCface artifacts are unavailable on this host. Its compact tables remain the source for current figures. Keep the [authorized archive provenance](../../docs/setup/SCFACE_LOCAL_DATA.md), original code freeze and run date; this documentation refresh does not grant new training authorization or replace independent scientific review.

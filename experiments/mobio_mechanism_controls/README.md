@@ -1,5 +1,7 @@
 # MOBIO key-reuse mechanism controls
 
+**Documentation checked: 2026-09-18. Corrected controls reported: 2026-09-05.** These results remain the mechanism evidence in the [current September report](../../reports/Sept_Dataset_Update.pdf). The new [SCface study](../scface_multiexposure/README.md) adds cross-dataset evidence, not a replication of these controls. Original configurations and correction history are retained for auditability.
+
 Status: **COMPLETED EXPLORATORY CONTROLS; NOT A PAPER REPRODUCTION**.
 
 Both controls were preregistered in `docs/protocols/multi_exposure.md` before inspection and use the existing MOBIO selected-still pipeline: 150 identities, 12 sessions, identity-disjoint 90/30/30 splits, one held-out gallery image, eight sets per identity, 128-bit BioHash, and three model seeds. Chance top-1 is `3.33%` over 30 test identities. Full metrics remain local under `results/`.

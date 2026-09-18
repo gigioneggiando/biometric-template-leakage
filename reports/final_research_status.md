@@ -1,6 +1,6 @@
 # Final research status
 
-## Readiness audit: 2026-09-12
+## Readiness audit: 2026-09-18
 
 **Ready to write a research draft; not yet ready to claim submission readiness or A/A* quality.** Venue rankings and acceptance are not properties established by an effect size, a figure package, or this audit. Sani's scientific and visual approval has not been obtained.
 
@@ -12,7 +12,7 @@ The user subsequently reported Sani's approval of paper-specified IoM-GRP and Po
 
 Fresh-key uncertainty remains broad: no endpoint meets the illustrative +/-1-point equivalence band. Native fresh-key PolyProtect protected-gallery top-1 reaches 12.73%/13.73%/10.66% against 3.33%/2.50%/3.846% chance on MOBIO/FEI/SCface. This is distinct from learned unprotected-gallery linkage and prevents a general privacy claim. PolyProtect is outside the rotational-invariance theorem.
 
-The presentation now contains two corrected diagrams, ten result plots, an eight-slide editable deck/PDF and a complete figure appendix. Earlier 73-condition/12-study evidence and new one-seed pilots remain separate. The per-seed inventory contains 633 rows from 25 local artifacts; full historical coverage reconciliation is pending. Export checks cover text overlap, bounds, box padding and unsupported dashes. Native PowerPoint rendering still needs a check on the presenting machine.
+The presentation contains two diagrams, ten result plots, an eight-slide editable deck/PDF, a complete figure appendix and a [nine-page September update](Sept_Dataset_Update.pdf) with a defined, icon-supported architecture. The current evidence integration is `4352eeb` (2026-09-18). Earlier 73-condition/12-study evidence and 24 one-seed pilot cells (72 model endpoints) remain separate. The per-seed inventory contains 633 rows from 25 local artifacts and has no SCface rows; tracked SCface aggregate tables feed figures directly. Full historical coverage reconciliation is pending. Export checks cover text overlap, bounds, box padding and unsupported dashes. Native PowerPoint rendering still needs a check on the presenting machine. No training was performed for this report refresh.
 
 | Remaining gate | Current status / next action |
 |---|---|

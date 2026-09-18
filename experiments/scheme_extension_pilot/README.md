@@ -1,5 +1,7 @@
 # Approved scheme pilots: 2026-09-12
 
+**Documentation checked: 2026-09-18.** This folder retains the original 16 MOBIO/FEI cells (48 endpoints), frozen at `d5f4e89`. The separate [SCface pilots](../scface_scheme_extension_pilot/README.md), frozen at `69a93e4`, add 8 cells / 24 endpoints on 2026-09-18, for 24 cells / 72 endpoints overall. The [September report](../../reports/Sept_Dataset_Update.pdf) shows all three datasets without treating pilots as confirmation.
+
 Engineering diagnostics, not confirmatory evidence or a published reproduction. The user reported Sani's approval of paper-specified IoM-GRP and PolyProtect and authorized up to one hour of pilots. The protocol and implementation were committed as `d5f4e89` before execution.
 
 ## Scope and outcome
@@ -37,6 +39,6 @@ MOBIO has 30 gallery identities (3.33% chance); FEI has 40 (2.50%). Learned fres
 
 Completed outputs are protected from accidental overwrite; `--resume` requires matching configuration fingerprints. Identity-level scores, biometric artifacts and detailed metrics remain ignored. Aggregate exports whitelist fields and do not include identities or secret keys.
 
-The [per-seed matrix](../multiexposure_run_matrix.csv) contains 633 rows from 25 locally available multi-exposure artifacts, including these 48 pilots. Five non-multi-exposure artifacts are excluded. It is a local coverage inventory, not proof that every historical study has been recovered. `config_sha256` in that matrix hashes the saved YAML bytes; the pilot table hashes canonical configuration serialization, so the two hashes are not interchangeable. Historical plots still use their tracked source-separated summaries; migration to one fully reconciled matrix remains pending. Missing stage annotations default to exploratory, not confirmation.
+The [per-seed matrix](../multiexposure_run_matrix.csv) contains 633 rows from 25 locally available multi-exposure artifacts, including these 48 pilots but no SCface rows. SCface compact aggregate exports are tracked separately; its detailed source artifacts are not available on this host. Five non-multi-exposure artifacts were excluded from the original inventory. This is not proof that every historical study has been recovered. `config_sha256` in that matrix hashes the saved YAML bytes; the pilot table hashes canonical configuration serialization, so the two hashes are not interchangeable. Historical plots still use their tracked source-separated summaries; migration to one fully reconciled matrix remains pending. Missing stage annotations default to exploratory, not confirmation.
 
 Next steps are listed in the [review and confirmation gates](../../docs/review/scheme_pilot_review_2026-09-12.md). No additional training beyond the authorized pilots was launched.

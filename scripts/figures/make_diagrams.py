@@ -122,74 +122,57 @@ def icon_gallery(ax, cx, cy, color=INK):
 # --------------------------------------------------------- Figure: pipeline
 
 def fig_architecture(out: Path) -> None:
-    fig, ax = plt.subplots(figsize=(7.2, 3.9))
-    ax.set_xlim(0, 12)
-    ax.set_ylim(0, 6.4)
+    fig, ax = plt.subplots(figsize=(11.5, 6.8))
+    ax.set_xlim(0, 13)
+    ax.set_ylim(0, 9)
     ax.axis("off")
-
-    # ---- top row: enrolment / protection pipeline
-    y, h, w, gap = 3.95, 0.95, 2.06, 0.33
+    ax.text(0.2, 8.7, "A  DATA AND PROTECTION", fontsize=10, weight="bold", color=BLUE)
     stages = [
-        ("Face image", "MOBIO / LFW /\nFEI / SCface"),
-        ("Detect & align", "YuNet, 5 landmarks"),
-        ("ArcFace", "512-D, unit norm"),
-        ("Protection", "four schemes"),
-        ("Template", "bits / codes / reals"),
+        (0.2, "1  Identity-disjoint data", "MOBIO / LFW / FEI / SCface\nTrain / val / test people differ\nGallery never in exposures"),
+        (3.45, "2  Fixed face encoder", "YuNet; 5-landmark alignment\nArcFace w600k_r50; 512-D\nUnit norm; frozen backbone"),
+        (6.7, "3  Keyed protection", "Template T = f(key, x)\nFresh / pool / shared key\nSecret key values withheld"),
+        (9.95, "4  Exposure records", "Input: batch x n x d\n8 nested sets per identity\nn = 1, 10 (initial: 1, 2, 5, 10)"),
     ]
-    xs = [0.2 + i * (w + gap) for i in range(len(stages))]
-    for x, (t, s) in zip(xs, stages):
-        box(ax, x, y, w, h, t, s, ts=7.2, ss=6.0)
-    for x0, x1 in zip(xs, xs[1:]):
-        arrow(ax, x0 + w + 0.02, y + h / 2, x1 - 0.02, y + h / 2)
-
-    iy = y + h + 0.55
-    cx = [x + w / 2 for x in xs]
-    icon_face(ax, cx[0], iy)
-    ax.add_patch(Rectangle((cx[1] - 0.22, iy - 0.24), 0.44, 0.48, fc="none", ec=INK, lw=0.8, ls=(0, (2, 2))))
-    icon_face(ax, cx[1], iy, r=0.10)
-    icon_vector(ax, cx[2], iy, seed=3)
-    ax.text(cx[2], iy + 0.36, r"$x\,/\,\|x\|_2$", ha="center", fontsize=8, color=INK)
-    icon_key(ax, cx[3], iy)
-    ax.text(cx[3], iy + 0.38, "secret key  k", ha="center", fontsize=6.8, color=ORANGE)
-    arrow(ax, cx[3], iy - 0.16, cx[3], y + h + 0.02, color=ORANGE)
-    icon_bits(ax, cx[4], iy, seed=5)
-    ax.text(cx[4], iy + 0.38, r"$T = f_k(x)$", ha="center", fontsize=7.5, color=INK)
-
-    # ---- connector: protected records of one person, collected from several services
-    ymid = 3.05
-    arrow(ax, cx[4], y - 0.02, cx[4], ymid, style="-")
-    arrow(ax, cx[4], ymid, 1.20, ymid, style="-")
-    arrow(ax, 1.20, ymid, 1.20, 2.35, style="-|>")
-    ax.text(6.0, ymid + 0.13, "Collect n records of one identity; vary the hidden-key regime",
-            ha="center", fontsize=6.6, color=GREY)
-
-    # ---- bottom row: attack
-    y2, h2 = 0.95, 0.95
-    for i in range(3):
-        ax.add_patch(FancyBboxPatch((0.30 + 0.09 * (2 - i), y2 + 0.09 * i), 1.80, 0.78, boxstyle="round,pad=0,rounding_size=0.05",
-                                    fc=LIGHT if i < 2 else "white", ec=INK, lw=0.9, zorder=i))
-    icon_bits(ax, 1.20, y2 + 0.18 + 0.50, n=12, w=1.1, h=0.14, seed=11, zorder=5)
-    ax.text(1.20, y2 + 0.18 + 0.22, "n records", ha="center", fontsize=7.2, weight="bold", color=INK, zorder=5)
-    ax.text(1.20, y2 - 0.22, "n = 1, 2, 5, 10", ha="center", fontsize=6.3, color=GREY)
-
-    bx = [2.95, 6.35, 8.75]
-    bw = [2.95, 1.95, 2.35]
-    box(ax, bx[0], y2, bw[0], h2, "Key-blind attacker", "MLP / pooling / DeepSets", ts=7.2, ss=6.0)
-    box(ax, bx[1], y2, bw[1], h2, "Prediction", "512-D embedding", ts=7.2, ss=6.0)
-    box(ax, bx[2], y2, bw[2], h2, "Gallery linkage", "held-out embeddings", ts=7.2, ss=6.0)
-    icon_net(ax, bx[0] + bw[0] / 2, y2 + h2 + 0.45)
-    icon_vector(ax, bx[1] + bw[1] / 2, y2 + h2 + 0.45, w=0.9, seed=8, color=GREEN)
-    icon_gallery(ax, bx[2] + bw[2] / 2, y2 + h2 + 0.45)
-
-    arrow(ax, 2.30, y2 + h2 / 2, bx[0] - 0.02, y2 + h2 / 2)
-    arrow(ax, bx[0] + bw[0] + 0.02, y2 + h2 / 2, bx[1] - 0.02, y2 + h2 / 2)
-    arrow(ax, bx[1] + bw[1] + 0.02, y2 + h2 / 2, bx[2] - 0.02, y2 + h2 / 2)
-    ax.text((bx[1] + bw[1] + bx[2]) / 2, y2 + h2 + 0.12, "cosine", ha="center", fontsize=6.3, color=GREY)
-
-    ax.text(bx[0], y2 - 0.22, "Train on separate identities; key values remain hidden",
-            fontsize=6.3, color=GREY, va="top")
-    ax.text(bx[2] + bw[2], y2 - 0.46, "Top-1 / top-5 / AUROC / EER", fontsize=6.3, color=GREY, va="top", ha="right")
-
+    for left, title, detail in stages:
+        ax.add_patch(FancyBboxPatch((left, 6.4), 2.85, 1.65, boxstyle="round,pad=0,rounding_size=0.05", fc="white", ec=BLUE, lw=1.1))
+        ax.text(left + 1.425, 7.78, title, ha="center", va="center", fontsize=8.5, weight="bold", color=INK)
+        ax.text(left + 1.425, 7.4, detail, ha="center", va="top", fontsize=7.5, linespacing=1.65, color=INK)
+    for left, *_ in stages[:-1]:
+        arrow(ax, left + 2.87, 7.2, left + 3.23, 7.2, color=BLUE)
+    icon_face(ax, 1.625, 8.32, r=0.11, color=BLUE)
+    icon_vector(ax, 4.875, 8.32, w=0.8)
+    icon_key(ax, 8.125, 8.32, s=1.1)
+    icon_bits(ax, 11.375, 8.32, w=0.8)
+    ax.text(0.2, 5.98, "OUTPUT d", fontsize=8, weight="bold", color=INK)
+    ax.text(1.7, 5.98, "BioHash: 128 bits  |  MLP-Hash: 512 bits  |  IoM-GRP: 300 codes (q=16; one-hot d=4,800)", fontsize=8, color=INK)
+    ax.text(1.7, 5.62, "PolyProtect: 170 reals (window m=5, overlap=2). Scheme coverage differs by dataset.", fontsize=8, color=INK)
+    ax.plot([0.2, 12.8], [5.28, 5.28], color=GREY, lw=0.6, ls="--")
+    ax.text(0.2, 4.88, "B  KEY-BLIND ATTACK AND EVALUATION", fontsize=10, weight="bold", color=GREEN)
+    ax.text(0.2, 4.48, "Attacker observes protected records, not keys or slot labels; slots are revealed only in a labelled control.", fontsize=8, color=INK)
+    arrow(ax, 12.85, 6.38, 12.85, 4.08, color=BLUE, style="-")
+    arrow(ax, 12.85, 4.08, 0.12, 4.08, color=BLUE, style="-")
+    arrow(ax, 0.12, 4.08, 0.12, 2.86, color=BLUE, style="-")
+    arrow(ax, 0.12, 2.86, 0.35, 2.86, color=BLUE)
+    attacks = [
+        (0.4, "5  Supervised attacker", "Single / mean / max MLP: d -> 256 -> 512\nDeepSets: encode, mean, decode\nSource embeddings: train targets only"),
+        (4.65, "6  Reconstructed embedding", "L2-normalized prediction in 512-D\nTrain on non-test identities\nSelect checkpoint by validation loss"),
+        (8.9, "7  Held-out gallery linkage", "Cosine scores vs. unprotected gallery\nTop-1 / top-5 / AUROC / EER / TAR\nIdentity-clustered bootstrap intervals"),
+    ]
+    for left, title, detail in attacks:
+        ax.add_patch(FancyBboxPatch((left, 1.95), 3.85, 1.7, boxstyle="round,pad=0,rounding_size=0.05", fc="white", ec=GREEN, lw=1.1))
+        ax.text(left + 1.925, 3.38, title, ha="center", va="center", fontsize=8.5, weight="bold", color=INK)
+        ax.text(left + 1.925, 3.0, detail, ha="center", va="top", fontsize=7.5, linespacing=1.65, color=INK)
+    icon_net(ax, 2.325, 3.87, color=GREEN, s=0.8)
+    icon_vector(ax, 6.575, 3.87, w=0.8, color=GREEN)
+    icon_gallery(ax, 10.825, 3.87)
+    arrow(ax, 4.27, 2.86, 4.63, 2.86, color=GREEN)
+    arrow(ax, 8.52, 2.86, 8.88, 2.86, color=GREEN)
+    ax.text(0.4, 1.5, "KEY DESIGN", fontsize=8, weight="bold", color=INK)
+    ax.text(2.25, 1.5, "Fresh: source-record keys are split-disjoint. Pool K: hidden transforms recur across identity splits.", fontsize=8, color=INK)
+    ax.text(0.4, 1.05, "UNCERTAINTY", fontsize=8, weight="bold", color=INK)
+    ax.text(2.25, 1.05, "Earlier studies: 3 model seeds. IoM-GRP / PolyProtect pilots: 1 seed; not confirmation.", fontsize=8, color=INK)
+    ax.text(0.4, 0.6, "SCOPE", fontsize=8, weight="bold", color=INK)
+    ax.text(2.25, 0.6, "Tests transform reuse and same-identity aggregation, not a new backbone or a universal privacy guarantee.", fontsize=8, color=INK)
     save_diagram(fig, ax, out, "fig_architecture")
 
 

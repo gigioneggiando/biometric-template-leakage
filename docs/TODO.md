@@ -11,7 +11,7 @@ This document separates tasks that need human authorization, licenses, hardware,
 - [x] Export a 633-row inventory from 25 local multi-exposure artifacts and refresh the 12-figure/eight-slide package.
 - [x] Correct the theory's side-information corollary and document PolyProtect's existing multiplicity literature.
 - [x] Prepare the [official access checklist](datasets/access_request_checklist.md) and [independent review checklist](review/scheme_pilot_review_2026-09-12.md).
-- [ ] Obtain SCface/AgeDB authorization and complete the second additional dataset.
+- [x] Complete the second additional dataset: authorized SCface received and evaluated on 2026-09-18 (see update below); AgeDB remains optional.
 - [ ] Approve and freeze full multi-seed confirmation; no such training was authorized in this session.
 - [ ] Investigate fresh PolyProtect native protected-gallery identification; do not claim privacy from learned attacks near chance.
 - [ ] Approve equivalence margins, seed uncertainty and multiplicity analysis; reconcile all historical sources with the local inventory.
@@ -25,6 +25,7 @@ This document separates tasks that need human authorization, licenses, hardware,
 - [x] Run the preregistered SCface BioHash key-pool study, frozen at `69a93e4` (pools 1/2/3 pass the all-seed clustered-interval criterion; pools 4/5/7/10 and fresh keys do not).
 - [x] Run one-seed IoM-GRP/PolyProtect engineering pilots on SCface (8 cells, 24 model runs, 128.22 seconds on CPU), also frozen at `69a93e4`.
 - [x] Extend the cross-dataset comparison table, figures, and eight-slide presentation to include SCface.
+- [x] Refresh the September dataset report and all 20 tracked READMEs against `4352eeb`; distinguish current aggregate SCface evidence from the 633-row local inventory, which has no SCface rows.
 - [ ] Obtain authorized AgeDB access if pursued as an optional third dataset.
 - [ ] Approve and freeze full multi-seed confirmation across MOBIO/FEI/SCface; no such training was authorized in this session.
 

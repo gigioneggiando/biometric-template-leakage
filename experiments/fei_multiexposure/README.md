@@ -1,5 +1,7 @@
 # FEI multi-exposure key-pool study
 
+**Documentation checked: 2026-09-18. Study completed: 2026-09-12.** This retained third-dataset study now sits alongside [SCface](../scface_multiexposure/README.md) in the [73-condition comparison](../cross_dataset_key_pool_summary.csv). Additional FEI scheme findings are [one-seed pilots](../scheme_extension_pilot/README.md), not reruns of this BioHash study.
+
 Status: **COMPLETED THIRD-DATASET REPLICATION; NOT A PAPER REPRODUCTION**.
 
 FEI face database (Centro Universitario da FEI, Brazil; research use only, no redistribution). Four official `originalimages_part1-4.zip` archives (344 MB) downloaded on 2026-09-12 from the official page and hashed locally; hashes are kept outside Git in the external data folder. 2,800 images, 200 identities, 14 images each (11 profile-rotation steps, two frontal expressions, one low-illumination image), 640x480, white background, institutional volunteers aged 19-40, 100 male / 100 female.
@@ -24,7 +26,7 @@ Unprotected oracle `100%`. Runtime 8.65 minutes.
 ## Interpretation
 
 - Fresh keys: 10-record top-1 `1.77%`, below `2.50%` chance, AUROC `0.502`; no multiplicity amplification (`2.29% -> 1.77%`). Third dataset consistent with Theorem 1.
-- Recurring pools: pools 1-7 pass both preregistered criteria; pool 10 fails (top-1 `3.96%`, one interval lower bound at zero). Pools 3-7 show the central signature: a single record is at chance (`2.4-3.8%`) while ten records recover `24-55%` of a 40-identity gallery.
+- Recurring pools: tested pools 1/2/3/4/5/7 pass both preregistered criteria; pool 10 fails (top-1 `3.96%`, one interval lower bound at zero). Pools 6/8/9 were not tested. Tested pools 3/4/5/7 have small single-record means (`2.4-3.8%`) while ten-record means reach `24-55%` of a 40-identity gallery; this is not an equivalence test of the single-record endpoint.
 - Compared with MOBIO and LFW: FEI has the steepest single-record collapse (pool 3 already at chance) and the cleanest 10-record decay; the boundary is between pools 7 and 10, close to MOBIO partitions A/2 and later than MOBIO partition 3. FEI varies pose within one session, so this is a pose-robustness result, not a session-robustness result.
 
 Full metrics remain local under `results/fei_key_pool_boundary/`. Reproduce with:

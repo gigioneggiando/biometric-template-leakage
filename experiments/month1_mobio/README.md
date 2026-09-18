@@ -1,5 +1,7 @@
 # MOBIO single-template baseline
 
+**Documentation checked: 2026-09-18. Baseline completed: 2026-09-04.** Retain this single-template evidence and acquisition provenance separately from the later [multi-exposure study](../mobio_multiexposure/README.md). Current results add FEI/SCface and 24 one-seed scheme pilot cells; see the [September update](../../reports/Sept_Dataset_Update.pdf). No new baseline training was performed for the report refresh.
+
 Classification: **independent engineering validation, not a `benchmark_cb` reproduction**.
 
 The authorized local MOBIO selected-still bundle contains 28,800 images from all 150 identities (192 per identity). The initial bounded protocol selects one image from each of 12 sessions per identity with seed `20260904`, then assigns identities to 90 train / 30 validation / 30 test. YuNet plus the hash-pinned `buffalo_l` ArcFace recognition model extracted 1,799 of 1,800 embeddings; `m120_07_p03_i0_0` had no detected face.

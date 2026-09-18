@@ -1,5 +1,7 @@
 # MOBIO fresh-key and correlated-key controls
 
+**Documentation checked: 2026-09-18. Controls reported: 2026-09-06.** These historical three-seed controls remain the source for the [current control figure](../../reports/figures/fig_controls.pdf). The [September update](../../reports/Sept_Dataset_Update.pdf) adds SCface results separately; no SCface correlation control or new MOBIO run is implied.
+
 Status: **COMPLETED EXPLORATORY CONTROLS; NOT A PAPER REPRODUCTION**.
 
 These controls were preregistered in `docs/protocols/multi_exposure.md` before their results were inspected. They use MOBIO selected still images, identity-disjoint 90/30/30 splits, one held-out gallery image per identity, eight attack sets per identity, 128-bit sign-corrected Haar BioHash, and three deterministic model seeds. Top-1 chance is `3.33%` over 30 test identities. Full metrics remain local under `results/`.
