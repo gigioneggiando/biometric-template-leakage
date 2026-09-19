@@ -181,7 +181,8 @@ def execute(config_path: Path) -> None:
     manifest_path = destination / "execution_manifest.json"
     if manifest_path.exists():
         raise FileExistsError("Execution already frozen; use --analyse-only for saved results")
-    sources = sorted(set([config_path.resolve(), ROOT / "docs/protocols/scheme_followup_2026-09-18.md"] +
+    protocol_doc = ROOT / f"docs/protocols/{config_path.stem}.md"
+    sources = sorted(set([config_path.resolve(), protocol_doc] +
                          list((ROOT / "src/biometrics_ai").rglob("*.py")) + list((ROOT / "scripts/train").glob("*.py"))))
     hashes = {path.relative_to(ROOT).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest() for path in sources}
     manifest = {"started_utc": datetime.now(timezone.utc).isoformat(),

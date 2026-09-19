@@ -2,6 +2,16 @@
 
 This document separates tasks that need human authorization, licenses, hardware, or author contact from tasks that the repository can perform once those blockers are removed. Never commit biometric data, model weights, keys, tokens, credentials, or private paths to Git.
 
+## Code follow-up: 2026-09-19 (extended exposures, pool-8, SCface at full rigor)
+
+- [x] Extend `scheme_followup_2026-09-18` to exposures 2 and 5 (previously only 1 and 10 were tested at this rigor), condition `random_key_pool_8` (previously only pool-1/pool-4), and SCface (previously one-seed pilots only). One run, new key/set seeds, 32 cells / 672 endpoints in 1,008.66 seconds. See [results](../experiments/scheme_followup_2026-09-19_full/README.md).
+- [x] Fresh-key null holds at every tested exposure count (1/2/5/10) on both datasets and schemes: all 32 intervals include chance.
+- [x] Pool-4 amplification replicates on SCface with the same statistical rigor as MOBIO (8/8 primary contrasts positive, Holm-significant).
+- [x] **Notable finding:** PolyProtect does not degrade monotonically with pool size. Pool-8 leaked *more* than pool-4 in all four MOBIO/SCface cells (up to ~5x on SCface); IoM-GRP decreased as expected. One pool-8 draw per cell, so "size 8 is worse for PolyProtect" versus "this particular draw was worse" are not distinguished.
+- [x] Reviewed SWG-MinHash as a third protection scheme and decided against implementing it: its only available source cites no academic paper for the "SWG" method itself (labelled "our method", zero external stars/forks/contributors) and has known code-quality issues (mutates NumPy's global seed, no dedicated unit test for the scheme). The two-additional-scheme roadmap requirement is already satisfied by IoM-GRP and PolyProtect, so this was never a blocking gap.
+- [x] **Decided not to pursue AgeDB** (2026-09-19, Gigi and Manish): it would need Sani's help to obtain, and the two/three-dataset roadmap requirement is already met by MOBIO/LFW/FEI/SCface. Dropped, not blocked.
+- [ ] Multiple independent pool-8 draws (to separate pool-size effects from draw-specific effects), FEI coverage, and a learned raw-input attacker remain open.
+
 ## Code follow-up: 2026-09-19 (stricter PolyProtect selection, implementation and real-data audit)
 
 - [x] Implement `polyprotect_parameters_stricter` (score-conditioned parameter search over a development set of genuine pairs), approximating paper Section IV-D; unit-tested on synthetic identity-structured data (determinism, validity, non-worse-than-first-candidate extremeness).
@@ -54,8 +64,8 @@ See the [completed audit and limitations](../experiments/norm_native_audit_2026-
 - [x] Run one-seed IoM-GRP/PolyProtect engineering pilots on SCface (8 cells, 24 model runs, 128.22 seconds on CPU), also frozen at `69a93e4`.
 - [x] Extend the cross-dataset comparison table, figures, and eight-slide presentation to include SCface.
 - [x] Refresh the September dataset report and all 20 tracked READMEs against `4352eeb`; distinguish current aggregate SCface evidence from the 633-row local inventory, which has no SCface rows.
-- [ ] Obtain authorized AgeDB access if pursued as an optional third dataset.
-- [ ] Approve and freeze full multi-seed confirmation across MOBIO/FEI/SCface beyond the bounded follow-up below.
+- [x] AgeDB decision: not pursued (see 2026-09-19 entry above). Four datasets (MOBIO/LFW/FEI/SCface) already exceed the roadmap's two-additional-dataset requirement.
+- [x] Approve and freeze full multi-seed confirmation across MOBIO/FEI/SCface beyond the bounded follow-up: extended to exposures 2/5, pool-8, and SCface (see 2026-09-19 entry above); FEI coverage at this rigor remains open.
 
 ## Bounded follow-up: 2026-09-18
 

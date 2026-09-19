@@ -1,5 +1,17 @@
 # Research log
 
+## 2026-09-19 (extended follow-up: exposures 2/5, pool-8, SCface at full rigor)
+
+- After discussion with Manish, the user asked to finish the open experiment/code items before emailing Sani, and to drop AgeDB (it needs Sani's help to obtain and was never required: the two-additional-dataset gate is already met by FEI/SCface).
+- Extended `scheme_followup_2026-09-18` into a new config/protocol (`scheme_followup_2026-09-19_full`), swapping FEI (not present on this host) for SCface and adding exposures 2/5 and condition `random_key_pool_8` to the existing fresh/pool-1/pool-4 conditions. New key seed 92101, set seed 92107 (not reused). Fixed a hardcoded protocol-doc path in `run_scheme_followup.py`'s `execute()` so it derives from the config filename instead, preserving the original config's behavior exactly while supporting new ones.
+- Ran 32 cells / 672 endpoints in 1,008.66 seconds on CPU, within budget. All planned cells completed.
+- **Fresh-key null holds at every tested exposure count (1/2/5/10):** all 32 `independent_unseen_keys` endpoints include chance in their 95% interval, the first confirmation at 2 and 5 exposures under this rigor.
+- **Pool-4 amplification replicates on SCface:** 8/8 primary contrasts positive and Holm-significant (p = 0.004-0.034), a second independent confirmation of the MOBIO pattern under new seeds and the first multi-seed confirmation on SCface.
+- **PolyProtect is not monotonic in pool size:** pool-8 leaked more than pool-4 in all four tested MOBIO/SCface cells (up to roughly 5x on SCface), while IoM-GRP decreased as expected. Consistent with the pool-sensitivity already reported in `pool_replication_2026-09-19`. One pool-8 draw per cell, so this does not separate a size effect from a draw-specific effect.
+- Extended native PolyProtect controls to SCface (6 new tests, three key seeds x two partitions): 7.2-14.3% top-1 against 3.85% chance, all exceeding their permutation null (Holm p = 0.006), replicating the earlier one-key SCface pilot finding.
+- Reviewed SWG-MinHash (github.com/shuaichaosong/cbef) as a candidate third protection scheme and declined to implement it: the README cites no academic paper for the "SWG" method itself (labelled "our method"), the repository has zero external stars/forks/contributors, and the 2026-09-10 audit had already found it mutates NumPy's global RNG state and has no dedicated unit test for the scheme. This was never a blocking gap since IoM-GRP and PolyProtect already satisfy the two-additional-scheme requirement.
+- Updated `docs/TODO.md`, `docs/ROADMAP.md`, and `reports/final_research_status.md` to record the AgeDB and SWG-MinHash decisions and the new coverage. See [results](../experiments/scheme_followup_2026-09-19_full/README.md).
+
 ## 2026-09-19 (stricter PolyProtect selection: implementation and real-data audit)
 
 - Implemented `polyprotect_parameters_stricter` in `src/biometrics_ai/protection/polyprotect.py`: a development-set score-conditioned search over `candidates` (C, E) parameter draws, keeping the one minimizing mean mated-cosine-score extremeness outside `[-unlinkable_band, unlinkable_band]`. This approximates the PolyProtect paper's Section IV-D stricter selection; the paper gives no closed-form objective, so this is our own operationalization, not a source-exact reproduction.

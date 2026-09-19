@@ -2,6 +2,10 @@
 
 This roadmap records Sani's requested next phase. It does not change the interpretation of existing results and does not authorize unsupported reproduction or SOTA claims.
 
+## Progress update: 2026-09-19 (extended exposures, pool-8, SCface)
+
+The [extended follow-up](../experiments/scheme_followup_2026-09-19_full/README.md) completed 32 cells, 672 endpoints, on MOBIO and SCface (FEI absent on this host) at exposures 1/2/5/10 and conditions fresh/pool-1/pool-4/pool-8 in 1,008.66 seconds. The fresh-key null now holds at every tested exposure count. Pool-4 amplification replicates on SCface with full statistical rigor. PolyProtect is not monotonic in pool size: pool-8 leaked more than pool-4 in all four tested cells. Reviewed and declined two backup items: SWG-MinHash (its only source cites no academic paper for the method) and AgeDB (not needed; the dataset requirement is already met, and it would require Sani's help to obtain).
+
 ## Progress update: 2026-09-19
 
 The [independent-pool/baseline study](../experiments/pool_replication_2026-09-19/README.md) completed 24 cells, 144 fits and 72 prediction-mean evaluations in 254.188 seconds. IoM gains persist across three tested pools; PolyProtect is pool-sensitive. No input-pooling superiority is established. The maximal-linkability full author-thesis chapter is compared, with final publisher-version verification still blocked. SCface remains explicitly supporting historical/pilot evidence because matched inputs were unavailable on the executing host. Same-pool paired access and baseline training differences are documented.
@@ -32,10 +36,10 @@ The additional datasets and schemes must be selected through the gates below bef
 
 | Axis | Current evidence | Required extension |
 |---|---|---|
-| Multi-exposure datasets | MOBIO, LFW, FEI, SCface | Two primary datasets (FEI, SCface) added; AgeDB remains an optional third if access and compute permit |
-| Protection schemes | BioHash and paper-specified MLP-Hash | Add 2 schemes with distinct transformation families |
+| Multi-exposure datasets | MOBIO, LFW, FEI, SCface | Two primary datasets (FEI, SCface) added; AgeDB reviewed and not pursued (2026-09-19), the requirement is met without it |
+| Protection schemes | BioHash, paper-specified MLP-Hash, IoM-GRP, PolyProtect | Two schemes with distinct transformation families added; SWG-MinHash reviewed and declined (no citable source paper) |
 | Key conditions | Fresh, shared/reused pools, controlled correlation | Preserve comparable fresh/reuse endpoints for every scheme |
-| Exposures | 1, 2, 5, 10 | Preserve 1 and 10 as mandatory endpoints; run 2 and 5 in full confirmation |
+| Exposures | 1, 2, 5, 10 | 2 and 5 now run for MOBIO/SCface IoM-GRP/PolyProtect at full multi-seed rigor; FEI still needs 2/5 at this rigor |
 | Attackers | Single MLP, mean/max pooling, DeepSets | Keep the same baselines; add scheme-specific inputs only when justified |
 | Evaluation | Top-k, AUROC, EER, TAR@FAR, clustered intervals | Add equivalence analysis and cross-dataset/cross-scheme aggregation |
 
@@ -212,9 +216,7 @@ Presentation requirements:
 
 ## Immediate next actions
 
-1. Ask Sani to approve FEI + SCface as primaries and AgeDB as the third/contingency dataset in the [dated dataset memo](datasets/candidate_selection_2026-09-10.md).
-2. FEI and SCface acquisition and their first BioHash endpoint runs are complete. Obtain authorized AgeDB access before acquisition if the third dataset is pursued; do not rerun FEI or SCface simply to regenerate figures.
-3. Ask Sani to approve paper-specified IoM-GRP + PolyProtect using the [dated protection memo](protections/candidate_selection_2026-09-10.md).
-4. Extract and freeze the IoM-GRP and PolyProtect parameter settings before implementation.
-5. Freeze the extension protocol and estimated compute budget after dataset eligibility audits.
-6. Implement one dataset and one scheme at a time; do not launch the full Cartesian product before pilots pass.
+1. FEI and SCface are both acquired and evaluated. AgeDB was reviewed and deliberately dropped on 2026-09-19 (Gigi and Manish): the two-additional-dataset requirement is already met, and pursuing it would need Sani's help to obtain access.
+2. IoM-GRP and PolyProtect are both approved, implemented, piloted, and followed up at multi-seed/multi-partition rigor on MOBIO and SCface (exposures 1/2/5/10, pools 1/4/8). SWG-MinHash was reviewed as a third scheme and declined on 2026-09-19: its only available source cites no academic paper for the method itself.
+3. Do not rerun FEI or SCface simply to regenerate figures.
+4. Remaining before a full Stage-B confirmatory matrix: FEI at the same multi-seed/exposure/pool rigor as MOBIO/SCface, multiple independent pool-8 draws, a learned raw-input attacker, and approved equivalence margins.
