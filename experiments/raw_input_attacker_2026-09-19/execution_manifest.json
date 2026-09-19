@@ -1,0 +1,29 @@
+{
+  "started_utc": "2026-09-19T12:53:01.812407+00:00",
+  "budget_seconds": 1800,
+  "base_commit": "346187c7cf6207c3ff7587e68a2b4869053cf5d0",
+  "dirty_worktree": true,
+  "source_sha256": {
+    "scripts/diagnostics/run_raw_input_attacker.py": "3a6badbc853bac14db09be47fff6d1496c62fa63bfd09f19225f2f20cdf6b093",
+    "docs/protocols/raw_input_attacker_2026-09-19.md": "7cd40fd398d97fa88a0fb1f267baf65ff5399c429a5625d31c540ebf77417656",
+    "scripts/diagnostics/run_norm_native_audit.py": "ed7540d44533fe27e430337c74ce373485df114b6e27fe2d4d8a584aaf60c9a2",
+    "scripts/train/run_real_multiexposure.py": "56923ad93fe9bfaef519a4402519dc07fa3b2df2bfe5ab390d3d56074bbf7332"
+  },
+  "key_seed": 92201,
+  "set_seed": 92207,
+  "datasets": [
+    "MOBIO",
+    "SCface"
+  ],
+  "schemes": [
+    "PolyProtect",
+    "IoM-GRP"
+  ],
+  "conditions": [
+    "independent_unseen_keys",
+    "random_key_pool_4"
+  ],
+  "status": "completed",
+  "wall_seconds": 775.476,
+  "finished_utc": "2026-09-19T13:06:00.919044+00:00"
+}

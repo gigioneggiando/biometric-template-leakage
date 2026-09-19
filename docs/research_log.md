@@ -1,5 +1,15 @@
 # Research log
 
+## 2026-09-19 (learned raw-input attacker)
+
+- Last open item from the day's list. Re-extracted raw (pre-normalization) ArcFace vectors directly from MOBIO and SCface source images, reusing `extract_raw` from `norm_native_audit_2026-09-18` unchanged (including its saved-embedding agreement check), and fed them through the existing attacker pipeline by calling `run_real_multiexposure.run()` directly rather than through `run_pilots`, which asserts unit-normalized input and was left untouched. Materialized the raw vectors as a new on-disk embeddings directory so the existing pipeline needed no changes.
+- First attempt failed: the per-dataset raw-extraction deadline was computed from the script's global start time instead of a fresh per-dataset clock, so SCface's larger extraction (2,851 images, started after MOBIO's full pipeline had already run) hit a `TimeoutError` at 2,700/2,851 images, a few seconds short of finishing. Fixed the deadline computation and reran; both datasets completed.
+- PolyProtect and IoM-GRP (scale-invariant control), fresh keys and pool-4, exposures 1 and 10, three model seeds, one identity partition per dataset, 775.48 seconds total.
+- **Fresh-key null holds under raw input** for both schemes on both datasets: every fresh-key mean is within about one point of chance.
+- **IoM-GRP pool-4 amplification is unchanged by raw input** (91.11%/67.63% here versus 90.97-91.25%/39.90-63.78% for unit input in the same conditions from `scheme_followup_2026-09-19_full`), the expected result for a scheme already proven scale-invariant, and a useful positive control that the pipeline substitution works correctly.
+- **PolyProtect pool-4 amplification, large under unit input (53-62% ten-record top-1), is essentially absent under raw input** (3.6-4.7%, seed SD comparable to the mean, no consistent signal). Candidate explanation, not established here: PolyProtect's polynomial output scales with input norm raised to powers up to 5, so per-record raw-norm variation (roughly 15-33 in these datasets) may swamp the shared-coefficient signal the attacker needs to detect pool-4 reuse, rather than exposing it the way single-record native matching suggested it might.
+- This is a three-seed descriptive comparison on one partition per dataset, not a bootstrap-corrected test, exactly as scoped in the [protocol](protocols/raw_input_attacker_2026-09-19.md) before execution. See [results](../experiments/raw_input_attacker_2026-09-19/README.md). Updated `docs/TODO.md` to close out the last open item from today's list.
+
 ## 2026-09-19 (extended follow-up: exposures 2/5, pool-8, SCface at full rigor)
 
 - After discussion with Manish, the user asked to finish the open experiment/code items before emailing Sani, and to drop AgeDB (it needs Sani's help to obtain and was never required: the two-additional-dataset gate is already met by FEI/SCface).
