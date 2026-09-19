@@ -1,12 +1,20 @@
 import numpy as np
 import pytest
 import json
+from itertools import combinations
 from pathlib import Path
 import yaml
 
 from biometrics_ai.protection import iomgrp as iom_module
 from biometrics_ai.protection.iomgrp import IoMGRPConfig, iomgrp, iomgrp_batch, iomgrp_encoded
-from biometrics_ai.protection.polyprotect import PolyProtectConfig, polyprotect, polyprotect_batch, polyprotect_parameters, polyprotect_with_parameters
+from biometrics_ai.protection.polyprotect import (
+    PolyProtectConfig,
+    polyprotect,
+    polyprotect_batch,
+    polyprotect_parameters,
+    polyprotect_parameters_stricter,
+    polyprotect_with_parameters,
+)
 
 
 def test_pool_replication_statistics_and_prediction_mean():
@@ -158,6 +166,62 @@ def test_polyprotect_separate_scalar_reference(overlap, scale):
         reference.append(output)
     actual = polyprotect_with_parameters(values, coefficients, exponents, config)
     np.testing.assert_allclose(actual, np.asarray(reference, dtype=np.float32), rtol=2e-6, atol=1e-6)
+
+
+def _synthetic_identity_embeddings(seed, input_dim=32, n_identities=20, per_identity=3, noise=0.05):
+    rng = np.random.default_rng(seed)
+    centers = rng.normal(size=(n_identities, input_dim))
+    centers /= np.linalg.norm(centers, axis=1, keepdims=True)
+    embeddings, identities = [], []
+    for identity, center in enumerate(centers):
+        for _ in range(per_identity):
+            vector = center + rng.normal(scale=noise, size=input_dim)
+            embeddings.append(vector / np.linalg.norm(vector))
+            identities.append(identity)
+    return np.array(embeddings), np.array(identities)
+
+
+def _mated_extremeness(embeddings, identities, coefficients, exponents, config, band=0.5):
+    pairs = [(a, b) for identity in np.unique(identities) for a, b in
+             combinations(np.flatnonzero(identities == identity), 2)]
+    left = polyprotect_with_parameters(embeddings[[p[0] for p in pairs]], coefficients, exponents, config)
+    right = polyprotect_with_parameters(embeddings[[p[1] for p in pairs]], coefficients, exponents, config)
+    scores = np.sum(left * right, axis=-1) / (np.linalg.norm(left, axis=-1) * np.linalg.norm(right, axis=-1) + 1e-12)
+    return float(np.mean(np.maximum(0.0, np.abs(scores) - band)))
+
+
+def test_polyprotect_stricter_selection_is_deterministic_and_valid():
+    config = PolyProtectConfig(input_dim=32, window_size=5, overlap=2)
+    embeddings, identities = _synthetic_identity_embeddings(7)
+    coefficients, exponents = polyprotect_parameters_stricter(11, embeddings, identities, config, candidates=8)
+    assert len(set(coefficients)) == 5 and 0 not in coefficients
+    np.testing.assert_array_equal(np.sort(exponents), np.arange(1, 6))
+    again_c, again_e = polyprotect_parameters_stricter(11, embeddings, identities, config, candidates=8)
+    np.testing.assert_array_equal(coefficients, again_c)
+    np.testing.assert_array_equal(exponents, again_e)
+    other_c, other_e = polyprotect_parameters_stricter(12, embeddings, identities, config, candidates=8)
+    assert not (np.array_equal(coefficients, other_c) and np.array_equal(exponents, other_e))
+
+
+def test_polyprotect_stricter_selection_does_not_exceed_first_candidate_extremeness():
+    config = PolyProtectConfig(input_dim=32, window_size=5, overlap=2)
+    embeddings, identities = _synthetic_identity_embeddings(3)
+    first_candidate = polyprotect_parameters("stricter-key:stricter_candidate:0", config)
+    first_extremeness = _mated_extremeness(embeddings, identities, *first_candidate, config)
+    selected = polyprotect_parameters_stricter("stricter-key", embeddings, identities, config, candidates=25)
+    selected_extremeness = _mated_extremeness(embeddings, identities, *selected, config)
+    assert selected_extremeness <= first_extremeness + 1e-9
+
+
+def test_polyprotect_stricter_selection_rejects_invalid_development_sets():
+    config = PolyProtectConfig(input_dim=32, window_size=5, overlap=2)
+    embeddings, identities = _synthetic_identity_embeddings(5)
+    with pytest.raises(ValueError):
+        polyprotect_parameters_stricter(1, embeddings[:, :10], identities, config)
+    with pytest.raises(ValueError):
+        polyprotect_parameters_stricter(1, embeddings, identities[:-1], config)
+    with pytest.raises(ValueError):
+        polyprotect_parameters_stricter(1, embeddings, np.arange(len(embeddings)), config)
 
 
 def test_iom_separate_grouped_dot_reference(monkeypatch):

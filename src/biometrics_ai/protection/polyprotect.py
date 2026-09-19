@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from itertools import combinations
 
 import numpy as np
 
@@ -33,6 +34,51 @@ def polyprotect_parameters(key: int | str | bytes, config: PolyProtectConfig) ->
     rng = np.random.default_rng(_seed_from_key(key))
     candidates = np.concatenate((np.arange(-config.coefficient_bound, 0), np.arange(1, config.coefficient_bound + 1)))
     return rng.choice(candidates, config.window_size, replace=False), rng.permutation(np.arange(1, config.window_size + 1))
+
+
+def polyprotect_parameters_stricter(
+    key: int | str | bytes,
+    development_embeddings: np.ndarray,
+    development_identity_ids,
+    config: PolyProtectConfig = PolyProtectConfig(),
+    candidates: int = 50,
+    unlinkable_band: float = 0.5,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Score-conditioned parameter selection approximating PolyProtect paper Section IV-D.
+
+    The paper reports that naive random (C, E) selection leaves mated (genuine-pair)
+    comparison scores with extreme bumps near +-1, and proposes selecting parameters so
+    mated scores instead concentrate within a "full unlinkability" range. The paper does
+    not give a closed-form selection objective, so this is our own concrete
+    operationalization, not a source-exact reproduction: among `candidates` parameter
+    sets drawn the same way as `polyprotect_parameters`, keep the one minimizing the mean
+    amount by which mated cosine scores on `development_embeddings` fall outside
+    [-unlinkable_band, unlinkable_band]. Selection uses only the development set; it must
+    not be the evaluation/attack data. Not yet evaluated against real embeddings.
+    """
+    values = np.asarray(development_embeddings, dtype=np.float64)
+    identities = np.asarray(development_identity_ids)
+    if values.ndim != 2 or values.shape[-1] != config.input_dim:
+        raise ValueError("Development set must be a matrix of input_dim-length embeddings")
+    if len(identities) != len(values):
+        raise ValueError("development_identity_ids must have one entry per development row")
+    mated = [pair for identity in np.unique(identities) for pair in combinations(np.flatnonzero(identities == identity), 2)]
+    if not mated:
+        raise ValueError("Development set needs at least one identity with two records")
+    left = values[[pair[0] for pair in mated]]
+    right = values[[pair[1] for pair in mated]]
+    best_extremeness, best_parameters = np.inf, None
+    for index in range(candidates):
+        coefficients, exponents = polyprotect_parameters(f"{key}:stricter_candidate:{index}", config)
+        protected_left = polyprotect_with_parameters(left, coefficients, exponents, config)
+        protected_right = polyprotect_with_parameters(right, coefficients, exponents, config)
+        mated_scores = np.sum(protected_left * protected_right, axis=-1) / (
+            np.linalg.norm(protected_left, axis=-1) * np.linalg.norm(protected_right, axis=-1) + 1e-12
+        )
+        extremeness = float(np.mean(np.maximum(0.0, np.abs(mated_scores) - unlinkable_band)))
+        if extremeness < best_extremeness:
+            best_extremeness, best_parameters = extremeness, (coefficients, exponents)
+    return best_parameters
 
 
 def polyprotect_with_parameters(embeddings: np.ndarray, coefficients: np.ndarray,

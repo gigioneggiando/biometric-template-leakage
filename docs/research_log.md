@@ -1,5 +1,11 @@
 # Research log
 
+## 2026-09-19 (stricter PolyProtect selection, implementation only)
+
+- Implemented `polyprotect_parameters_stricter` in `src/biometrics_ai/protection/polyprotect.py`: a development-set score-conditioned search over `candidates` (C, E) parameter draws, keeping the one minimizing mean mated-cosine-score extremeness outside `[-unlinkable_band, unlinkable_band]`. This approximates the PolyProtect paper's Section IV-D stricter selection; the paper gives no closed-form objective, so this is our own operationalization, not a source-exact reproduction.
+- Added three unit tests on synthetic identity-structured embeddings (`tests/unit/test_scheme_extensions.py`): determinism given the same key/development set, parameter validity (reuses the existing `polyprotect_with_parameters` constraints), and a guaranteed non-worse-than-first-candidate extremeness bound. All 111 repository tests pass.
+- Not evaluated against real embeddings: no local MOBIO/FEI/SCface embeddings or models are present on this host. Native protected-gallery comparison against the naive-selection baseline (`experiments/norm_native_audit_2026-09-18`) and wiring into a dedicated experiment runner remain open. See `docs/TODO.md`.
+
 ## 2026-09-19 (independent pools and prediction baseline)
 
 - User requested full-text maximal-leakage comparison, independent pool draws, a clear SCface role, matched baselines, reproducibility, revised graphics and a push after validation.
