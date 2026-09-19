@@ -43,6 +43,7 @@ def polyprotect_parameters_stricter(
     config: PolyProtectConfig = PolyProtectConfig(),
     candidates: int = 50,
     unlinkable_band: float = 0.5,
+    max_development_pairs: int | None = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Score-conditioned parameter selection approximating PolyProtect paper Section IV-D.
 
@@ -54,7 +55,9 @@ def polyprotect_parameters_stricter(
     sets drawn the same way as `polyprotect_parameters`, keep the one minimizing the mean
     amount by which mated cosine scores on `development_embeddings` fall outside
     [-unlinkable_band, unlinkable_band]. Selection uses only the development set; it must
-    not be the evaluation/attack data. Not yet evaluated against real embeddings.
+    not be the evaluation/attack data. `max_development_pairs` deterministically subsamples
+    mated pairs (seeded by `key`) when there are more than that many, trading selection
+    precision for runtime on large development sets; `None` uses every mated pair.
     """
     values = np.asarray(development_embeddings, dtype=np.float64)
     identities = np.asarray(development_identity_ids)
@@ -65,6 +68,11 @@ def polyprotect_parameters_stricter(
     mated = [pair for identity in np.unique(identities) for pair in combinations(np.flatnonzero(identities == identity), 2)]
     if not mated:
         raise ValueError("Development set needs at least one identity with two records")
+    if max_development_pairs is not None and len(mated) > max_development_pairs:
+        if max_development_pairs < 1:
+            raise ValueError("max_development_pairs must be positive when given")
+        rng = np.random.default_rng(_seed_from_key(f"{key}:stricter_pair_subsample"))
+        mated = [mated[index] for index in rng.choice(len(mated), max_development_pairs, replace=False)]
     left = values[[pair[0] for pair in mated]]
     right = values[[pair[1] for pair in mated]]
     best_extremeness, best_parameters = np.inf, None

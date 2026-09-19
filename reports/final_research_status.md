@@ -28,7 +28,7 @@ The package contains 19 figures, a 12-slide editable deck/PDF and a [16-page Sep
 | Two additional protection families | Paper-specified implementations, MOBIO/FEI/SCface pilots and three-seed/two-partition MOBIO/FEI follow-up complete; full cross-dataset confirmation remains open. |
 | Confirmatory matrix | Current LFW/FEI/SCface studies cover BioHash endpoints 1 and 10, not all schemes, attackers, exposures, and partitions requested in the roadmap. |
 | Statistical inference | Follow-up crossed seed/identity intervals and prespecified Holm families complete. Approved equivalence margins, older-study inference and full historical coverage remain open. |
-| Theory and implementation | Separate formulas/matcher and genuine raw-norm controls complete. A stricter PolyProtect parameter-selection function is implemented and unit-tested on synthetic data; real-embedding evaluation, learned raw-input retraining, full causal explanation and independent human review remain open. |
+| Theory and implementation | Separate formulas/matcher and genuine raw-norm controls complete. A stricter PolyProtect parameter-selection function was implemented, unit-tested, and evaluated against real MOBIO/SCface native matching: it did not reduce leakage (directionally worse on MOBIO, no effect on SCface; neither significant after correction). A hyperparameter sweep, FEI coverage, learned raw-input retraining, full causal explanation and independent human review remain open. |
 | Novelty and venue fit | Versioned closest-work comparison and deployment assumptions documented; exhaustive priority and independent human review are not claimed. |
 | Professor review | Review the revised manuscript and 12-slide package; record decisions before expanding experiments. |
 

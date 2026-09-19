@@ -2,11 +2,12 @@
 
 This document separates tasks that need human authorization, licenses, hardware, or author contact from tasks that the repository can perform once those blockers are removed. Never commit biometric data, model weights, keys, tokens, credentials, or private paths to Git.
 
-## Code follow-up: 2026-09-19 (stricter PolyProtect selection, implementation only)
+## Code follow-up: 2026-09-19 (stricter PolyProtect selection, implementation and real-data audit)
 
 - [x] Implement `polyprotect_parameters_stricter` (score-conditioned parameter search over a development set of genuine pairs), approximating paper Section IV-D; unit-tested on synthetic identity-structured data (determinism, validity, non-worse-than-first-candidate extremeness).
-- [ ] Evaluate against real MOBIO/FEI/SCface embeddings and compare native protected-gallery leakage to the naive-selection baseline in `norm_native_audit_2026-09-18`. Blocked: no local embeddings on this host.
-- [ ] Wire selection into a dedicated experiment runner/config once evaluated; not merged into `run_real_multiexposure.py`'s generic per-record protection dispatcher, which has no development-set concept.
+- [x] Evaluate against real MOBIO/SCface embeddings (FEI not present on this host) and compare native protected-gallery leakage to the naive-selection baseline. **Negative finding:** this operationalization did not reduce native leakage; it was directionally worse on MOBIO (+3.13 pp, not significant after Holm correction) and had no effect on SCface (-0.32 pp, not significant). See [results](../experiments/polyprotect_stricter_audit_2026-09-19/README.md).
+- [ ] The negative finding is not a refutation of stricter selection in general: a sweep over `candidates`, `max_development_pairs`, `unlinkable_band`, and an alternative extremeness statistic (e.g. max instead of mean out-of-band mated score) remains untested, as does FEI coverage.
+- [ ] Wire selection into a dedicated experiment runner/config only if a sweep finds a configuration that actually helps; not merged into `run_real_multiexposure.py`'s generic per-record protection dispatcher, which has no development-set concept.
 
 ## Pool and baseline revision: 2026-09-19
 

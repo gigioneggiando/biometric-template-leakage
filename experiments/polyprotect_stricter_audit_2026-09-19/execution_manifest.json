@@ -1,0 +1,29 @@
+{
+  "started_utc": "2026-09-19T11:35:59.525125+00:00",
+  "budget_seconds": 1800,
+  "base_commit": "6ccad8d5d435beeb1be3021587c9e9446f27ee3c",
+  "dirty_worktree": true,
+  "source_sha256": {
+    "scripts/diagnostics/run_polyprotect_stricter_audit.py": "b805385efbfb0cbd1ab8927b48bdbd45b7e7757e5c3b290aa7f9f0668ec7445f",
+    "docs/protocols/polyprotect_stricter_audit_2026-09-19.md": "79878a9234640a16445b2e61108ffb4437f45e15b7b9823c1c51cfa777e2ee19",
+    "src/biometrics_ai/protection/polyprotect.py": "00d7afdeb59663d79679f1500e512dc19cd885d70e83492e406b8256cdb7ba8d",
+    "scripts/diagnostics/run_norm_native_audit.py": "ed7540d44533fe27e430337c74ce373485df114b6e27fe2d4d8a584aaf60c9a2",
+    "scripts/train/run_real_multiexposure.py": "56923ad93fe9bfaef519a4402519dc07fa3b2df2bfe5ab390d3d56074bbf7332",
+    "scripts/train/run_scheme_followup.py": "e3fddef2928c25486f5461d70445d3c6e71284716fc9f32ef3db804c4b70adf8",
+    "scripts/train/run_scheme_extension_pilot.py": "1a89d5316b1345dd27f3e2c969eb47efe6832bf809116e69414e29a4a889d854"
+  },
+  "key_seeds": [
+    92003,
+    92011,
+    92017
+  ],
+  "candidates": 20,
+  "max_development_pairs": 200,
+  "datasets": [
+    "MOBIO",
+    "SCface"
+  ],
+  "status": "completed",
+  "wall_seconds": 729.041,
+  "finished_utc": "2026-09-19T11:48:10.487145+00:00"
+}

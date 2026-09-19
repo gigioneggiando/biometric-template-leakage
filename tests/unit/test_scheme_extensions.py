@@ -213,6 +213,18 @@ def test_polyprotect_stricter_selection_does_not_exceed_first_candidate_extremen
     assert selected_extremeness <= first_extremeness + 1e-9
 
 
+def test_polyprotect_stricter_selection_pair_subsampling_is_deterministic():
+    config = PolyProtectConfig(input_dim=32, window_size=5, overlap=2)
+    embeddings, identities = _synthetic_identity_embeddings(9, n_identities=15, per_identity=4)
+    capped = polyprotect_parameters_stricter(21, embeddings, identities, config, candidates=6, max_development_pairs=5)
+    again = polyprotect_parameters_stricter(21, embeddings, identities, config, candidates=6, max_development_pairs=5)
+    np.testing.assert_array_equal(capped[0], again[0])
+    np.testing.assert_array_equal(capped[1], again[1])
+    assert len(set(capped[0])) == 5 and 0 not in capped[0]
+    with pytest.raises(ValueError):
+        polyprotect_parameters_stricter(21, embeddings, identities, config, max_development_pairs=0)
+
+
 def test_polyprotect_stricter_selection_rejects_invalid_development_sets():
     config = PolyProtectConfig(input_dim=32, window_size=5, overlap=2)
     embeddings, identities = _synthetic_identity_embeddings(5)
