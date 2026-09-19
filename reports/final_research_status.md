@@ -50,6 +50,8 @@ The report refresh checked 44 source-hash entries across the three newly finaliz
 
 Recover those exact executed files from the experiment machine and verify the recorded hashes before claiming exact reproduction. The manifest records a dirty worktree; a base commit alone cannot recover uncommitted content. The exported aggregate results and passing tests are not invalidated by this finding, but they do not resolve it. No source, protocol, result CSV or manifest was changed to hide the mismatch. The report uses finalized aggregates with this explicit provenance limitation. Private SCface metadata is also absent on this host, preventing an independent record-level audit.
 
+**Recovery follow-up:** the user confirmed that the experiment files are only on Luigi's machine. Local Git unreachable-object inspection, exact checks of the three relevant VS Code history snapshots, and uniform/single-boundary mixed-newline reconstruction of checkout/history did not recover the three versions. A tested, read-only [recovery utility](../scripts/diagnostics/recover_executed_sources.py) and [experiment-machine handoff](../experiments/scheme_followup_2026-09-19_full/README.md#source-recovery-handoff-for-luigi) are ready. It refuses to archive incomplete or mismatched sources. No executed-source archive has been recovered in this follow-up; the original manifest and reproducibility warning remain unchanged.
+
 ## Research question
 
 Can a key-agnostic learned set model recover identity-discriminative information from multiple independently protected face templates?

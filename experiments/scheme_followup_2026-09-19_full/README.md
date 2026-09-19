@@ -74,6 +74,24 @@ python scripts/train/run_scheme_followup.py --config configs/attacks/scheme_foll
 
 Execution refuses to overwrite an existing freeze. Biometric records, keys, and identity-level scores remain ignored.
 
+### Source recovery handoff for Luigi
+
+Recovery is still blocked: the user confirmed that the experiment files are only on Luigi's machine. Additional local checks found no unreachable Git objects, no exact matches in the three relevant VS Code history snapshots, and no matches from uniform or single-boundary mixed LF/CRLF reconstruction of checkout and committed versions. These checks do not prove that every possible backup or newline pattern is absent.
+
+**Preserve the original experiment folder before pulling, checking out, formatting, or editing anything.** A dirty-worktree base commit does not contain all executed bytes. Do not rerun training or replace the recorded checksums to resolve this issue.
+
+Send Luigi the [recovery utility](../../scripts/diagnostics/recover_executed_sources.py) and the unchanged [execution manifest](execution_manifest.json). Put both in a separate handoff directory. The expected SHA-256 of the manifest file itself is `cc93e4b928d1216cafe6d0b845f12c3683763a5c4ae5ab24bb152d8835e6eda2`.
+
+From that handoff directory, run this with Python 3.10 or newer, replacing the source-root argument with the preserved experiment repository or backup path:
+
+```text
+python recover_executed_sources.py execution_manifest.json --source-root "/path/to/original/biometric-template-leakage" --archive executed_sources_recovered.zip
+```
+
+The utility uses only Python's standard library (Git is optional for historical recovery). It reads source files without changing them, tries recorded Git versions and documented newline-only transformations, and accepts a candidate only when its full SHA-256 equals the original manifest entry. It writes and reopens the archive only after every listed source/configuration/protocol file matches, and refuses to overwrite an existing archive. The terminal output records the source and reconstruction method for each match. No images, embeddings, keys, or identity-level scores are included.
+
+Return the successful archive and terminal output. If it reports `UNRESOLVED`, no archive is written: preserve and transfer the three original source files or their editor/backup snapshots, retaining their repository-relative paths, without opening and resaving them. The exact target hashes are listed in the [provenance check](../../reports/final_research_status.md#provenance-check). A mismatch remains unresolved, not a successful recovery. Independently verify the returned archive against the original manifest before removing the warning; matching sources alone do not establish successful end-to-end reproduction.
+
 ## Remaining scope
 
 FEI is not covered at this expanded matrix. No additional protection family beyond IoM-GRP/PolyProtect/BioHash/MLP-Hash was added; the candidate-selection review records the decision not to implement SWG-MinHash. A [separate learned raw-input study](../raw_input_attacker_2026-09-19/README.md) is now complete, without a matched unit arm. Multiple independent pool-8 draws, approved equivalence margins and independent human review remain open. Identity assignments overlap and reuse the same pipeline; this is a sensitivity replication, not an independent population or outside replication.
