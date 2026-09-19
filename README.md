@@ -15,11 +15,13 @@
 | Local run inventory | [849 rows from 49 artifacts](experiments/multiexposure_run_matrix.csv), with [legacy/missing-detail coverage audit](experiments/scheme_followup_2026-09-18/coverage_audit.csv) |
 | Raw-norm and native audit | [4,177 verified raw extractions, 48 implementation cells, 130 aggregate rows](experiments/norm_native_audit_2026-09-18/README.md); completed in 254.157 seconds |
 | Independent recurring pools and simple baseline | [24 cells / 144 fits / 72 prediction-mean evaluations](experiments/pool_replication_2026-09-19/README.md); three new pools, three model seeds, two partitions; 254.188 seconds |
-| Scientific presentation | 16-page report, 12-slide PDF/editable deck, 19 figures and a page-by-page plain-language guide |
+| Extended MOBIO/SCface study | [32 cells / 672 endpoints](experiments/scheme_followup_2026-09-19_full/README.md); 1/2/5/10 records; fresh/pool-1/4/8; all eight primary gains pass correction |
+| Learned raw input and stricter selection | [Raw-input study](experiments/raw_input_attacker_2026-09-19/README.md) and [local stricter-selection audit](experiments/polyprotect_stricter_audit_2026-09-19/README.md); negative findings, not universal scheme conclusions |
+| Scientific presentation | 19-page report, 15-slide PDF/editable deck, 22 figures and a [simple page-by-page README](reports/Sept_Dataset_Update_README.md) |
 
-**New result:** IoM amplification persists across the tested pool draws; PolyProtect is strongly pool-sensitive (-3.23 to +72.40 points). All eight input-mean versus prediction-mean intervals include zero, so method superiority is not established. The full author-thesis maximal-linkability chapter is compared explicitly; publisher-PDF version verification remains blocked. SCface is retained as supporting pilot evidence, not newly replicated cross-camera confirmation.
+**New result:** SCface now has multi-seed/two-partition new-scheme evidence: pool-4 gains of 16.19/34.29 points for IoM and 5.93/5.77 for PolyProtect. Pool-8 PolyProtect scores are higher in this draw, not evidence of a universal pool-size effect. Raw learned PolyProtect stays near chance in a separate descriptive study; changed seeds, partitions and targets prevent a causal unit/raw comparison. The local stricter policy shows no corrected reduction in native linkage. Earlier independent-pool evidence remains: IoM gains persist, PolyProtect varies strongly, and no input-pooling superiority is established. Publisher-version verification and independent human review remain open.
 
-The trained follow-up is hash-frozen against `4352eeb`; the new raw audit against `15e4384`, with executed source hashes recording uncommitted additions. Historical studies are not pooled. Raw-vs-shuffled controls do not establish identity-specific norm leakage. All 48 trained follow-up contrasts now have intervals, corrected tests and seed-sensitivity analysis; eight pool-4 mean gains and four shared-key DeepSets losses survive the post-hoc family. SCface confirmation, the full matrix, raw-input learned retraining, equivalence and independent review remain open. Chance compatibility is not privacy.
+The original trained follow-up is hash-frozen against `4352eeb`; the native raw audit against `15e4384`, with executed source hashes recording additions. Historical studies are not pooled. Raw-vs-shuffled controls do not establish identity-specific norm leakage. All 48 original follow-up contrasts retain their corrected analysis. SCface extension and learned raw retraining are now complete; full cross-dataset coverage, matched raw/unit causal analysis, equivalence and independent review remain open. Chance compatibility is not privacy.
 
 The [closest-work comparison](docs/literature/closest_work_2026-09-18.md) identifies the contribution as controlled **hidden-pool reuse and set aggregation**, not multiplicity or identity distillation themselves. Training requires paired access to the same realized pool used by targets; this is a strong explicit assumption.
 
@@ -30,11 +32,11 @@ No environment setup or experiment rerun is needed to view the existing outputs.
 | What to view | Location |
 |---|---|
 | September dataset update: findings, architecture overview and detailed attacker | [reports/Sept_Dataset_Update.pdf](reports/Sept_Dataset_Update.pdf) |
-| All 19 figures together, including architecture and results | [reports/slides/figure_appendix.pdf](reports/slides/figure_appendix.pdf) |
-| 12-slide research overview | [reports/slides/research_review.pdf](reports/slides/research_review.pdf) |
+| All 22 figures together, including architecture and results | [reports/slides/figure_appendix.pdf](reports/slides/figure_appendix.pdf) |
+| 15-slide research overview | [reports/slides/research_review.pdf](reports/slides/research_review.pdf) |
 | Four-dataset evidence coverage | [reports/figures/fig_dataset_coverage.pdf](reports/figures/fig_dataset_coverage.pdf) |
 | Independent pools and matched prediction baseline | [reports/figures/fig_pool_replication.pdf](reports/figures/fig_pool_replication.pdf) |
-| Each report page explained simply | [reports/Sept_Dataset_Update_guide.md](reports/Sept_Dataset_Update_guide.md) |
+| Each report page explained simply | [reports/Sept_Dataset_Update_README.md](reports/Sept_Dataset_Update_README.md) |
 | Editable presentation | [reports/slides/research_review.pptx](reports/slides/research_review.pptx) |
 | Architecture diagram image | [reports/figures/fig_architecture.png](reports/figures/fig_architecture.png) |
 | Architecture diagram vector PDF | [reports/figures/fig_architecture.pdf](reports/figures/fig_architecture.pdf) |

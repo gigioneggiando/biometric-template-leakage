@@ -1,6 +1,8 @@
 # Learned raw-input attacker
 
-Status: **COMPLETED; FRESH-KEY NULL HOLDS, POOL-4 AMPLIFICATION DOES NOT TRANSFER TO RAW INPUT**.
+Status: **COMPLETED; DESCRIPTIVE NEAR-CHANCE POLYPROTECT AND STRONG IOM POOL-4 LINKAGE**.
+
+**Interpretation correction, report refresh:** this run has no matched unit-input arm. It changes key/set seeds and identity assignments relative to the extended unit study. The unchanged runner also averages raw source vectors for training targets, weighting larger norms more strongly before target normalization. Thus cross-study differences cannot be attributed solely to input normalization; IoM code-level invariance does not guarantee identical learned results. Fresh-key means are near chance descriptively, not a corrected null or equivalence conclusion. The frozen tables and execution records are unchanged.
 
 [Protocol](../../docs/protocols/raw_input_attacker_2026-09-19.md) frozen before execution. Runtime 775.48 seconds on CPU. MOBIO and SCface only (FEI not present on this host); one identity partition per dataset (the existing saved split, no reassignment); PolyProtect (scale-sensitive) and IoM-GRP (scale-invariant control).
 
@@ -25,9 +27,9 @@ Full per-exposure/model results are in [raw_input_results.csv](raw_input_results
 
 **Fresh keys remain chance-compatible for raw input, for both schemes, on both datasets.** This is descriptive (three-seed mean/std, not a bootstrap interval or corrected test, per the protocol's stated scope), but every fresh-key mean sits within about one point of chance with no consistent direction. Raw, non-unit-normalized input does not break the fresh-key null in this pilot.
 
-**IoM-GRP pool-4 amplification is essentially unchanged by raw input** (compare 91.11%/67.63% here to 90.97-91.25%/39.90-63.78% for unit input in `scheme_followup_2026-09-19_full`, same order of magnitude), exactly as expected for a scheme already proven scale-invariant at the code level (`scale_invariance.csv`). This is a useful positive control: the pipeline substitution (raw embeddings fed through the unmodified attacker/training code) behaves correctly.
+**IoM-GRP retains strong pool-4 linkage in this raw-input run:** 91.11%/67.63%. This is consistent with its scale-invariant codes, but the comparison with unit-input studies is not paired, and raw target weighting changes. Neither unchanged learned performance nor correct operation of every pipeline component follows from high accuracy alone.
 
-**PolyProtect pool-4 amplification, which is large under unit-normalized input (53-62% ten-record top-1 in `scheme_followup_2026-09-19_full`), is essentially absent under raw input**: every raw-input PolyProtect pool-4 endpoint here is within a couple of points of chance (3.6-4.7%), with seed standard deviations comparable to the means, i.e. no consistent signal across seeds. Raw, per-record magnitude variation did not help this learned attacker exploit the recurring-transform structure; if anything it appears to swamp it.
+**PolyProtect has no positive mean-pooling gain in this raw-input run:** ten-record mean top-1 is 3.61%/3.85%, versus one-record 4.72%/5.77% on MOBIO/SCface. All raw pool-4 endpoints lie between 3.61% and 5.77%. This is a descriptive failure setting. The extended unit study has MOBIO mean top-1 58.06-62.50% but SCface 10.10-10.26%, not a universal 53-62% range. Different pools, assignments, targets and input scales prevent isolating which change explains the difference.
 
 ## Interpretation
 

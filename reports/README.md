@@ -1,12 +1,20 @@
 # Research package
 
+## Finalized experiment update
+
+The latest package is a **19-page report, 15-slide deck and 22-figure appendix**, integrating results through `4831d99`. Start with the [simple page-by-page README](Sept_Dataset_Update_README.md), then open the [PDF](Sept_Dataset_Update.pdf). The [detailed guide](Sept_Dataset_Update_guide.md) retains older exact tables.
+
+The [672-endpoint extension](../experiments/scheme_followup_2026-09-19_full/README.md) strengthens MOBIO/SCface coverage with exposures 1/2/5/10 and pools 1/4/8. All eight planned gains pass correction; SCface is no longer only a pilot. [Raw learned retraining](../experiments/raw_input_attacker_2026-09-19/README.md) and [local stricter selection](../experiments/polyprotect_stricter_audit_2026-09-19/README.md) add negative findings. Raw/unit studies are not matched causal comparisons; the local policy is not an exact official reproduction. No experiments were rerun for this presentation refresh.
+
+The experimental core is stronger and sufficient to finish a narrowly scoped manuscript for coauthor review. It does not establish universal privacy, method superiority, exhaustive novelty, or submission acceptance. Private inputs were not re-audited on this host. The historical notes below describe the earlier package, not the latest coverage.
+
 **Updated: 2026-09-19.** Historical integration: `4352eeb`; SCface freeze `69a93e4`. Four datasets contribute at different evidence levels; pilots are not confirmation. The new [independent-pool study](../experiments/pool_replication_2026-09-19/README.md) adds 144 fits and 72 prediction-mean evaluations in 254.188 seconds. IoM gains persist across tested pools; PolyProtect is pool-sensitive, and no input-pooling superiority is established. SCface remains supporting pilot evidence.
 
 The earlier [bounded follow-up](../experiments/scheme_followup_2026-09-18/README.md) adds 216 endpoints across three seeds/two partitions in 859.63 seconds, frozen against `4352eeb`. The [raw-norm/native audit](../experiments/norm_native_audit_2026-09-18/README.md), frozen against `15e4384`, re-extracts 4,177 records and checks all 48 paired contrasts in 254.157 seconds. The current package has a 16-page report, 12-slide deck and 19 figures. Raw norms do not establish identity-specific leakage; four significant shared-key DeepSets regressions are retained.
 
 ## Start here
 
-- [September dataset update: 16 pages, architecture, results and scientific scope](Sept_Dataset_Update.pdf)
+- [September dataset update: 19 pages, architecture, results and scientific scope](Sept_Dataset_Update.pdf)
 - [Independent pools, simple baseline, full numerical results and reproduction](../experiments/pool_replication_2026-09-19/README.md)
 - [Each page explained in plain language](Sept_Dataset_Update_guide.md)
 - [Closest research, precise contribution and attacker access](../docs/literature/closest_work_2026-09-18.md)
@@ -15,9 +23,9 @@ The earlier [bounded follow-up](../experiments/scheme_followup_2026-09-18/README
 - [Architecture overview](figures/fig_architecture.pdf) and [detailed attacker](figures/fig_attack_detail.pdf)
 - [Working manuscript](paper_draft.md)
 - [Figure index, captions, and regeneration commands](figures/README.md)
-- [12-slide PDF](slides/research_review.pdf)
+- [15-slide PDF](slides/research_review.pdf)
 - [Editable review deck](slides/research_review.pptx)
-- [Complete 19-figure vector appendix](slides/figure_appendix.pdf)
+- [Complete 22-figure vector appendix](slides/figure_appendix.pdf)
 - [New scheme pilot results and caveats](../experiments/scheme_extension_pilot/README.md)
 - [SCface added-dataset study](../experiments/scface_multiexposure/README.md) and [SCface scheme pilots](../experiments/scface_scheme_extension_pilot/README.md)
 - [Local per-seed run inventory](../experiments/multiexposure_run_matrix.csv)

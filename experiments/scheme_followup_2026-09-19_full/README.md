@@ -1,6 +1,6 @@
 # Extended multi-seed scheme follow-up: exposures, pool-8, SCface
 
-**Completed: 2026-09-19.** All 32 planned cells and 672 model endpoints completed in **1,008.66 seconds** total on CPU (8 Torch threads), within the authorized one-hour budget. This extends [scheme_followup_2026-09-18](../scheme_followup_2026-09-18/README.md); it does not change that study's frozen 216 endpoints or its original eight-hypothesis primary family, which remain unchanged.
+**Completed: 2026-09-19.** All 32 planned cells and 672 model endpoints completed on CPU (8 Torch threads). The matrix records **1,008.66 seconds**; the outer execution manifest records **1,024.74 seconds** including subsequent work, within the authorized one-hour budget. This extends [scheme_followup_2026-09-18](../scheme_followup_2026-09-18/README.md); it does not change that study's frozen 216 endpoints or its original eight-hypothesis primary family, which remain unchanged.
 
 ## Design and provenance
 
@@ -27,7 +27,7 @@ All eight contrasts are positive and Holm-significant. This is a second, indepen
 
 ## Fresh keys remain chance-compatible at every tested exposure count
 
-All 32 `independent_unseen_keys` endpoints (2 datasets x 2 schemes x 2 splits x 4 exposure levels) have a 95% crossed interval that includes chance. This is the first evidence at 2 and 5 exposures under this rigor; earlier multi-seed coverage was 1 and 10 only. No exposure count between 1 and 10 breaks the fresh-key null for either scheme on either dataset in this run.
+All **56** `independent_unseen_keys` seed-aggregated endpoints have crossed 95% intervals containing chance: 2 datasets x 2 schemes x 2 splits x 7 model/exposure combinations. The single-at-1/mean-at-2/5/10 subset contains **32** endpoints. This extends coverage to the tested counts 2 and 5; it does not test every integer between 1 and 10, establish equivalence, or prove privacy.
 
 ## Pool-8 does not behave like a simple extension of pool-4, and PolyProtect is not monotonic in pool size
 
@@ -59,6 +59,8 @@ All six SCface tests exceed their gallery-label permutation null, replicating th
 
 ## Files and reproduction
 
+**Source recovery required:** the report-refresh audit found three recorded source hashes unresolved in the current checkout, committed history and earlier source archive. See the [exact paths, hashes and audit method](../../reports/final_research_status.md#provenance-check). Recover the executed versions from the experiment machine before asserting exact reproduction. Aggregates and manifests remain unchanged; passing current tests is not evidence that these missing source versions are identical.
+
 - [results_summary.csv](results_summary.csv): 672 trained endpoints.
 - [seed_identity_endpoints.csv](seed_identity_endpoints.csv): 224 endpoint summaries (32 cells x 7 exposure/model combinations) with crossed uncertainty.
 - [seed_identity_contrasts.csv](seed_identity_contrasts.csv): 64 ten-minus-one contrasts (32 cells x 2 models); 8 are the corrected primary family, the rest are descriptive.
@@ -74,4 +76,4 @@ Execution refuses to overwrite an existing freeze. Biometric records, keys, and 
 
 ## Remaining scope
 
-FEI is not covered (no local embeddings on this host). No additional protection family beyond IoM-GRP/PolyProtect/BioHash/MLP-Hash was added; a documented review of SWG-MinHash found no citable academic paper for the scheme itself and unresolved code-quality issues in its only available source, so it was not implemented (see `docs/protections/candidate_selection_2026-09-10.md`; the two-additional-scheme roadmap requirement is already satisfied by IoM-GRP and PolyProtect). A learned raw-input attacker, multiple independent pool-8 draws, approved equivalence margins, and independent human review remain open.
+FEI is not covered at this expanded matrix. No additional protection family beyond IoM-GRP/PolyProtect/BioHash/MLP-Hash was added; the candidate-selection review records the decision not to implement SWG-MinHash. A [separate learned raw-input study](../raw_input_attacker_2026-09-19/README.md) is now complete, without a matched unit arm. Multiple independent pool-8 draws, approved equivalence margins and independent human review remain open. Identity assignments overlap and reuse the same pipeline; this is a sensitivity replication, not an independent population or outside replication.

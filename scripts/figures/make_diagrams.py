@@ -129,9 +129,9 @@ def fig_architecture(out: Path) -> None:
     ax.text(0.2, 8.7, "A  DATA AND PROTECTION", fontsize=10, weight="bold", color=BLUE)
     stages = [
         (0.2, "1  Identity-disjoint data", "MOBIO / LFW / FEI / SCface\nTrain / val / test people differ\nGallery never in exposures"),
-        (3.45, "2  Fixed face encoder", "YuNet; 5-landmark alignment\nArcFace w600k_r50; 512-D\nUnit norm; frozen backbone"),
+        (3.45, "2  Fixed face encoder", "YuNet; 5-landmark alignment\nArcFace w600k_r50; 512-D\nUnit main / raw separate study"),
         (6.7, "3  Keyed protection", "Template T = f(key, x)\nFresh / pool / shared key\nSecret key values withheld"),
-        (9.95, "4  Exposure records", "Input: batch x n x d\n8 nested sets per identity\nn = 1, 10 (initial: 1, 2, 5, 10)"),
+        (9.95, "4  Exposure records", "Input: batch x n x d\n8 nested sets per identity\nn = 1, 2, 5, 10 (by study)"),
     ]
     for left, title, detail in stages:
         ax.add_patch(FancyBboxPatch((left, 6.4), 2.85, 1.65, boxstyle="round,pad=0,rounding_size=0.05", fc="white", ec=BLUE, lw=1.1))
@@ -170,9 +170,9 @@ def fig_architecture(out: Path) -> None:
     ax.text(0.4, 1.5, "KEY DESIGN", fontsize=8, weight="bold", color=INK)
     ax.text(2.25, 1.5, "Fresh: source-record keys are split-disjoint. Pool K: hidden transforms recur across identity splits.", fontsize=8, color=INK)
     ax.text(0.4, 1.05, "REPLICATION", fontsize=8, weight="bold", color=INK)
-    ax.text(2.25, 1.05, "MOBIO / FEI follow-up: 2 identity partitions x 3 model seeds; matched 120-epoch training caps.", fontsize=8, color=INK)
+    ax.text(2.25, 1.05, "MOBIO / FEI original; MOBIO / SCface extended: 2 splits x 3 seeds; 120-epoch caps.", fontsize=8, color=INK)
     ax.text(0.4, 0.6, "DESIGN", fontsize=8, weight="bold", color=INK)
-    ax.text(2.25, 0.6, "Same-identity aggregation under controlled transform reuse; detailed attacker paths in the companion figure.", fontsize=8, color=INK)
+    ax.text(2.25, 0.6, "Three-pool prediction-mean baseline; raw learned and stricter native studies are separate controls.", fontsize=8, color=INK)
     save_diagram(fig, ax, out, "fig_architecture")
 
 

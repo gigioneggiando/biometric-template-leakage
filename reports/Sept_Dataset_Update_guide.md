@@ -1,6 +1,8 @@
 # September report: detailed reading guide
 
-Companion to the [16-page report](Sept_Dataset_Update.pdf), revised 19 September 2026. A **template** is a list of numbers describing a face; protection changes that list using a secret key. **Top-1** means choosing the correct person on the first try. **Chance** means random guessing among the gallery's people. Percentage points measure a difference: 10% to 30% is a 20-point increase.
+Companion to the [19-page report](Sept_Dataset_Update.pdf), revised 19 September 2026. For the simpler explanation of every page, start with the [plain-language README](Sept_Dataset_Update_README.md). This guide retains detailed older numerical tables. A **template** is a list of numbers describing a face; protection changes that list using a secret key. **Top-1** means choosing the correct person on the first try. **Chance** means random guessing among the gallery's people. Percentage points measure a difference: 10% to 30% is a 20-point increase.
+
+Latest scope: SCface now has a multi-seed extended study, and learned raw-input/stricter-selection studies are complete. Pages 17-19 explain these additions. Older references to no raw retraining or to pilot-only SCface apply only to those earlier studies. Three executed-source snapshots for the extended study remain unresolved locally; see the [provenance note](final_research_status.md#provenance-check).
 
 The original page-by-page explanation is retained, with a new coverage diagram (page 15), independent-pool/baseline results (page 16), and revised prior-work/conclusions. Older results were not overwritten. Values below usually retain two decimal places; the PDF heatmap rounds to one. Small rounding differences are not different experiments.
 
@@ -322,7 +324,7 @@ The revised page also summarizes page 16: IoM gains persist across tested new po
 
 Columns are MOBIO, LFW, FEI and SCface, not four equally complete experiment suites. Rows distinguish historical BioHash, MOBIO MLP-Hash, one-seed new-scheme pilots, the three-model-seed/two-partition follow-up, native/raw controls and the new three-pool study. Green/blue cells indicate completed coverage, not higher accuracy. Grey **Not run** means no experiment in that layer, not zero linkage or safety.
 
-The numbers within cells describe replication: **3 model seeds** vary optimization; **2 splits** change identity roles but overlap; **3 pools** change transforms and slot assignments. Native controls' three keys are not three independently trained attackers. LFW contributes historical BioHash evidence only in this matrix. SCface contributes historical BioHash and single-seed IoM/PolyProtect pilots, not the newer matched confirmation. Its surveillance captures make it valuable supporting evidence, but cannot supply missing replication. The chosen paper scope is a MOBIO/FEI core with explicitly supporting SCface evidence.
+The numbers within cells describe replication: **3 model seeds** vary optimization; **2 splits** change identity roles but overlap; **3 pools** change transforms and slot assignments. Native controls' three keys are not three independently trained attackers. LFW contributes historical BioHash evidence in this matrix. SCface now also contributes the extended three-seed/two-split study, raw learned study and local stricter audit. It still lacks the independent-pool baseline experiment. Coverage is not uniform across all four datasets.
 
 ## Page 16: Do the results survive new pools and a simple baseline?
 
@@ -356,6 +358,46 @@ The right plot asks whether averaging protected inputs **before** the learned ML
 
 Every direct-baseline interval includes zero. This is **not evidence of superiority and not proof of equality**. Prediction mean is competitive on IoM; PolyProtect's positive average differences have very large pool uncertainty. The study completed in **254.188 seconds**: **24 cells, 144 fits and 72 reused-checkpoint evaluations**. Pool seeds change both transforms and sample-to-slot assignments; exposure sets stay fixed. [Full design, source freeze and tables](../experiments/pool_replication_2026-09-19/README.md).
 
+## Page 17: Expanded exposures and SCface replication
+
+The eight panels show dataset x scheme x partition. X is record count 1/2/5/10; y is top-1 percentage. Colors are fresh/pool-1/pool-4/pool-8. The graph shows single MLP at 1 and mean MLP thereafter; DeepSets remains in the exported tables. Bars are crossed seed/identity 95% intervals, not across-pool intervals. A/B assignments overlap. The primary comparison is ten-record mean minus one-record single at pool 4, not every difference between curves.
+
+| Dataset / scheme / split | Gain, pp | 95% interval, pp | Holm p |
+|---|---:|---|---:|
+| MOBIO / IoM A | 32.50 | [25.00,39.72] | 0.004 |
+| MOBIO / IoM B | 27.22 | [17.08,36.81] | 0.004 |
+| MOBIO / PolyProtect A | 58.19 | [44.17,71.25] | 0.004 |
+| MOBIO / PolyProtect B | 53.47 | [38.33,67.22] | 0.004 |
+| SCface / IoM A | 16.19 | [5.29,26.77] | 0.006 |
+| SCface / IoM B | 34.29 | [21.47,47.12] | 0.004 |
+| SCface / PolyProtect A | 5.93 | [0.48,14.11] | 0.034 |
+| SCface / PolyProtect B | 5.77 | [1.28,12.02] | 0.011 |
+
+32 cells x 7 model/exposure combinations x 3 seeds = **672 trained endpoints**, or 224 seed-aggregated summaries. Of these, **56** are fresh-key summaries and all include chance; the single/mean-only fresh subset has 32. This does not test unobserved counts 3/4/6/7/8/9. Pool-8 PolyProtect exceeds pool-4 in each of four cells, but pools differ, so a causal pool-size effect is not isolated. Native SCface controls also now have three key draws per partition and corrected null tests. [All plotted values and intervals](../experiments/scheme_followup_2026-09-19_full/seed_identity_endpoints.csv), [primary tests](../experiments/scheme_followup_2026-09-19_full/seed_identity_contrasts.csv).
+
+## Page 18: Separate raw learned study
+
+Y is learned top-1 (%); x separates scheme and fresh/pool-4 condition. Grey/blue/green are single-1/mean-10/DeepSets-10. Bars are **model-seed SD**, not confidence intervals. There is no matched unit arm, corrected null family, or equivalence test. Twenty-four summaries represent 72 fits at one saved partition per dataset.
+
+| Dataset / scheme / condition | Single 1, % | Mean 10, % | DeepSets 10, % |
+|---|---:|---:|---:|
+| MOBIO / IoM / Fresh | 3.75 | 3.33 | 4.17 |
+| MOBIO / IoM / Pool 4 | 55.00 | 91.11 | 63.33 |
+| MOBIO / PolyProtect / Fresh | 2.64 | 3.61 | 4.58 |
+| MOBIO / PolyProtect / Pool 4 | 4.72 | 3.61 | 4.58 |
+| SCface / IoM / Fresh | 3.69 | 3.85 | 3.85 |
+| SCface / IoM / Pool 4 | 26.44 | 67.63 | 43.59 |
+| SCface / PolyProtect / Fresh | 3.53 | 3.69 | 3.85 |
+| SCface / PolyProtect / Pool 4 | 5.77 | 3.85 | 3.69 |
+
+Key/set seeds and assignments differ from page 17. Targets are normalized means of raw vectors, so norms also affect target weighting. The result is a tested PolyProtect failure setting, not a demonstration that normalization alone causes the cross-study difference or that raw input is safer. [All means and plotted SDs](../experiments/raw_input_attacker_2026-09-19/raw_input_results.csv).
+
+## Page 19: Local stricter parameter selection
+
+X is stricter-minus-naive native accuracy in percentage points. Left of zero would favor less linkage; right means more linkage. MOBIO is **+3.13 [0.10,6.16], p=0.1344**; SCface is **-0.32 [-2.19,1.47], p=0.7556**. Intervals condition on three fixed key seeds; p-values adjust the two paired tests. Neither shows a corrected change. The separate four-arm above-null family has p=0.0008; that is a different question.
+
+The rule tries 20 candidates against 200 training-only development pairs and band [-0.5,0.5]. It is a local operationalization, not source-exact replication, a broad hyperparameter sweep or a refutation of every stricter policy. [Paired numbers](../experiments/polyprotect_stricter_audit_2026-09-19/paired_contrasts.csv).
+
 ## Why SCface appears only sometimes
 
 | Evidence layer | MOBIO | LFW | FEI | SCface |
@@ -368,12 +410,15 @@ Every direct-baseline interval includes zero. This is **not evidence of superior
 | Genuine raw-norm/native audit, pages 11-12 | Yes | No | Yes | No |
 | All 48 paired follow-up contrasts, page 13 | Yes | No | Yes | No |
 | Three-pool replication and prediction baseline, page 16 | Yes | No | Yes | No |
+| Extended exposures and pool-8, page 17 | Yes | No | No | Yes |
+| Raw learned retraining, page 18 | Yes | No | No | Yes |
+| Local stricter native selection, page 19 | Yes | No | No | Yes |
 
-The later bounded run used locally available MOBIO/FEI data. SCface compact results exist, but its embeddings and detailed artifacts were unavailable on the executing host. LFW was outside the selected follow-up scope. This is **missing experimental coverage**, not a missing plotting command. Neither missingness nor unavailable local artifacts says anything about privacy on those datasets.
+The original bounded run and three-pool study used MOBIO/FEI. The finalized extension instead used MOBIO/SCface. Private inputs are not all available on the current report-building host; tracked compact results support the updated plots. LFW remains outside those new studies. Missing coverage is not zero linkage or a privacy result.
 
 Cross-dataset figures include page 4's heatmap, page 8's scheme panels, page 15's new coverage diagram, and [BioHash pool curves](figures/fig_pool_curves.pdf) in the [19-figure appendix](slides/figure_appendix.pdf). Missing cells cannot be filled from another scheme, seed budget or different task. Raw percentages and chance-normalized ratios do not remove capture/domain differences.
 
-If we want SCface in page 6's **matched corrected comparison**, we must recover authorized local data/artifacts and run that matched protocol, preserving mugshot galleries and surveillance-only exposures. Reassigning identities must preserve that camera-aware gallery rule; an ordinary earliest-record gallery rule is not automatically equivalent. Simply copying a one-seed SCface point into that figure would be misleading.
+Page 6 is preserved as the original MOBIO/FEI study; page 17 contains the new MOBIO/SCface study with different key/set seeds. SCface preparation gives mugshots index 0, and split reassignment preserves that ordering. Private metadata was not independently re-audited here. Copying pilot points into the corrected study remains inappropriate.
 
 ## Can this become a paper now?
 
@@ -385,7 +430,7 @@ The central claim can be: **Under explicit paired same-pool access, reuse of hid
 
 1. **Full-text comparison completed using the author thesis.** Section 5.4, equations, scenarios and numerical tables are explicitly compared. The blocked publisher PDF's exact version and independent human review remain unverified.
 2. **Independent recurring pools completed.** Three new realizations expose persistent IoM gains but substantial PolyProtect sensitivity. This is useful negative evidence, not a universal robustness certificate.
-3. **SCface role chosen: supporting historical/pilot evidence.** A narrow MOBIO/FEI core is justified; no matched four-dataset cross-scheme confirmation is claimed.
+3. **SCface extended study complete.** It now contributes corrected three-seed/two-partition evidence. It still lacks independent-pool replication; no four-dataset cross-scheme matrix is claimed.
 4. **Simple baseline and access justification completed.** Prediction averaging is tested on identical ten-record sets/galleries. Training differences, same-pool paired supervision, output-visible queries and closed-set assumptions are explicit. Superiority is not supported.
 5. **Reproduction package updated.** Frozen sources, aggregate tables, tests, missing coverage and failure cases are retained. Authorized private inputs remain necessary; coauthor signoff and independent review are not replaced by computational checks.
 
@@ -393,7 +438,7 @@ The central claim can be: **Under explicit paired same-pool access, reuse of hid
 
 - **Stricter PolyProtect policy:** necessary to support a claim that recommended PolyProtect settings are broken; optional if results are explicitly about the tested naive policy and secondary to the reuse study. Alternatively move this diagnostic to an appendix.
 - **Large/open-set galleries:** necessary for strong operational or internet-scale linkage claims; an important extension, but not automatically necessary for a clearly limited closed-set study.
-- **Learned raw-input retraining:** necessary for claims about that learned attack on raw inputs; not needed to report the completed native scale-control result honestly.
+- **Learned raw-input retraining:** now complete descriptively. A matched unit/raw comparison is still required for a causal normalization claim.
 - **Another encoder:** would strengthen generalization beyond this ArcFace checkpoint. Without it, limit claims to this encoder rather than treating all face embeddings as established coverage.
 - **Head-to-head wins:** needed for superiority claims, not for every empirical measurement paper. Literature comparison is still essential, and a fair baseline comparison may be requested by reviewers.
 - **Every dataset in every plot:** not a scientific requirement. A clear coverage matrix and honest separation of study scopes are required for readers to understand what the plots support.

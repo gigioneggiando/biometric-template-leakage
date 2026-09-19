@@ -584,14 +584,19 @@ def fig_dataset_coverage(out: Path) -> None:
     from matplotlib.colors import ListedColormap
 
     labels = ["BioHash historical", "MLP-Hash historical", "IoM / PolyProtect pilots",
-              "IoM / PolyProtect follow-up", "Native / raw-norm audit", "Independent-pool + baseline"]
-    cells = [[2, 2, 2, 2], [2, 0, 0, 0], [1, 0, 1, 1], [3, 0, 3, 0], [3, 0, 3, 0], [4, 0, 4, 0]]
+              "Original scheme follow-up", "Native / raw-norm audit", "Independent-pool + baseline",
+              "Extended exposure study", "Learned raw-input study", "Stricter-selection audit"]
+    cells = [[2, 2, 2, 2], [2, 0, 0, 0], [1, 0, 1, 1], [3, 0, 3, 0], [3, 0, 3, 0], [4, 0, 4, 0],
+             [3, 0, 0, 3], [2, 0, 0, 2], [2, 0, 0, 2]]
     text = [["3 model seeds"] * 4, ["3 model seeds", "Not run", "Not run", "Not run"],
             ["1 model seed", "Not run", "1 model seed", "1 model seed"],
             ["3 seeds / 2 splits", "Not run", "3 seeds / 2 splits", "Not run"],
             ["3 keys / 2 splits", "Not run", "3 keys / 2 splits", "Not run"],
-            ["3 pools / 3 seeds\n2 splits", "Not run", "3 pools / 3 seeds\n2 splits", "Not run"]]
-    fig, axis = plt.subplots(figsize=(10.5, 4.8))
+                ["3 pools / 3 seeds\n2 splits", "Not run", "3 pools / 3 seeds\n2 splits", "Not run"],
+                ["3 seeds / 2 splits", "Not run", "Not run", "3 seeds / 2 splits"],
+                ["3 seeds / 1 split", "Not run", "Not run", "3 seeds / 1 split"],
+                ["3 keys / 1 split", "Not run", "Not run", "3 keys / 1 split"]]
+    fig, axis = plt.subplots(figsize=(10.5, 6.1))
     axis.imshow(cells, cmap=ListedColormap(["#eeeeee", "#f9e6b2", "#d5e9f5", "#bde5d8", "#83c6b4"]), vmin=0, vmax=4, aspect="auto")
     axis.set_xticks(range(4), ["MOBIO", "LFW", "FEI", "SCface"])
     axis.set_yticks(range(len(labels)), labels)
@@ -602,7 +607,7 @@ def fig_dataset_coverage(out: Path) -> None:
             axis.text(column, row, value, ha="center", va="center", fontsize=9)
     axis.set_title("Dataset coverage: evidence layers are not interchangeable", pad=16)
     fig.subplots_adjust(left=0.29, right=0.98, top=0.85, bottom=0.25)
-    fig.text(0.03, 0.11, "SCface retains mugshot-to-surveillance historical and pilot evidence; no new matched confirmation.", fontsize=9)
+    fig.text(0.03, 0.11, "SCface now has an extended study; coverage alone does not establish identical gallery protocols.", fontsize=9)
     fig.text(0.03, 0.055, "Grey = not run in this package, not zero accuracy. Identity partitions overlap; native audits do not train attackers.", fontsize=9)
     save_figure(fig, out, "fig_dataset_coverage")
 
@@ -640,6 +645,90 @@ def fig_pool_replication(out: Path) -> None:
     save_figure(fig, out, "fig_pool_replication")
 
 
+def fig_extended_exposures(out: Path) -> None:
+    table = pd.read_csv(EXP / "scheme_followup_2026-09-19_full/seed_identity_endpoints.csv")
+    fig, axes = plt.subplots(2, 4, figsize=(12.8, 6.8), sharex=True, sharey=True)
+    conditions = [("independent_unseen_keys", "Fresh", C["grey"]),
+                  ("random_key_pool_1", "Pool 1", C["green"]),
+                  ("random_key_pool_4", "Pool 4", C["blue"]),
+                  ("random_key_pool_8", "Pool 8", C["orange"])]
+    for row_index, dataset in enumerate(["MOBIO", "SCface"]):
+        for column, (scheme, split) in enumerate([(scheme, split) for scheme in ["IoM-GRP", "PolyProtect"]
+                                                  for split in [91831, 91843]]):
+            axis = axes[row_index, column]
+            subset = table[(table["dataset"] == dataset) & (table["scheme"] == scheme) &
+                           (table["split_seed"] == split) & table["model"].isin(["single_mlp", "mean_mlp"])]
+            for offset, (condition, label, color) in enumerate(conditions):
+                values = subset[subset["condition"] == condition].sort_values("exposures")
+                axis.errorbar(np.arange(4) + (offset - 1.5) * 0.045, 100 * values["top1_mean"],
+                              yerr=100 * np.vstack([values["top1_mean"] - values["lower95"],
+                                                    values["upper95"] - values["top1_mean"]]),
+                              color=color, marker="o", markersize=3, capsize=1.5, lw=1, label=label)
+            axis.axhline(100 * subset["chance"].iloc[0], color=C["black"], ls=":", lw=0.7)
+            axis.set_title(f"{dataset} / {scheme} / {'A' if split == 91831 else 'B'}", fontsize=9)
+            axis.set_xticks(range(4), [1, 2, 5, 10])
+            axis.set_ylim(-3, 104)
+            if row_index == 1:
+                axis.set_xlabel("Records per person")
+            if column == 0:
+                axis.set_ylabel("Top-1 (%)")
+    handles, labels = axes[0, 0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="upper center", ncol=4, frameon=False, bbox_to_anchor=(0.5, 0.97))
+    fig.subplots_adjust(left=0.07, right=0.985, top=0.86, bottom=0.19, hspace=0.3, wspace=0.12)
+    fig.text(0.03, 0.065, "Single MLP at 1 record; mean MLP at 2/5/10. Bars: crossed seed/identity 95% intervals; dotted line: chance.", fontsize=9)
+    fig.text(0.03, 0.025, "A/B are overlapping identity assignments. One pool realization per condition; pool size is not an isolated causal effect.", fontsize=9)
+    save_figure(fig, out, "fig_extended_exposures")
+
+
+def fig_raw_learned(out: Path) -> None:
+    table = pd.read_csv(EXP / "raw_input_attacker_2026-09-19/raw_input_results.csv")
+    fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.8), sharey=True)
+    endpoints = [(1, "single_mlp", "Single, 1", C["grey"]),
+                 (10, "mean_mlp", "Mean, 10", C["blue"]),
+                 (10, "deepsets", "DeepSets, 10", C["green"])]
+    for axis, dataset in zip(axes, ["MOBIO", "SCface"]):
+        subset = table[table["dataset"] == dataset]
+        for index, (_, model, label, color) in enumerate(endpoints):
+            values = subset[subset["model"] == model].set_index(["scheme", "condition"]).loc[
+                [(scheme, condition) for scheme in ["IoM-GRP", "PolyProtect"]
+                 for condition in ["independent_unseen_keys", "random_key_pool_4"]]]
+            axis.errorbar(np.arange(4) + (index - 1) * 0.17, 100 * values["top1_mean"],
+                          yerr=100 * values["top1_std"], fmt="o", color=color, capsize=3, label=label)
+        axis.set_xticks(range(4), ["IoM\nFresh", "IoM\nPool 4", "PolyProtect\nFresh", "PolyProtect\nPool 4"])
+        axis.axhline(100 * subset["chance"].iloc[0], color=C["black"], ls="--", lw=0.8)
+        axis.set_title(dataset)
+        axis.set_ylim(-3, 103)
+        axis.legend(frameon=False, fontsize=8, loc="upper right")
+    axes[0].set_ylabel("Raw-input learned top-1 (%)")
+    fig.subplots_adjust(left=0.08, right=0.98, top=0.9, bottom=0.3, wspace=0.12)
+    fig.text(0.03, 0.12, "Bars: standard deviation across three model seeds, NOT confidence intervals. One saved identity split; descriptive study.", fontsize=8.5)
+    fig.text(0.03, 0.065, "PolyProtect is near chance in this run; IoM retains large pool-4 gains. No matched unit-input retraining at these seeds.", fontsize=8.5)
+    fig.text(0.03, 0.02, "Different pool/set seeds and partitions prevent attributing cross-study accuracy differences solely to normalization.", fontsize=8.5)
+    save_figure(fig, out, "fig_raw_learned")
+
+
+def fig_stricter_selection(out: Path) -> None:
+    table = pd.read_csv(EXP / "polyprotect_stricter_audit_2026-09-19/paired_contrasts.csv")
+    fig, axis = plt.subplots(figsize=(10.5, 4.1))
+    for position, row in table.iterrows():
+        axis.errorbar(100 * row["gain"], position,
+                      xerr=[[100 * (row["gain"] - row["lower95"])], [100 * (row["upper95"] - row["gain"])]],
+                      fmt="o", color=C["blue"], capsize=4)
+        axis.text(7, position, f"{100 * row['gain']:+.2f} pp; Holm p={row['holm_p']:.4f}", va="center", fontsize=10)
+    axis.set_yticks(range(len(table)), table["dataset"])
+    axis.set_ylim(-0.6, 1.6)
+    axis.invert_yaxis()
+    axis.set_xlim(-4, 13)
+    axis.axvline(0, color=C["grey"], ls="--")
+    axis.set_xlabel("Stricter minus naive native top-1 (percentage points)")
+    axis.set_title("Local stricter selection: no corrected evidence of reduced linkage", pad=15)
+    fig.subplots_adjust(left=0.1, right=0.98, top=0.85, bottom=0.32)
+    fig.text(0.03, 0.15, "Left of zero would mean less native linkage. Bars: identity-bootstrap 95% intervals, conditional on three key seeds.", fontsize=9)
+    fig.text(0.03, 0.09, "20 candidates; 200 development pairs; score band [-0.5, 0.5]. Paired Holm family 2; neither comparison passes 0.05.", fontsize=9)
+    fig.text(0.03, 0.03, "Local operationalization, not source-exact replication or a refutation of all stricter PolyProtect parameter policies.", fontsize=9)
+    save_figure(fig, out, "fig_stricter_selection")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, default=ROOT / "reports/figures")
@@ -661,6 +750,9 @@ def main() -> None:
     fig_followup_failures(args.out)
     fig_dataset_coverage(args.out)
     fig_pool_replication(args.out)
+    fig_extended_exposures(args.out)
+    fig_raw_learned(args.out)
+    fig_stricter_selection(args.out)
     print(f"figures written to {args.out}")
 
 
