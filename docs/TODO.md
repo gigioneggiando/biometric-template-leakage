@@ -2,6 +2,11 @@
 
 This document separates tasks that need human authorization, licenses, hardware, or author contact from tasks that the repository can perform once those blockers are removed. Never commit biometric data, model weights, keys, tokens, credentials, or private paths to Git.
 
+## Provenance follow-up: 2026-09-20
+
+- [x] Manish's presentation-refresh provenance audit found 3 of 44 checked source hashes (in the `scheme_followup_2026-09-19_full` manifest) unresolved by automated Git/VS Code/newline-reconstruction search. Ran his [recovery utility](../scripts/diagnostics/recover_executed_sources.py) directly against the experiment machine (`E:\Research\Biometrics`): all 33/33 manifest entries matched unchanged, including the three flagged files, which simply have a non-uniform line-ending mix the automated heuristics did not try. Independently re-verified the archive against the manifest. See [research_log.md](research_log.md) and [final_research_status.md](../reports/final_research_status.md#provenance-check).
+- [x] Checked the finalized September package (19-page report, 15-slide deck, 22-figure appendix) for missing data/experiments/images per Manish's request: page/figure counts match claims, the three new figures (extended exposures, raw-input, stricter-selection) render correctly and match the underlying CSVs, and the coverage diagram accurately reflects every completed study. Updated stale "unresolved" provenance references in `paper_draft.md` and `Sept_Dataset_Update_guide.md` left over from before the recovery.
+
 ## Code follow-up: 2026-09-19 (extended exposures, pool-8, SCface at full rigor)
 
 - [x] Extend `scheme_followup_2026-09-18` to exposures 2 and 5 (previously only 1 and 10 were tested at this rigor), condition `random_key_pool_8` (previously only pool-1/pool-4), and SCface (previously one-seed pilots only). One run, new key/set seeds, 32 cells / 672 endpoints in 1,008.66 seconds. See [results](../experiments/scheme_followup_2026-09-19_full/README.md).

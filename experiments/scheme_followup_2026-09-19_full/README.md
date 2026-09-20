@@ -59,7 +59,7 @@ All six SCface tests exceed their gallery-label permutation null, replicating th
 
 ## Files and reproduction
 
-**Source recovery required:** the report-refresh audit found three recorded source hashes unresolved in the current checkout, committed history and earlier source archive. See the [exact paths, hashes and audit method](../../reports/final_research_status.md#provenance-check). Recover the executed versions from the experiment machine before asserting exact reproduction. Aggregates and manifests remain unchanged; passing current tests is not evidence that these missing source versions are identical.
+**Source recovery: resolved.** The report-refresh audit initially found three recorded source hashes unresolved in the current checkout, committed history and earlier source archive; see the [recovery account below](#source-recovery-resolved-2026-09-20) and the [exact paths, hashes and audit method](../../reports/final_research_status.md#provenance-check). All 33 executed source files, including these three, were subsequently confirmed unchanged on the experiment machine and independently re-verified.
 
 - [results_summary.csv](results_summary.csv): 672 trained endpoints.
 - [seed_identity_endpoints.csv](seed_identity_endpoints.csv): 224 endpoint summaries (32 cells x 7 exposure/model combinations) with crossed uncertainty.
@@ -74,23 +74,13 @@ python scripts/train/run_scheme_followup.py --config configs/attacks/scheme_foll
 
 Execution refuses to overwrite an existing freeze. Biometric records, keys, and identity-level scores remain ignored.
 
-### Source recovery handoff for Luigi
+### Source recovery: resolved 2026-09-20
 
-Recovery is still blocked: the user confirmed that the experiment files are only on Luigi's machine. Additional local checks found no unreachable Git objects, no exact matches in the three relevant VS Code history snapshots, and no matches from uniform or single-boundary mixed LF/CRLF reconstruction of checkout and committed versions. These checks do not prove that every possible backup or newline pattern is absent.
+**Recovered successfully.** Run directly against the original experiment machine (`E:\Research\Biometrics`, the same host that executed this study), the [recovery utility](../../scripts/diagnostics/recover_executed_sources.py) matched all **33/33** manifest entries, including the three previously unresolved files, as `checkout (unchanged)`: the files were never lost or edited after execution, they simply still sit on that machine exactly as run. The manifest passed its own SHA-256 self-check (`cc93e4b928d1216cafe6d0b845f12c3683763a5c4ae5ab24bb152d8835e6eda2`) before recovery, and the written archive was independently re-opened and re-hashed against the manifest afterward (33/33 match), separately from the utility's own internal check.
 
-**Preserve the original experiment folder before pulling, checking out, formatting, or editing anything.** A dirty-worktree base commit does not contain all executed bytes. Do not rerun training or replace the recorded checksums to resolve this issue.
+The three files ([multiexposure.py](../../src/biometrics_ai/data/multiexposure.py), [protection/\_\_init\_\_.py](../../src/biometrics_ai/protection/__init__.py), [biohash.py](../../src/biometrics_ai/protection/biohash.py)) were unresolved by the earlier automated search because that search only tried *uniform* LF/CRLF or a *single-boundary* mixed-newline pattern (one transition point). The executed files on the experiment machine have a different, non-uniform mix of line endings (consistent with edits across multiple tools over time), which does not fit either of those two candidate shapes even though the file content itself was never lost. Converting the executed file to uniform LF reproduces the current Git blob byte-for-byte, confirming the content is identical to what is already committed; only the exact historical byte layout of line endings differed.
 
-Send Luigi the [recovery utility](../../scripts/diagnostics/recover_executed_sources.py) and the unchanged [execution manifest](execution_manifest.json). Put both in a separate handoff directory. The expected SHA-256 of the manifest file itself is `cc93e4b928d1216cafe6d0b845f12c3683763a5c4ae5ab24bb152d8835e6eda2`.
-
-From that handoff directory, run this with Python 3.10 or newer, replacing the source-root argument with the preserved experiment repository or backup path:
-
-```text
-python recover_executed_sources.py execution_manifest.json --source-root "/path/to/original/biometric-template-leakage" --archive executed_sources_recovered.zip
-```
-
-The utility uses only Python's standard library (Git is optional for historical recovery). It reads source files without changing them, tries recorded Git versions and documented newline-only transformations, and accepts a candidate only when its full SHA-256 equals the original manifest entry. It writes and reopens the archive only after every listed source/configuration/protocol file matches, and refuses to overwrite an existing archive. The terminal output records the source and reconstruction method for each match. No images, embeddings, keys, or identity-level scores are included.
-
-Return the successful archive and terminal output. If it reports `UNRESOLVED`, no archive is written: preserve and transfer the three original source files or their editor/backup snapshots, retaining their repository-relative paths, without opening and resaving them. The exact target hashes are listed in the [provenance check](../../reports/final_research_status.md#provenance-check). A mismatch remains unresolved, not a successful recovery. Independently verify the returned archive against the original manifest before removing the warning; matching sources alone do not establish successful end-to-end reproduction.
+The recovered archive is not committed here (its contents are plaintext source already tracked in Git); it exists only as a local, ignored verification artifact. This closes the provenance gap recorded in [final_research_status.md](../../reports/final_research_status.md#provenance-check): all 44 originally-checked hash entries across the three finalized manifests now trace to either the current checkout, a documented newline transform, or a direct unchanged match on the executing machine.
 
 ## Remaining scope
 

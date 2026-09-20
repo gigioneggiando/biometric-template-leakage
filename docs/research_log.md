@@ -1,5 +1,12 @@
 # Research log
 
+## 2026-09-20 (source-provenance gap resolved)
+
+- Manish's presentation refresh added a provenance check that hashed every source file recorded in the three newly finalized execution manifests. 41/44 entries matched directly or after a documented line-ending transform; three files in `scheme_followup_2026-09-19_full`'s manifest (`multiexposure.py`, `protection/__init__.py`, `biohash.py`) did not, and his automated recovery (Git unreachable objects, VS Code history, uniform/single-boundary mixed-newline reconstruction) could not resolve them. He committed a read-only recovery utility and a handoff asking "Luigi" (Gigi) to run it against the original experiment machine.
+- Manish asked the user to have the work checked for anything missing; the user asked me to check. That machine, `E:\Research\Biometrics`, is one I already have direct access to from this session (it is where every 2026-09-19 experiment in this conversation actually ran).
+- Ran the recovery utility against it directly: all 33/33 manifest entries matched as `checkout (unchanged)`, including the three flagged files. They were never lost or edited; they simply still sit on that machine exactly as executed. The earlier search missed them only because their line endings are a non-uniform mix (consistent with edits across multiple tools over time), a shape the utility's uniform/single-boundary heuristics do not cover, not because the content was gone. Independently re-verified the written archive's hashes against the manifest a second time, separately from the utility's own internal check.
+- Updated `reports/final_research_status.md`'s provenance-check section and the experiment README's recovery handoff section to record the resolution. The archive itself is not committed (it is plaintext already tracked in Git); it was a local verification artifact only.
+
 ## 2026-09-19 (learned raw-input attacker)
 
 - Last open item from the day's list. Re-extracted raw (pre-normalization) ArcFace vectors directly from MOBIO and SCface source images, reusing `extract_raw` from `norm_native_audit_2026-09-18` unchanged (including its saved-embedding agreement check), and fed them through the existing attacker pipeline by calling `run_real_multiexposure.run()` directly rather than through `run_pilots`, which asserts unit-normalized input and was left untouched. Materialized the raw vectors as a new on-disk embeddings directory so the existing pipeline needed no changes.

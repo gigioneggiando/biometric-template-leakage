@@ -155,7 +155,7 @@ One encoder, four datasets with unequal coverage, and 25-40 gallery identities; 
 
 ## 8. Reproducibility
 
-The report-refresh [provenance audit](final_research_status.md#provenance-check) leaves three extended-study executed-source hashes unresolved. The corresponding exact files must be recovered from the experiment machine; current tests and a dirty-worktree base commit are not substitutes. The aggregate tables and recorded manifest are retained unmodified. This limitation prevents claiming exact reproduction from the current repository alone.
+The report-refresh [provenance audit](final_research_status.md#provenance-check) initially left three extended-study executed-source hashes unresolved; running the recovery utility directly against the experiment machine subsequently matched all 33/33 manifest entries, including these three, as unchanged, and the recovered archive was independently re-verified against the manifest. The files were never lost; the earlier automated search simply did not cover their exact (non-uniform) line-ending pattern. The aggregate tables and recorded manifest are retained unmodified.
 
 All configurations, preregistrations, compact summaries, and hashes are in the repository. Restricted MOBIO data, embeddings, keys, and full metrics remain local. Commands: `experiments/mobio_multiexposure/README.md`, `experiments/mobio_mechanism_controls/README.md`, and `experiments/mobio_correlation_controls/README.md`.
 
