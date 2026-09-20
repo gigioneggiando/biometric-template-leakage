@@ -98,6 +98,30 @@ def test_tracked_table_matches_rebuilt_sources():
     pd.testing.assert_frame_equal(actual, expected, check_exact=False, atol=0.00000051, rtol=0)
 
 
+def test_plain_language_guide_covers_pages_and_heatmap_scores():
+    guide = (ROOT / "reports/Sept_Dataset_Update_README.md").read_text(encoding="utf-8")
+    headings = [line for line in guide.splitlines() if line.startswith("## Page ")]
+    assert [int(line.split()[2].rstrip(":")) for line in headings] == list(range(1, 20))
+    section = guide.split("| Study, in picture order |", 1)[1].split("**What the names mean:**", 1)[0]
+    rows = [[cell.strip() for cell in line.strip("|").split("|")]
+            for line in section.splitlines() if line.startswith("| ")]
+    table = pd.read_csv(ROOT / "experiments/cross_dataset_key_pool_summary.csv")
+    groups = list(table.groupby("source_file", sort=False))
+    assert len(rows) == len(groups) == 12
+    score_count = 0
+    for cells, (source, group) in zip(rows, groups):
+        assert cells[1] == ", ".join(str(value).capitalize() for value in group["pool_size"]), source
+        for column, metric in ((2, "one_record_top1_mean"), (3, "top1_mean")):
+            values = []
+            for _, record in group.iterrows():
+                if pd.notna(record[metric]):
+                    warning = "*" if column == 3 and not record["interval_excludes_chance"] else ""
+                    values.append(f"{100 * record[metric]:.1f}{warning}")
+            assert cells[column] == (", ".join(values) or "Not available"), (source, metric)
+            score_count += len(values)
+    assert score_count == 136
+
+
 def test_plot_validator_rejects_overlapping_text(tmp_path):
     plt = FIGURES["plt"]
     fig = plt.figure()
@@ -130,6 +154,10 @@ def test_dataset_update_contains_current_evidence_and_vector_figures(tmp_path):
     assert "colluto" not in text.lower()
     assert "REQUIRED BEFORE SUBMISSION" not in text
     assert "A/A*" not in text
+    conclusion = document.pages[13].extract_text()
+    assert "Extended-study sources verified on experiment machine (33/33)" in conclusion
+    assert "independent human review remains open" in conclusion
+    assert "unresolved" not in conclusion.lower()
     for page in document.pages:
         assert len(page.extract_text()) > 100
     assert not list(document.pages[1].images)

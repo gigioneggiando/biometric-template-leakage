@@ -377,7 +377,7 @@ def build_dataset_update(destination: Path) -> None:
                      "All direct prediction-mean baseline intervals include zero: no input-pooling superiority claim.\n"
                      "Fresh-key learned intervals include chance; they do not establish equivalence or general unlinkability.\n\n"
                      "Scope: only three new pools, fixed set seed, overlapping assignments, one encoder, small galleries, paired access.\n"
-                     "Three extended-study source snapshots remain unresolved locally; independent human review remains open.",
+                     "Extended-study sources verified on experiment machine (33/33); independent human review remains open.",
                      0.6, 1.15, 12.1, 5.45, size=13)
         elif number == 15:
             add_text(slide, fig, "All four datasets are shown, without mixing historical studies, one-seed pilots and matched follow-ups.\n"
