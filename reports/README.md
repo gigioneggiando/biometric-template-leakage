@@ -48,6 +48,16 @@ adds BioHash, IoM-GRP and PolyProtect contracts and correctly resolves all six
 executable recurring/fresh recipes. Combined frozen coverage is 25/26 with no
 observed error; the intraprocedural baseline resolves 6/26 and makes one error.
 
+The prospective [MOBIO/SCface utility confirmation](../experiments/scface_utility_confirmation_2026-09-25/README.md)
+adds 96 evaluations on new keys and identity reassignments. All four FMR bounds
+pass, but zero of four cells pass the three-point TAR noninferiority criterion.
+This strengthens the analyzer evaluation while leaving the remediation's utility
+claim unresolved.
+
+The updated algorithm briefing is available as a [four-slide PDF](slides/algorithm_update_2026-09-25.pdf)
+and [PowerPoint](slides/algorithm_update_2026-09-25.pptx). Regenerate both with
+`python scripts/figures/make_algorithm_update_deck.py`.
+
 Regenerate with `python scripts/figures/make_source_security_report.py`.
 
 ## Static-analysis update: 2026-09-25

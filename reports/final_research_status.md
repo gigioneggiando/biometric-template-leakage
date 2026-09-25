@@ -64,6 +64,13 @@ results across six executable local recipes plus the frozen 20-case regression
 corpus. This is internally authored bounded evidence, not external validation or
 a general Python soundness result. The separate security/utility gate is unchanged.
 
+The later [MOBIO/SCface utility confirmation](../experiments/scface_utility_confirmation_2026-09-25/README.md)
+ran 96 prospective evaluations on two new split assignments and twelve new paired
+keys. All candidate FMR upper bounds remain below 2%, but all four TAR lower bounds
+cross the fixed -3-point margin (-3.16 to -5.36 points). The SCface mean TAR changes
+are nonnegative, yet too imprecise; both new MOBIO cells also fail. Stable utility
+noninferiority and any joint security/utility claim therefore remain unestablished.
+
 The [three-page static-analysis PDF](Static_Policy_Analysis_2026-09-25.pdf), [revised manuscript](paper_draft.md), [prospective protocol](../docs/protocols/static_policy_2026-09-25.md), and hash-frozen aggregate results are the new package. The previous 19-page September report, 15-slide deck, 22 figures and historical experiment families are preserved rather than silently re-labeled.
 
 ## Findings update: 2026-09-19

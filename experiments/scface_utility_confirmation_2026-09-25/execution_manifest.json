@@ -1,0 +1,58 @@
+{
+  "status": "completed",
+  "started_utc": "2026-09-25T16:17:38.982524+00:00",
+  "base_commit": "67622905c2877fcd88c77d4b88423f5e8c21b5d2",
+  "source_sha256": {
+    "scripts/train/run_scface_utility_confirmation.py": "e6ed5d15562203ba8b12773dbe09f4ae8e4cdd10ce661dd4e87afb0411f8c9a6",
+    "scripts/train/run_source_security_utility.py": "f53c2de4fa04b7b9482eab252ed967eaf354db4d51f5113d6c356d414544e84f",
+    "src/biometrics_ai/evaluation/security_utility.py": "edc28523dbe6c8c2ebb42704775b6981db8ab5f0b6948cc6a06399fb6933028b",
+    "docs/protocols/scface_utility_confirmation_2026-09-25.md": "188b52acea61fe799aeb44fd4003859d364222dfcaddaf94b3c0116c59bb666a"
+  },
+  "input_sha256": {
+    "MOBIO/embeddings.npy": "b6af0e9005fbd23c84914449e20e526118363df262f42fbbc386a725e1a77dc6",
+    "MOBIO/metadata.json": "558ad2394d4a8c0fd1a168ca1fdc42b33c3d56d16df70f8031502735dbf82e6b",
+    "MOBIO/embedding_manifest.json": "d736daedb69b6b6a48a67c7a894acecd2fee5384ed9be9fa86ca7ebc79fd4399",
+    "SCface/embeddings.npy": "a13dd0fbed371aa59b6045f43ae0f126e3b080510c04bac96c1a4f245981aaa7",
+    "SCface/metadata.json": "bdb04203171f9303fe5965fbde90cb4d24c819f40c24396e9573496f1a0b9103",
+    "SCface/embedding_manifest.json": "164ed3ec4f97247e0cb7cbd747118d3590c9bc6fdf2ec85584939e63709a8c71"
+  },
+  "software": {
+    "numpy": "2.3.3",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.6.0"
+  },
+  "datasets": {
+    "MOBIO": "mobio/buffalo_l_yunet",
+    "SCface": "scface_multiexposure/buffalo_l_yunet"
+  },
+  "key_seeds": [
+    92927,
+    92941,
+    92951,
+    92957,
+    92959,
+    92987,
+    92993,
+    93001,
+    93047,
+    93053,
+    93059,
+    93077
+  ],
+  "split_seeds": [
+    93083,
+    93089
+  ],
+  "planned_evaluations": 96,
+  "attacker_training_runs": 0,
+  "budget_seconds": 3600,
+  "utility_margin": 0.03,
+  "fmr_limit": 0.02,
+  "tail_alpha": 0.00625,
+  "completed_evaluations": 96,
+  "utility_passes": 0,
+  "scface_primary_pass": false,
+  "all_cells_pass": false,
+  "wall_seconds": 13.376265999999305,
+  "finished_utc": "2026-09-25T16:17:52.721692+00:00"
+}
