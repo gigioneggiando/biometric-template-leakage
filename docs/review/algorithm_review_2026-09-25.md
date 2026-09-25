@@ -48,9 +48,11 @@ fixed joint gate.
    files, so a clean checkout produced 195 passes and one failure. The test now verifies
    recorded hash syntax everywhere and verifies file content when private inputs are
    locally present. No frozen result or manifest hash was changed.
-7. **Attribution needed correction.** The repository stated that the professor had
-   selected or supported this direction. The available message says Manish proposed
-   it for Sani. The documentation now records that distinction.
+7. **Attribution needed refinement.** Sani suggested exploring an algorithmic
+   contribution, while Manish proposed this particular static-analysis direction.
+   Sani has not yet reviewed this implementation or its conclusions. The
+   hash-frozen protocol retains its original wording as a historical artifact; the
+   current documentation records the more precise distinction.
 
 ## Recommended v2
 

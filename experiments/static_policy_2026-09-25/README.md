@@ -2,9 +2,11 @@
 
 Completed 2026-09-25: **16 cells, 96 newly trained endpoints, 352.766 seconds**.
 This is a new exploratory independent study, not a re-labeling of historical
-results or an exact published reproduction. Manish proposed static analysis as a
-contribution direction for discussion with Sani; professor approval and independent
-priority review remain open.
+results or an exact published reproduction. Sani suggested exploring an algorithmic
+contribution, and Manish proposed this static-analysis direction. Sani has not yet
+reviewed this specific implementation or its conclusions; independent priority
+review remains open. The hash-frozen protocol's stronger attribution is retained as
+a historical artifact and corrected here rather than edited after execution.
 
 Open the [three-page PDF addendum](../../reports/Static_Policy_Analysis_2026-09-25.pdf).
 The [prospective protocol](../../docs/protocols/static_policy_2026-09-25.md) fixes

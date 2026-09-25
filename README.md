@@ -61,8 +61,9 @@ and broad analyzer detection accuracy are unverified. Open the
 ```
 
 Add `--enforce` to fail the gate: exit 2 for blocking findings, 3 for unresolved
-review. Even fresh policies require review. Manish proposed this contribution
-direction for discussion with Sani; professor approval is not recorded.
+review. Even fresh policies require review. Sani suggested exploring an algorithmic
+contribution; Manish proposed this static-analysis direction. Sani has not yet
+reviewed this specific implementation or its conclusions.
 See the [internal algorithm review](docs/review/algorithm_review_2026-09-25.md)
 for the evidence limits and prioritized v2 validation plan.
 
