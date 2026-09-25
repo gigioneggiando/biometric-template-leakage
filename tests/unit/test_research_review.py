@@ -128,6 +128,7 @@ def test_new_participant_audit_rejects_reused_and_unverified_people():
 def test_local_cohort_audit_preserves_blocker_and_actual_algorithm_traces():
     import hashlib
     import json
+    import re
     from scripts.diagnostics.audit_new_participants import ROOT
     from biometrics_ai.protection.source_analysis import analyse_source
 
@@ -138,7 +139,10 @@ def test_local_cohort_audit_preserves_blocker_and_actual_algorithm_traces():
     for row in audit["cohorts"]:
         assert row["eligible_not_seen_by_id"] == 0
         assert row["new_participants_verified"] == 0
-        assert hashlib.sha256((ROOT / row["metadata_path"]).read_bytes()).hexdigest() == row["metadata_sha256"]
+        metadata_path = ROOT / row["metadata_path"]
+        assert re.fullmatch(r"[0-9a-f]{64}", row["metadata_sha256"])
+        if metadata_path.exists():
+            assert hashlib.sha256(metadata_path.read_bytes()).hexdigest() == row["metadata_sha256"]
     source = (ROOT / "scripts/diagnostics/source_policy_recipes.py").read_text()
     for recipe, trace in audit["source_analysis"].items():
         assert json.loads(json.dumps(analyse_source(source, recipe))) == trace

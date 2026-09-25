@@ -27,7 +27,7 @@
 
 ## 2026-09-25 (static policy analyzer and matched remediation)
 
-- User requested a static-analysis algorithm, new experiments demonstrating its effectiveness, and revised PDF/documentation; reported professor support for that contribution direction. No independent priority confirmation is claimed.
+- Manish proposed a static-analysis algorithm for discussion with Sani and added experiments plus revised PDF/documentation. Professor approval and independent priority confirmation are not established.
 - Added KSSA v1 configuration-level key-scope analysis, non-mutating fresh-key recommendations, JSON audit CLI and opt-in fail-closed enforcement. Reuse, correlation, slot disclosure and unsupported declarations block; scheme/runtime obligations retain review. This is not general source-code analysis or a new cryptographic transform.
 - Wrote a [prospective protocol](protocols/static_policy_2026-09-25.md), froze source/config/protocol/input hashes, and completed [16 matched cells / 96 new trained endpoints](../experiments/static_policy_2026-09-25/README.md) in 352.766 seconds. MOBIO/FEI, IoM-GRP/PolyProtect, two identity partitions, three model seeds, one/ten records; pool 4 versus the analyzer-generated fresh-key candidate.
 - All eight primary ten-record reductions have positive paired crossed-bootstrap intervals and Holm p = 0.004; reductions span 72.08-94.48 percentage points. Fresh learned intervals include chance, not equivalence. Fresh PolyProtect native top-1 remains descriptively 7.80-13.33%, so its warning remains. Authentication utility was not evaluated; only one pool draw and one attacker architecture were tested. No SCface rerun because local embeddings are absent.

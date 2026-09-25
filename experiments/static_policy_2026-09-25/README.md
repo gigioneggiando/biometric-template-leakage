@@ -2,9 +2,9 @@
 
 Completed 2026-09-25: **16 cells, 96 newly trained endpoints, 352.766 seconds**.
 This is a new exploratory independent study, not a re-labeling of historical
-results or an exact published reproduction. The user reports that the professor
-identified static analysis as the contribution to pursue; independent priority
-review remains open.
+results or an exact published reproduction. Manish proposed static analysis as a
+contribution direction for discussion with Sani; professor approval and independent
+priority review remain open.
 
 Open the [three-page PDF addendum](../../reports/Static_Policy_Analysis_2026-09-25.pdf).
 The [prospective protocol](../../docs/protocols/static_policy_2026-09-25.md) fixes

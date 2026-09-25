@@ -67,8 +67,8 @@ def build_report(destination: Path) -> None:
         paragraph(figure, .87, "Contribution and scope",
                   "KSSA v1 audits the experiment configuration before biometric data are loaded. It maps declared key "
                   "scope to explicit findings and proposes a separate fresh-key comparison. This is a configuration "
-                  "analyzer, not a general source-code analyzer or a new biometric transform. The professor's direction "
-                  "is user-reported; research priority still needs independent literature review.")
+                  "analyzer, not a general source-code analyzer or a new biometric transform. Manish proposed this "
+                  "direction for discussion with Sani; professor approval and research priority are not established.")
         paragraph(figure, .70, "Algorithm",
                   "1. Parse the YAML scheme/condition matrix; reject unsupported required fields.\n"
                   "2. Classify each pair: fresh-declared, shared across splits, shared projection, unknown.\n"

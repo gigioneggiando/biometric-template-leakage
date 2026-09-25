@@ -53,7 +53,7 @@ Pool-4 to fresh learned linkage falls **27.08% to 3.47% on MOBIO** and **27.92% 
 
 ## Static-analysis update: 2026-09-25
 
-Implemented **KSSA v1**, a static checker for the repository's YAML protection policies: key reuse, shared projections, slot disclosure, unsupported declarations and unresolved scheme/runtime assumptions. It proposes a separate fresh-key configuration; it does not certify security or analyze arbitrary Python source. The user reports professor support for this contribution direction; independent novelty review remains open.
+Implemented **KSSA v1**, a static checker for the repository's YAML protection policies: key reuse, shared projections, slot disclosure, unsupported declarations and unresolved scheme/runtime assumptions. It proposes a separate fresh-key configuration; it does not certify security or analyze arbitrary Python source. Manish proposed this contribution direction for discussion with Sani; professor approval and independent novelty review remain open.
 
 The [new matched rerun](../experiments/static_policy_2026-09-25/README.md) completed **16 cells / 96 trained endpoints in 352.766 seconds**, on MOBIO/FEI, IoM-GRP/PolyProtect, two identity assignments and three model seeds. All eight primary ten-record pool-4-minus-fresh reductions are positive (72.08-94.48 points), with positive paired intervals and Holm p = 0.004. Fresh learned intervals include chance, not equivalence. Fresh PolyProtect native top-1 remains descriptively 7.80-13.33%; its warning remains. Authentication utility, broader analyzer accuracy, independent-pool robustness and production secrecy are unverified. SCface was not rerun because embeddings are absent locally.
 

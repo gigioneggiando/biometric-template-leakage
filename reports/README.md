@@ -47,6 +47,8 @@ points. Native PolyProtect risk remains; fresh keys are not a security certifica
 or a validated drop-in authentication defense. Research priority is not established.
 
 Regenerate the addendum with `python scripts/figures/make_static_policy_report.py`.
+The [internal algorithm review](../docs/review/algorithm_review_2026-09-25.md)
+separates the demonstrated result from the remaining novelty and validation work.
 The earlier report and slides below remain the historical September package.
 
 ## Historical finalized experiment update
