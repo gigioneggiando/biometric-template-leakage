@@ -1,8 +1,68 @@
 # Key-agnostic multi-exposure biometric template leakage
 
-**Last status update:** 2026-09-19. Historical integration: `4352eeb`; SCface protocol/pilot freeze: `69a93e4`. New pool study has its own executed-source archive.
+**Last status update:** 2026-09-25. New-participant audit and algorithm-linked joint protocol prepared; no new-cohort experiment run. Historical results remain separate.
 
 **Navigation:** [Research package index](reports/README.md), [current evidence and gates](reports/final_research_status.md), [figure captions](reports/figures/README.md), and [review slides](reports/slides/research_review.pdf).
+
+## Simple explanation and next research gates
+
+Open the [eight-page pizza explanation PDF](reports/Pizza_Algorithm_Explained_2026-09-25.pdf).
+It explains the algorithm, shared components, trusted matching and results with
+simple wording, original pizza drawings and no typographic dashes.
+
+Pages 7 and 8 add the [participant audit and next-study handoff](experiments/new_participant_joint_2026-09-25/README.md).
+All 200 local FEI and 150 MOBIO participants were previously used. No genuinely
+new participants have been added. The [proposed joint protocol](docs/protocols/new_participant_joint_2026-09-25.md)
+links analyzer findings to attacks and matching on the same new test cohort.
+Its 500-person planning target requires authorized data, feasibility/power review
+and approval before execution; it is not a new result or established sample size.
+
+The [fixed utility replication](experiments/utility_replication_2026-09-25/README.md)
+completed 96 evaluations: both MOBIO splits pass, both FEI splits remain
+inconclusive under the unchanged three-point tolerance. This is utility-only,
+not a new joint security pass. The earlier failed joint gates remain unchanged.
+The [answer-free reviewer packet](experiments/source_review_2026-09-25/README.md)
+and [internal proof/prior-work review](docs/review/source_proof_novelty_2026-09-25.md)
+are ready; independent labels, external signoff and novelty review are still pending.
+
+## Source-level extension and matching utility
+
+The [source interpreter](src/biometrics_ai/protection/source_analysis.py) now infers
+key reuse and explicitly shared projection components from a bounded Python subset.
+The [new study](experiments/source_security_utility_2026-09-25/README.md) adds proposed
+mathematical criteria, 24 source cases with YAML/Bandit baselines, and 18 new
+MOBIO/FEI attacker and trusted-key verification endpoints. Open the
+[four-page PDF](reports/Source_Security_Utility_2026-09-25.pdf) and
+[formal model](docs/theory/source_scope_and_utility.md).
+
+**Result:** learned linkage decreases and average matching TAR remains near
+95-97%, but **both fixed utility-noninferiority gates fail**. Independent benchmark
+labels and research novelty remain unverified. This is a bounded research
+prototype, not a general source analyzer or a deployment security certificate.
+
+## Static analysis and security evaluation
+
+[KSSA v1](src/biometrics_ai/protection/policy.py) statically audits the YAML key policy
+for reuse, correlated projections and slot disclosure, rejects unsupported
+declarations, and preserves scheme/runtime review warnings. It proposes fresh
+keys without overwriting the source policy. It is configuration-level analysis,
+not a general source-code analyzer or proof of security.
+
+The [new MOBIO/FEI experiment](experiments/static_policy_2026-09-25/README.md)
+completed 96 trained endpoints in 352.766 seconds. All eight planned ten-record
+pool-4-minus-fresh reductions are positive: 72.08-94.48 percentage points,
+Holm p = 0.004 each. Native PolyProtect linkage remains; authentication utility
+and broad analyzer detection accuracy are unverified. Open the
+[three-page PDF](reports/Static_Policy_Analysis_2026-09-25.pdf) or
+[updated manuscript](reports/paper_draft.md).
+
+```powershell
+.\.venv\Scripts\python.exe -m biometrics_ai.protection.policy --config configs/attacks/static_policy_2026-09-25.yaml
+```
+
+Add `--enforce` to fail the gate: exit 2 for blocking findings, 3 for unresolved
+review. Even fresh policies require review. The professor's contribution direction
+is user-reported; independent novelty review is still required.
 
 ## What we have now
 

@@ -1,8 +1,16 @@
-# Hidden Transform Reuse Amplifies Linkage from Protected Face Records
+# Source-Level Key-Scope Analysis and Utility-Constrained Biometric Protection
 
-Working draft, revised 2026-09-19. Fixed-pool follow-up, subsequent independent-pool study, earlier exploration and raw-norm audit remain separately labeled. Later evidence does not retroactively change the original primary family. No independent human review or source-exact reproduction is claimed.
+Working draft, revised 2026-09-25. The new configuration-level static analyzer and matched remediation study are separate from the fixed-pool follow-up, independent-pool study, earlier exploration and raw-norm audit. Later evidence does not retroactively change an earlier primary family. No independent human review, global priority or source-exact reproduction is claimed.
 
 ## Abstract
+
+We extend configuration auditing with a bounded Python source interpreter that propagates record-dependent key provenance through arithmetic, aliases, helper calls and assembled projection blocks. We propose component-weighted exposure reuse mass and an uncertainty-aware security/utility gate, derived from established probability and noninferiority ideas under explicit assumptions. In 24 same-author source cases, the interpreter detects 13 of 17 observed-reuse cases, classifies seven finite-domain non-reuse cases, and abstains on four; independently labeled evaluation remains pending. A separate 18-endpoint BioHash pilot reduces mean learned linkage from 27.08% to 3.47% on MOBIO and 27.92% to 2.50% on FEI while trusted-key verification averages remain near 95-97%. However, neither dataset meets the predeclared three-point utility-noninferiority criterion under the uncertainty bounds. The source analysis and mathematical construction are proposed contributions, not established priority, a general privacy proof, or demonstrated deployment readiness.
+
+Earlier configuration-only contribution and its separate experiment:
+
+We introduce Key-Scope Static Analysis (KSSA v1), a configuration-level checker that classifies declared key scope, flags reuse/correlation and slot disclosure, rejects unsupported declarations, and retains explicit scheme/runtime review obligations. It proposes a separate fresh-key policy without altering the source experiment. In a new matched MOBIO/FEI evaluation with two schemes, two identity assignments and three model seeds, all 96 trained endpoints complete. Eight planned ten-record pool-4-minus-fresh comparisons show reductions of 72.08-94.48 percentage points, each with a positive paired crossed-bootstrap interval and Holm p = 0.004. Fresh learned intervals include chance, but native PolyProtect linkage remains descriptively above chance. This supports the audited policy-change workflow under the tested threat model, not general analyzer accuracy, authentication utility, a novel fresh-key defense or universal unlinkability. Static-analysis priority requires independent review; the professor's reported direction motivates this contribution but does not establish priority.
+
+Historical motivation and boundaries follow, with their evidence families kept separate:
 
 We study how hidden transform reuse conditions the benefit of combining protected face records. An attacker trains on paired examples from the same hidden pool but disjoint identities, then links same-person records to a small closed gallery. The original MOBIO/FEI study has 216 trained endpoints and eight positive planned pool-4 contrasts (21.25-40.83 percentage points; Holm p = 0.004). A three-pool follow-up finds persistent IoM gains but PolyProtect gains from -3.23 to +72.40 points; all direct input-mean versus prediction-mean intervals include zero. An extended MOBIO/SCface study adds 672 endpoints at 1/2/5/10 records and fresh/pool-1/4/8 conditions. Its eight primary gains pass Holm correction (p = 0.004-0.034), including smaller SCface PolyProtect gains of 5.93/5.77 points. Separate raw-input retraining finds near-chance PolyProtect performance and strong IoM pool-4 linkage, but changed seeds, partitions and targets prevent a causal normalization comparison. A local stricter PolyProtect selection rule does not demonstrate reduced native linkage. Prior work already studies multiplicity, joint-score maximal linkability, adaptive identity extraction and residual naive-parameter linkage. Our contribution is the controlled hidden-reuse comparison and its boundaries, not those general observations. Chance-compatible attacks do not establish privacy.
 
@@ -11,6 +19,8 @@ We study how hidden transform reuse conditions the benefit of combining protecte
 Retained templates can expose several records grouped by an account pseudonym even when real identity and protection keys remain unknown. We study a strong access scenario: paired training examples and targets share the same realized hidden transform pool. We do not claim that this policy is prevalent in products. The question is whether same-person aggregation helps under reuse, and where that statement fails.
 
 Contributions:
+
+The proposed primary contribution is bounded source-derived key/component provenance and a formalized utility-constrained remediation workflow (Section 4.2), extending the earlier configuration checker (Section 4.1). Independent source labels, priority review and demonstrated utility noninferiority remain open. The following empirical contributions motivate the rules and retain their original limits:
 
 1. **Reuse-conditioned amplification:** eight corrected fixed-pool contrasts, followed by three new pools where IoM gains persist but PolyProtect is pool-sensitive. Earlier four-dataset sweeps are not pooled into these inference claims.
 2. **Limits on aggregation:** mechanism controls, shared-key regressions and a competitive prediction-mean baseline constrain interpretation. Neither more records nor a set-trained model is universally better.
@@ -49,6 +59,92 @@ Scope: the theorem assumes ideal Gaussian or Haar/Stiefel sampling, independent 
 - Protection: 128-bit BioHash (key-seeded orthonormal Gaussian projection, sign threshold); paper-specified MLP-Hash (512-1024-1024-1024-512, ReLU, semi-orthogonal key-seeded layers, output-mean binarization; not source-exact, authors' repository unavailable).
 - Attackers: single-template MLP (n=1); mean/max-pool MLP and DeepSets (n>1); hidden 256; cosine + 0.1 MSE. Earlier studies use 400 epochs/patience 60; matched follow-up uses 120/patience 30, three seeds and mean/DeepSets at n=10. Target: normalized mean of exposed source embeddings, not the gallery.
 - Metrics: top-1/top-5 linkage against the unprotected gallery, AUROC, EER, TAR@FAR, 2,000-resample identity-clustered 95% intervals. Preregistered per-pool criterion: all clustered intervals above chance and at least five points over the fresh endpoint.
+
+### 4.1 Static analysis algorithm and matched remediation
+
+KSSA v1 operates on the existing YAML configuration language, not arbitrary Python programs. For each scheme/condition pair it computes an abstract scope in {fresh-declared, shared-across-splits, shared-projection, unknown}. Positive finite recurring pools and shared calibration keys emit KEY_REUSE. A positive shared BioHash projection dimension emits KEY_CORRELATION. Exposed key-slot labels emit SLOT_DISCLOSURE. Unsupported schemes/conditions and malformed required declarations block analysis. This is not exhaustive parameter-schema validation. PolyProtect retains NATIVE_LINKAGE_REVIEW; uncorrected BioHash retains HAAR_ASSUMPTION; every configuration retains RUNTIME_ASSUMPTIONS. Classification requires O(S*C) steps for S schemes and C conditions, excluding string parsing/output. The decision is block or review, never certified secure.
+
+The recommendation replaces the key condition with independent_unseen_keys, removes slot disclosure, and preserves the remaining configuration in a separate object. This is an operationalization of a known key-freshness principle, not a new cryptographic transform. Static findings cannot certify production entropy/secrecy, input normalization, record-ID uniqueness, side channels, implementation fidelity, or legitimate matching utility. The opt-in enforcement command exits nonzero for both blocking and unresolved-review outcomes; research runners still allow deliberately insecure controls.
+
+The [new protocol](../docs/protocols/static_policy_2026-09-25.md) was written before execution. Two MOBIO/FEI identity assignments (92531/92543), IoM-GRP/PolyProtect, seeds 701/709/719, and one/ten exposures produce 16 cells and 96 trained endpoints in 352.766 seconds. Baseline pool-4 and recommended fresh keys share inputs, splits, set/key seeds, model seeds and training caps (120 epochs, patience 30). Key mechanisms differ, so identical seed numbers do not imply identical draws. Primary inference uses eight paired ten-record baseline-minus-candidate contrasts, crossed seed/identity bootstrap intervals (2,000 draws), identity sign-flips of seed-mean differences (1,999 resamples), and Holm correction over eight tests.
+
+All eight primary reductions have positive intervals and Holm p = 0.004: 92.08/94.44 points for MOBIO IoM, 94.48/94.27 for FEI IoM, 72.08/72.08 for MOBIO PolyProtect, and 83.75/85.52 for FEI PolyProtect. Fresh learned intervals include chance but do not establish equivalence. Fresh PolyProtect native cosine top-1 remains descriptively 10.30-13.33% on MOBIO and 7.80-8.97% on FEI versus 3.33%/2.50% chance. These new native values have no corrected null test; the review warning is retained.
+
+The [full table and reproduction record](../experiments/static_policy_2026-09-25/README.md) and [PDF addendum](Static_Policy_Analysis_2026-09-25.pdf) separate these results from earlier studies. Runtime-agreement fixtures validate declared scope against actual key audits, not detector precision/recall. One pool draw, overlapping identity assignments, three model seeds, one architecture and same-pool paired training access bound inference. No authorized authentication-utility study or SCface rerun was performed. Rule selection was informed by earlier results, so this is not a blinded discovery benchmark. Independent literature review of configuration-level biometric static analysis remains necessary before asserting novelty.
+
+### 4.2 Source-derived component scope and utility-constrained remediation
+
+**Analysis.** The new interpreter reads Python ASTs without executing them. A distinguished unique integer record argument maps to record-injective provenance; fixed inputs, bounded images and unknown expressions form the remaining abstract values. Integer affine maps preserve injectivity; modulo and masking bound image cardinality; deterministic hashing cannot restore diversity lost by pooling. Acyclic positional helper calls and aliases propagate summaries to reviewed BioHash sinks. Explicit orthonormal-projection blocks, axis-1 concatenation, matrix multiplication and zero thresholding propagate component widths and key provenance. This detects structurally shared blocks without a named YAML condition, but not arbitrary numerical covariance. Unsupported branches, loops, recursion and dynamic calls yield unknown. The existing branch-heavy runner is not covered; the executable evaluation recipes are.
+
+**Qualified soundness.** Structural induction establishes the fixed/capacity/injectivity transfer rules for the supported subset with unique integer record IDs, fixed context inputs, trusted unmodified callees, no reflection/external mutation, and an ideal collision-free KDF contract. Real keys truncate SHA-256 to 64 bits, so ideal injectivity is not a universal finite-implementation guarantee. An upper capacity bound K signals possible reuse; it forces a collision only beyond K records. Neither injectivity nor static completion proves secrecy or unlinkability. A post-execution module-binding defect was repaired; the executed source is hash-preserved and all 24 recorded predictions were rechecked unchanged.
+
+**Proposed functional.** For target-training and target-target pairs E, component weights summing to one, and component transform labels Z, define
+
+$$\mathcal{R}_E = \sum_{(r,s)\in E}\sum_j w_j\Pr[Z_{rj}=Z_{sj}].$$
+
+Linearity of expectation identifies this as expected weighted repeated-component mass. For n target records, m training records and IID uniform pools K_j it becomes
+
+$$\mathcal{R}_E = \left(nm+\binom n2\right)\sum_j w_j/K_j.$$
+
+This is structural accounting, not leaked identity information. Nonuniform IID pools require their actual collision sum; a cardinality bound alone cannot upper-bound privacy risk. A separate unweighted collision/coupling bound requires mutually independent hidden isotropic components and can be vacuous. It does not cover the actual dependent correlated-orthogonal construction or PolyProtect. The [full theory note](../docs/theory/source_scope_and_utility.md) states the proof sketch and assumptions. Standard expectation/coupling facts are not claimed as new theorems.
+
+**Benchmark.** A separate runtime label oracle enumerates 64 integer record IDs per trusted synthetic source fixture. On 24 same-author cases the source interpreter has 13 TP, zero FP, seven TN and four abstentions, all four on observed-reuse cases. Thus coverage is 83.3% and detection across all observed-reuse cases is 76.5%, not 100%. A YAML baseline supplied the same fresh declaration cannot detect hidden implementation reuse. Bandit 1.8.6 flags one RNG case (B311), not biometric reuse. Its generic-security scope does not make this a specialist-analyzer superiority test. Independent human labels and independently authored held-out constructions are still absent.
+
+**Utility-constrained evidence.** Let L be attack top-1, U legitimate TAR, and F legitimate FMR. The proposed gate is
+
+$$\mathcal{G}_{\delta,\tau} =
+\mathbf1\{\operatorname{LCB}(L_b-L_c)>0\}
+\mathbf1\{\operatorname{LCB}(U_c-U_b)\geq-\delta\}
+\mathbf1\{\operatorname{UCB}(F_c)\leq\tau\}.$$
+
+The prospective pilot fixes delta = 0.03 and tau = 0.02. Validation identities select thresholds targeting 1% FMR; held-out test identities evaluate TAR/FMR. Both arms use a trusted raw-probe verifier that retrieves the claimed enrollment key from outside the template database and re-encodes the probe under it. This excludes key-service compromise and unrestricted compatible-output queries and introduces real custody/compute requirements. It is not public cross-key matching or unchanged-infrastructure security.
+
+The [18-endpoint study](../experiments/source_security_utility_2026-09-25/README.md) completed in 75.64 seconds: MOBIO/FEI, sign-corrected 64-bit BioHash, pool 4/shared 16-of-64/fresh conditions, three joint key/model seeds, one identity assignment and ten-record mean pooling. Mean pool-4 to fresh learned linkage falls 27.08% to 3.47% on MOBIO and 27.92% to 2.50% on FEI. Legitimate TAR changes 95.45% to 96.87% and 95.71% to 95.67%; fresh FMR is 0.77%/0.80%. Six one-sided bounds use 10,000 crossed joint-seed/probe-identity bootstrap draws and Bonferroni tail allocation 0.05/6, conditional on the enrollment gallery. Leakage-reduction lower bounds are +0.42/+5.00 points and fresh FMR upper bounds 1.43%/1.14%, but TAR-difference lower bounds are -3.94/-5.68 points. **Both primary gates fail on utility noninferiority.** Similar average accuracy does not establish utility retention under the chosen margin. The failed gates, margins and results are retained without post-hoc relaxation.
+
+**Contribution boundary.** The proposal integrates key/component provenance, reuse accounting and utility-constrained evidence. Abstract interpretation, fresh-key principles, collision formulas and noninferiority are established ideas. The [study attribution and review requirements](../experiments/source_security_utility_2026-09-25/README.md#attribution-and-novelty-boundary) identify independent labeling, specialist prior-art review, proof review and a prospectively powered utility replication as remaining gates. A new expression alone is not evidence of journal-level novelty. The [four-page PDF](Source_Security_Utility_2026-09-25.pdf) presents these limitations alongside the measured results.
+
+### 4.3 Review preparation and fixed utility-only replication
+
+An [answer-free packet](../experiments/source_review_2026-09-25/README.md) provides
+24 neutral-named source cases and blank labeling forms. This masks predictions
+and runtime answers, not code behavior; no independent labels or new external
+cases have been received. An [internal review memo](../docs/review/source_proof_novelty_2026-09-25.md)
+records proof obligations and targeted project-page comparisons with established
+abstract interpretation and crypto misuse tools. External mathematical review,
+full-paper novelty comparison and application-owner margin approval remain open.
+
+A [prospectively fixed utility replication](../experiments/utility_replication_2026-09-25/README.md)
+ran while those reviews were pending, with twelve new key seeds, two new identity
+partitions per dataset and no new attacker training. All 96 evaluations completed
+in 12.36 seconds. The original delta = 0.03 and tau = 0.02 were retained. Eight
+one-sided bounds use 20,000 crossed key/probe-identity bootstrap draws and alpha
+0.05/8. MOBIO TAR lower differences are -2.32/-2.02 points, passing both utility
+gates; FEI gives -3.71/-3.61 points and passes neither. All four FMR upper bounds
+are below 2%. Thus 2/4 utility gates pass, not a new joint security gate. The
+earlier 0/2 joint result is unchanged. Partitions overlap, uncertainty is conditional
+on enrollment galleries and observed validation thresholds, and the sample-size
+rationale is heuristic rather than a formal power calculation. A post-review,
+prospectively powered joint confirmation remains a future gate.
+
+### 4.4 New-participant joint evaluation: proposed, not executed
+
+A [local input audit](../experiments/new_participant_joint_2026-09-25/README.md)
+shows all 200 FEI and 150 MOBIO embedding identities were already included in the
+original hash-frozen pilot inputs. Additional FEI views and identity repartitioning
+do not supply independent people. No new authorized cohort is currently available;
+no new-cohort outcomes or new joint pass are reported.
+
+The [proposed fixed protocol](../docs/protocols/new_participant_joint_2026-09-25.md)
+uses the actual analyzer trace to motivate a preselected pool-4 to record-specific
+key change. It proposes 500 new eligible people (200 train, 100 validation, 200 test),
+12 paired key/model draws and matched attack/verification outcomes on the same test
+people. Three Bonferroni-allocated one-sided bounds at alpha 0.05/3 govern the single
+joint gate, retaining the three-point TAR tolerance and 2% FMR ceiling. The person
+count is a planning target pending feasibility and power review, not a demonstrated
+power result. Authorization, cross-cohort identity review and independent approval
+must precede execution. A new dataset is an external-cohort test, not an FEI extension
+by relabeling. The key-policy intervention is evaluated; scanning alone does not
+cause the protection improvement or establish source-detector generalization.
 
 ## 5. Earlier Exploratory Results (Separate Evidence)
 

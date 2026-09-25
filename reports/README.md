@@ -1,6 +1,55 @@
 # Research package
 
-## Finalized experiment update
+## Pizza explanation and utility replication
+
+Start with the [eight-page pizza PDF](Pizza_Algorithm_Explained_2026-09-25.pdf).
+It explains the source analyzer in simple terms with pizza diagrams and plain
+ASCII punctuation. The [new utility study](../experiments/utility_replication_2026-09-25/README.md)
+completed 96 evaluations: 2/4 utility gates pass, both on MOBIO. FEI remains
+inconclusive. No new joint security pass is claimed.
+
+Pages 7 and 8 now explain the [new-participant audit](../experiments/new_participant_joint_2026-09-25/README.md)
+and [algorithm-linked joint protocol](../docs/protocols/new_participant_joint_2026-09-25.md).
+No unused FEI/MOBIO participants were found in the available inputs. The user
+confirmed no new authorized cohort is available, so this is preparation only.
+No new participants or joint results have been added; the proposed 500-person
+target still needs feasibility and power approval.
+
+The [reviewer packet](../experiments/source_review_2026-09-25/README.md) is prepared,
+not externally labeled. The [internal proof/prior-work memo](../docs/review/source_proof_novelty_2026-09-25.md)
+records assumptions and existing methods; independent proof and novelty review
+remain pending. The replication ran while these reviews were pending.
+
+Regenerate with `python -m scripts.figures.make_pizza_algorithm_report`.
+
+## Source analysis and utility: 2026-09-25
+
+The earlier [four-page PDF](Source_Security_Utility_2026-09-25.pdf) and
+[full source/security/utility study](../experiments/source_security_utility_2026-09-25/README.md)
+extend the configuration prototype with source-derived key/component provenance,
+proposed mathematical criteria, a 24-case benchmark against YAML rules and Bandit,
+and 18 new learned/legitimate-verification endpoints. **Both datasets fail the
+fixed utility-noninferiority gate**, despite reduced leakage and similar average
+matching accuracy. Independent source labels and research-priority review remain
+open. See [the formal model](../docs/theory/source_scope_and_utility.md) and
+[manuscript Section 4.2](paper_draft.md#42-source-derived-component-scope-and-utility-constrained-remediation).
+
+Regenerate with `python scripts/figures/make_source_security_report.py`.
+
+## Static-analysis update: 2026-09-25
+
+Start with the [three-page static-analysis PDF](Static_Policy_Analysis_2026-09-25.pdf),
+[algorithm and full results](../experiments/static_policy_2026-09-25/README.md), and
+[revised manuscript](paper_draft.md). KSSA v1 statically audits protection configs
+and proposes a separate fresh-key comparison. A new 96-endpoint MOBIO/FEI rerun
+finds eight corrected ten-record linkage reductions of 72.08-94.48 percentage
+points. Native PolyProtect risk remains; fresh keys are not a security certificate
+or a validated drop-in authentication defense. Research priority is not established.
+
+Regenerate the addendum with `python scripts/figures/make_static_policy_report.py`.
+The earlier report and slides below remain the historical September package.
+
+## Historical finalized experiment update
 
 The latest package is a **19-page report, 15-slide deck and 22-figure appendix**, integrating results through `4831d99`. Start with the [simple page-by-page README](Sept_Dataset_Update_README.md), then open the [PDF](Sept_Dataset_Update.pdf). The [detailed guide](Sept_Dataset_Update_guide.md) retains older exact tables.
 

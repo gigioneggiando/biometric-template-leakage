@@ -1,5 +1,64 @@
 # Final research status
 
+## New-participant joint protocol: preparation only
+
+The [local cohort audit](../experiments/new_participant_joint_2026-09-25/README.md)
+finds zero eligible unused IDs in the current FEI/MOBIO inputs: all 200 FEI and
+150 MOBIO people were already present in the hash-frozen pilot metadata. The
+raw FEI inventory also has only 200 participant IDs. Extra images or new split
+seeds do not add independent people. The user confirmed no authorized new cohort
+is currently available and requested protocol/PDF preparation only.
+
+The [proposed fixed design](../docs/protocols/new_participant_joint_2026-09-25.md)
+connects the actual source-analysis traces to a preselected four-key-pool versus
+record-specific intervention, then tests both attack and matching on the same
+new test participants. It proposes 500 eligible new people (200 train, 100 validation,
+200 test), 12 paired key/model draws and one three-criterion joint gate. This is
+a planning target, not a completed power calculation or independently approved
+protocol. Access, overlap review, feasibility, power and margin approval remain
+execution gates. **No new participants, new-cohort endpoints or joint pass exist.**
+The [pizza report](Pizza_Algorithm_Explained_2026-09-25.pdf) now has eight pages,
+including the data blocker and algorithm-to-experiment connection.
+
+## Review preparation and utility replication: 2026-09-25
+
+The [simple pizza PDF](Pizza_Algorithm_Explained_2026-09-25.pdf) explains the
+algorithm and limitations, now extended to eight pages. A [24-case reviewer archive](../experiments/source_review_2026-09-25/README.md)
+withholds our predictions and oracle labels, but no independent forms or new
+externally authored cases have been received. The [internal review](../docs/review/source_proof_novelty_2026-09-25.md)
+documents proof obligations and overlap with abstract interpretation, CogniCrypt,
+CryptoGuard and Bandit. It is a targeted project-page review, not external proof
+certification or an exhaustive novelty search.
+
+The prospectively fixed [utility-only replication](../experiments/utility_replication_2026-09-25/README.md)
+completed 96 evaluations in 12.36 seconds: twelve new key seeds and two new splits
+on each of MOBIO and FEI. With unchanged margins and eight corrected one-sided
+bootstrap bounds, MOBIO passes both utility gates (TAR lower changes -2.32/-2.02
+points); FEI does not (-3.71/-3.61). All four FMR upper bounds remain below 2%.
+Thus **2/4 utility gates pass**, without a new attacker evaluation or joint gate.
+The original **0/2 joint gates** below remain unchanged. These are overlapping
+partitions, conditional bootstrap intervals and a heuristic seed-count rationale,
+not independent populations or a formal power calculation. External review was
+still pending at execution; this is not post-review confirmation.
+
+## Source-analysis and utility extension: 2026-09-25
+
+Implemented bounded Python source inference for key provenance and explicitly assembled shared projection blocks, extending the earlier YAML checker. Added a conditional soundness argument, proposed component-weighted exposure reuse mass, an idealized unweighted collision envelope, and a utility-constrained acceptance criterion. These combine established methods; independent novelty/proof review is not completed.
+
+The [new study](../experiments/source_security_utility_2026-09-25/README.md) has 24 same-author source cases and 18 new BioHash attacker/verification endpoints, completed in 75.64 seconds. Source analysis detects 13/17 observed-reuse cases and abstains on four, with seven finite-domain non-reuse cases; the runtime oracle is separate but human-independent labels remain pending. Bandit 1.8.6 supplies a generic-security baseline, not a specialist biometric analyzer.
+
+Pool-4 to fresh learned linkage falls **27.08% to 3.47% on MOBIO** and **27.92% to 2.50% on FEI**. Trusted-key verification TAR averages 95.45% to 96.87% and 95.71% to 95.67%, respectively. However, simultaneous-bootstrap TAR difference lower bounds are **-3.94/-5.68 points**, below the prospectively fixed -3-point margin: **0/2 primary joint gates pass**. Leakage-reduction and FMR criteria pass; utility noninferiority does not. Do not claim demonstrated retention from point estimates alone. The architecture requires raw-probe access and keys outside the attacker database; it is not a drop-in defense or protection against key-service compromise.
+
+[Four-page PDF](Source_Security_Utility_2026-09-25.pdf), [formal assumptions/derivations](../docs/theory/source_scope_and_utility.md), and the revised manuscript document the proposal and failures. A post-execution name-binding defect was fixed; exact executed analyzer bytes are archived and hash-verified, and all benchmark predictions rechecked unchanged. Historical studies remain intact.
+
+## Static-analysis update: 2026-09-25
+
+Implemented **KSSA v1**, a static checker for the repository's YAML protection policies: key reuse, shared projections, slot disclosure, unsupported declarations and unresolved scheme/runtime assumptions. It proposes a separate fresh-key configuration; it does not certify security or analyze arbitrary Python source. The user reports professor support for this contribution direction; independent novelty review remains open.
+
+The [new matched rerun](../experiments/static_policy_2026-09-25/README.md) completed **16 cells / 96 trained endpoints in 352.766 seconds**, on MOBIO/FEI, IoM-GRP/PolyProtect, two identity assignments and three model seeds. All eight primary ten-record pool-4-minus-fresh reductions are positive (72.08-94.48 points), with positive paired intervals and Holm p = 0.004. Fresh learned intervals include chance, not equivalence. Fresh PolyProtect native top-1 remains descriptively 7.80-13.33%; its warning remains. Authentication utility, broader analyzer accuracy, independent-pool robustness and production secrecy are unverified. SCface was not rerun because embeddings are absent locally.
+
+The [three-page static-analysis PDF](Static_Policy_Analysis_2026-09-25.pdf), [revised manuscript](paper_draft.md), [prospective protocol](../docs/protocols/static_policy_2026-09-25.md), and hash-frozen aggregate results are the new package. The previous 19-page September report, 15-slide deck, 22 figures and historical experiment families are preserved rather than silently re-labeled.
+
 ## Findings update: 2026-09-19
 
 **Presentation assessment after finalized experiments:** evidence is stronger for a bounded empirical manuscript, not uniformly larger attack scores or a completed submission. The current package is **19 report pages, 15 slides and 22 figures**, with a [simple explanation of every page](Sept_Dataset_Update_README.md). SCface now has the extended multi-seed study. Raw learned and local stricter-policy studies are complete, but neither establishes a universal protection conclusion. No new training was run for this report refresh; private SCface records were not independently re-audited on this host. Coauthor review, final references/venue preparation and the stated scientific limits remain.

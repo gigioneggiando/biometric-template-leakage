@@ -1,0 +1,1150 @@
+[
+  {
+    "case": "expression_00",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        1
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "fixed",
+            "capacity": 1,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 5,
+          "message": "whole: fixed key provenance, capacity <= 1"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "expression_01",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        1
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "fixed",
+            "capacity": 1,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 5,
+          "message": "whole: fixed key provenance, capacity <= 1"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "expression_02",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        4
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "bounded",
+            "capacity": 4,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 5,
+          "message": "whole: bounded key provenance, capacity <= 4"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "expression_03",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        8
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "bounded",
+            "capacity": 8,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 5,
+          "message": "whole: bounded key provenance, capacity <= 8"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "expression_04",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        1
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "fixed",
+            "capacity": 1,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 5,
+          "message": "whole: fixed key provenance, capacity <= 1"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "expression_05",
+    "runtime": {
+      "oracle": "no_reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        64
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "conditional_fresh",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "record_injective",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "expression_06",
+    "runtime": {
+      "oracle": "no_reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        64
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "conditional_fresh",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "record_injective",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "expression_07",
+    "runtime": {
+      "oracle": "no_reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        64
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "conditional_fresh",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "record_injective",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "expression_08",
+    "runtime": {
+      "oracle": "no_reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        64
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "conditional_fresh",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "record_injective",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "expression_09",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        4
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "bounded",
+            "capacity": 4,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 5,
+          "message": "whole: bounded key provenance, capacity <= 4"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "expression_10",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        4
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "bounded",
+            "capacity": 4,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 5,
+          "message": "whole: bounded key provenance, capacity <= 4"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "expression_11",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        7
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "bounded",
+            "capacity": 7,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 5,
+          "message": "whole: bounded key provenance, capacity <= 7"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "expression_12",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        16
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "unknown",
+      "complete": false,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "unknown",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "UNSUPPORTED",
+          "line": 3,
+          "message": "Unsupported arithmetic; record dependence alone does not prove freshness"
+        },
+        {
+          "rule": "UNSUPPORTED",
+          "line": 4,
+          "message": "Unknown key derivation input"
+        },
+        {
+          "rule": "UNSUPPORTED",
+          "line": 5,
+          "message": "Protection sink receives unresolved key provenance"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "expression_13",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        1
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "unknown",
+      "complete": false,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "unknown",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "UNSUPPORTED",
+          "line": 3,
+          "message": "Unsupported arithmetic; record dependence alone does not prove freshness"
+        },
+        {
+          "rule": "UNSUPPORTED",
+          "line": 4,
+          "message": "Unknown key derivation input"
+        },
+        {
+          "rule": "UNSUPPORTED",
+          "line": 5,
+          "message": "Protection sink receives unresolved key provenance"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "helper_00",
+    "runtime": {
+      "oracle": "no_reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        64
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "conditional_fresh",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 7,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "record_injective",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "helper_01",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        5
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 7,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "bounded",
+            "capacity": 5,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 7,
+          "message": "whole: bounded key provenance, capacity <= 5"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "helper_02",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        4
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 7,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "bounded",
+            "capacity": 4,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 7,
+          "message": "whole: bounded key provenance, capacity <= 4"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "prefix_0",
+    "runtime": {
+      "oracle": "no_reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        64
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "conditional_fresh",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "private_suffix",
+          "weight": null,
+          "key": {
+            "scope": "record_injective",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "prefix_16",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        1,
+        64
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "shared_prefix",
+          "weight": null,
+          "key": {
+            "scope": "fixed",
+            "capacity": 1,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        },
+        {
+          "line": 5,
+          "component": "private_suffix",
+          "weight": null,
+          "key": {
+            "scope": "record_injective",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 5,
+          "message": "shared_prefix: fixed key provenance, capacity <= 1"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "prefix_64",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        1
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 5,
+          "component": "shared_prefix",
+          "weight": null,
+          "key": {
+            "scope": "fixed",
+            "capacity": 1,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        },
+        {
+          "line": 5,
+          "component": "private_suffix",
+          "weight": null,
+          "key": {
+            "scope": "record_injective",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 5,
+          "message": "shared_prefix: fixed key provenance, capacity <= 1"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "branch_reuse",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        2
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "unknown",
+      "complete": false,
+      "sinks": [],
+      "findings": [
+        {
+          "rule": "UNSUPPORTED",
+          "line": 3,
+          "message": "Unsupported statement: If"
+        },
+        {
+          "rule": "UNSUPPORTED",
+          "line": 2,
+          "message": "No modeled protection sink reached"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "external_random_pool",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        4
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "unknown",
+      "complete": false,
+      "sinks": [
+        {
+          "line": 6,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "unknown",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "UNSUPPORTED",
+          "line": 4,
+          "message": "Call has no verified key/projection summary"
+        },
+        {
+          "rule": "UNSUPPORTED",
+          "line": 5,
+          "message": "Call has no verified key/projection summary"
+        },
+        {
+          "rule": "UNSUPPORTED",
+          "line": 6,
+          "message": "Protection sink receives unresolved key provenance"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "assembled_blocks_True",
+    "runtime": {
+      "oracle": "reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 8,
+          "component": "matrix_block_0",
+          "weight": 0.25,
+          "key": {
+            "scope": "fixed",
+            "capacity": 1,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        },
+        {
+          "line": 8,
+          "component": "matrix_block_1",
+          "weight": 0.75,
+          "key": {
+            "scope": "record_injective",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 8,
+          "message": "matrix_block_0: fixed key provenance, capacity <= 1"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  {
+    "case": "assembled_blocks_False",
+    "runtime": {
+      "oracle": "no_reuse_observed",
+      "records": 64,
+      "component_unique_counts": [
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64
+      ]
+    },
+    "analysis": {
+      "entry": "implementation",
+      "record_argument": "record_id",
+      "decision": "conditional_fresh",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 8,
+          "component": "matrix_block_0",
+          "weight": 0.25,
+          "key": {
+            "scope": "record_injective",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        },
+        {
+          "line": 8,
+          "component": "matrix_block_1",
+          "weight": 0.75,
+          "key": {
+            "scope": "record_injective",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "implementation"
+          ]
+        }
+      ],
+      "findings": [],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  }
+]

@@ -1,0 +1,122 @@
+[
+  {
+    "case": "expression_00",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    allocation = 0\n    token = derive(master, 'protection', allocation)\n    return protect(embedding, token, config)\n",
+    "sha256": "198e81c80d17c78dcae4e5faa4fc4d9d378632d30551a4b8357f0634b79cce3b"
+  },
+  {
+    "case": "expression_01",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    allocation = 91\n    token = derive(master, 'protection', allocation)\n    return protect(embedding, token, config)\n",
+    "sha256": "bc621d8d5417a1b738023bef52df777ded5570362e109ab5843fc6eaa2292ad4"
+  },
+  {
+    "case": "expression_02",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    allocation = record_id % 4\n    token = derive(master, 'protection', allocation)\n    return protect(embedding, token, config)\n",
+    "sha256": "e2c4fe53a7628f16d4f660327c11b91b539574c41c1c5cd6b6b50be5b8b48ecb"
+  },
+  {
+    "case": "expression_03",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    allocation = record_id & 7\n    token = derive(master, 'protection', allocation)\n    return protect(embedding, token, config)\n",
+    "sha256": "17be64d81af9b816ce5a39731a417360f7c8be8a6365a24db27c7299018e4ccf"
+  },
+  {
+    "case": "expression_04",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    allocation = record_id * 0\n    token = derive(master, 'protection', allocation)\n    return protect(embedding, token, config)\n",
+    "sha256": "759e02c9b5166ecac0a16f27a72646411a513ff651362b7fcce450f34b048f2f"
+  },
+  {
+    "case": "expression_05",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    allocation = record_id\n    token = derive(master, 'protection', allocation)\n    return protect(embedding, token, config)\n",
+    "sha256": "04a518f20dc60e5c3d9e37f551f9522e7c4a276d9e868c8b7f8ea2ebe18d1b83"
+  },
+  {
+    "case": "expression_06",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    allocation = record_id + 17\n    token = derive(master, 'protection', allocation)\n    return protect(embedding, token, config)\n",
+    "sha256": "25bc94417a57941eb024dd118e9d5859f4eae653afd8298e739f067475bcc30a"
+  },
+  {
+    "case": "expression_07",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    allocation = 3 * record_id - 11\n    token = derive(master, 'protection', allocation)\n    return protect(embedding, token, config)\n",
+    "sha256": "9dd4b7c0460485e3311cc57bb2730e01f24b44335945e1ac3b206d8e6a8200f6"
+  },
+  {
+    "case": "expression_08",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    allocation = 27 - record_id\n    token = derive(master, 'protection', allocation)\n    return protect(embedding, token, config)\n",
+    "sha256": "57cdb5b94c385d651e43c3703a312c1a54f4672859c7e6f26474410112334c0d"
+  },
+  {
+    "case": "expression_09",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    allocation = derive(master, 'slots', record_id) % 4\n    token = derive(master, 'protection', allocation)\n    return protect(embedding, token, config)\n",
+    "sha256": "e053f0952e61c75a5c1fe8cea7c2582bd399ecf6f1afc2557eb3f4e6abae0cc0"
+  },
+  {
+    "case": "expression_10",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    allocation = (record_id + 9) & 3\n    token = derive(master, 'protection', allocation)\n    return protect(embedding, token, config)\n",
+    "sha256": "b273dd701df1732e93f3dc3880a96c548663e2f610587ef719ca2ec227246315"
+  },
+  {
+    "case": "expression_11",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    allocation = (record_id * 5 + 11) % 7\n    token = derive(master, 'protection', allocation)\n    return protect(embedding, token, config)\n",
+    "sha256": "fb1c56f6ae45b7a41bd20e3d662e41cd9c42ee959afd279d8c0e4039927295d2"
+  },
+  {
+    "case": "expression_12",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    allocation = record_id // 4\n    token = derive(master, 'protection', allocation)\n    return protect(embedding, token, config)\n",
+    "sha256": "7af2c9d5e4e672d0d181dd25d67991b6669f756da938ded1fababf995fc6eae2"
+  },
+  {
+    "case": "expression_13",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    allocation = record_id - record_id\n    token = derive(master, 'protection', allocation)\n    return protect(embedding, token, config)\n",
+    "sha256": "54c9f7cdd38ba73058c750aff767eb5857e933eb2af06b324a1221fffb7fee2d"
+  },
+  {
+    "case": "helper_00",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef helper(secret, sample):\n    renamed = derive\n    return renamed(secret, 'domain', sample * 7 + 2)\ndef implementation(embedding, master, record_id, config):\n    result = helper(master, record_id)\n    return protect(embedding, result, config)\n",
+    "sha256": "bffff18dd836ee19704e29d1ae1c758996d20b0510fbd893c3759183f3ca6ea4"
+  },
+  {
+    "case": "helper_01",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef helper(secret, sample):\n    renamed = derive\n    return renamed(secret, 'domain', sample % 5)\ndef implementation(embedding, master, record_id, config):\n    result = helper(master, record_id)\n    return protect(embedding, result, config)\n",
+    "sha256": "3a41744c7698b37c051798088b166fda398a9cc069ac569bae3c00bb14896b01"
+  },
+  {
+    "case": "helper_02",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef helper(secret, sample):\n    renamed = derive\n    return renamed(secret, 'domain', derive(secret, 'hidden', sample) & 3)\ndef implementation(embedding, master, record_id, config):\n    result = helper(master, record_id)\n    return protect(embedding, result, config)\n",
+    "sha256": "b6280c7198278e9e63d8d82bb127f8b65f6dc7d0b39ebcb332e4c45d772eaa29"
+  },
+  {
+    "case": "prefix_0",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    common = derive(master, 'common', 0)\n    private = derive(master, 'private', record_id)\n    return correlated_biohash(embedding, common, private, 0, config)\n",
+    "sha256": "cad798821dd879902c03eaecb8142afb8c8ddc64b9f3b497a5b4c430ac2f435a"
+  },
+  {
+    "case": "prefix_16",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    common = derive(master, 'common', 0)\n    private = derive(master, 'private', record_id)\n    return correlated_biohash(embedding, common, private, 16, config)\n",
+    "sha256": "6fd785b51170d3ca50e3008ce5131668585220846da7557f3f76e79d8700bbaa"
+  },
+  {
+    "case": "prefix_64",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    common = derive(master, 'common', 0)\n    private = derive(master, 'private', record_id)\n    return correlated_biohash(embedding, common, private, 64, config)\n",
+    "sha256": "05061a588b350a583946661c43eae2e62a623d762923069f262067875f57fab5"
+  },
+  {
+    "case": "branch_reuse",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    if record_id % 2:\n        return protect(embedding, 3, config)\n    return protect(embedding, 7, config)\n",
+    "sha256": "d688fdcb9985f0cc9bbeffdb917bafe85c442fdca6bbbe0d4b5a607daa2c3344"
+  },
+  {
+    "case": "external_random_pool",
+    "source": "import random\nfrom biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\ndef implementation(embedding, master, record_id, config):\n    generator = random.Random(record_id)\n    token = generator.randrange(4)\n    return protect(embedding, token, config)\n",
+    "sha256": "3b0a2cad10c6c4986d84347b2c10acb71d11df8e29fdc26b6157e06920d17b37"
+  },
+  {
+    "case": "assembled_blocks_True",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\nimport numpy as np\nfrom biometrics_ai.protection.biohash import _orthonormal_projection as basis\ndef implementation(embedding, master, record_id, config):\n    first = basis(512, 16, derive(master, 'first', 0), True)\n    second = basis(512, 48, derive(master, 'second', record_id), True)\n    assembled = np.concatenate([first, second], axis=1)\n    return embedding @ assembled >= 0\n",
+    "sha256": "72dd6190bd8f096caadd75e76c8769ba0f4fc7cd48089e0bb52929110fcaa5e0"
+  },
+  {
+    "case": "assembled_blocks_False",
+    "source": "from biometrics_ai.protection.biohash import generate_key as derive, biohash as protect, correlated_biohash\nimport numpy as np\nfrom biometrics_ai.protection.biohash import _orthonormal_projection as basis\ndef implementation(embedding, master, record_id, config):\n    first = basis(512, 16, derive(master, 'first', record_id), True)\n    second = basis(512, 48, derive(master, 'second', record_id), True)\n    assembled = np.concatenate([first, second], axis=1)\n    return embedding @ assembled >= 0\n",
+    "sha256": "d702c9bb5b02eb350f0e08718a27bbf807fae3124fecb614f60070f8fb3dcc34"
+  }
+]

@@ -1,0 +1,144 @@
+{
+  "stage": "bounded_validation",
+  "planned_cells": 16,
+  "completed_cells": 16,
+  "all_cells_complete": true,
+  "wall_seconds": 352.53100000000086,
+  "budget_seconds": 3600.0,
+  "cells": [
+    {
+      "dataset": "MOBIO",
+      "scheme": "IoM-GRP",
+      "condition": "random_key_pool_4",
+      "split_seed": 92531,
+      "status": "completed",
+      "elapsed_seconds": 18.07800000000043
+    },
+    {
+      "dataset": "FEI",
+      "scheme": "IoM-GRP",
+      "condition": "random_key_pool_4",
+      "split_seed": 92531,
+      "status": "completed",
+      "elapsed_seconds": 21.54700000000048
+    },
+    {
+      "dataset": "MOBIO",
+      "scheme": "IoM-GRP",
+      "condition": "random_key_pool_4",
+      "split_seed": 92543,
+      "status": "completed",
+      "elapsed_seconds": 17.014999999999418
+    },
+    {
+      "dataset": "FEI",
+      "scheme": "IoM-GRP",
+      "condition": "random_key_pool_4",
+      "split_seed": 92543,
+      "status": "completed",
+      "elapsed_seconds": 21.67199999999957
+    },
+    {
+      "dataset": "MOBIO",
+      "scheme": "PolyProtect",
+      "condition": "random_key_pool_4",
+      "split_seed": 92531,
+      "status": "completed",
+      "elapsed_seconds": 4.859999999999673
+    },
+    {
+      "dataset": "FEI",
+      "scheme": "PolyProtect",
+      "condition": "random_key_pool_4",
+      "split_seed": 92531,
+      "status": "completed",
+      "elapsed_seconds": 5.765000000000327
+    },
+    {
+      "dataset": "MOBIO",
+      "scheme": "PolyProtect",
+      "condition": "random_key_pool_4",
+      "split_seed": 92543,
+      "status": "completed",
+      "elapsed_seconds": 4.578000000000429
+    },
+    {
+      "dataset": "FEI",
+      "scheme": "PolyProtect",
+      "condition": "random_key_pool_4",
+      "split_seed": 92543,
+      "status": "completed",
+      "elapsed_seconds": 5.67200000000048
+    },
+    {
+      "dataset": "MOBIO",
+      "scheme": "IoM-GRP",
+      "condition": "independent_unseen_keys",
+      "split_seed": 92531,
+      "status": "completed",
+      "elapsed_seconds": 51.35899999999947
+    },
+    {
+      "dataset": "FEI",
+      "scheme": "IoM-GRP",
+      "condition": "independent_unseen_keys",
+      "split_seed": 92531,
+      "status": "completed",
+      "elapsed_seconds": 67.32800000000043
+    },
+    {
+      "dataset": "MOBIO",
+      "scheme": "IoM-GRP",
+      "condition": "independent_unseen_keys",
+      "split_seed": 92543,
+      "status": "completed",
+      "elapsed_seconds": 51.25
+    },
+    {
+      "dataset": "FEI",
+      "scheme": "IoM-GRP",
+      "condition": "independent_unseen_keys",
+      "split_seed": 92543,
+      "status": "completed",
+      "elapsed_seconds": 72.5630000000001
+    },
+    {
+      "dataset": "MOBIO",
+      "scheme": "PolyProtect",
+      "condition": "independent_unseen_keys",
+      "split_seed": 92531,
+      "status": "completed",
+      "elapsed_seconds": 2.188000000000102
+    },
+    {
+      "dataset": "FEI",
+      "scheme": "PolyProtect",
+      "condition": "independent_unseen_keys",
+      "split_seed": 92531,
+      "status": "completed",
+      "elapsed_seconds": 2.9219999999986612
+    },
+    {
+      "dataset": "MOBIO",
+      "scheme": "PolyProtect",
+      "condition": "independent_unseen_keys",
+      "split_seed": 92543,
+      "status": "completed",
+      "elapsed_seconds": 2.1719999999986612
+    },
+    {
+      "dataset": "FEI",
+      "scheme": "PolyProtect",
+      "condition": "independent_unseen_keys",
+      "split_seed": 92543,
+      "status": "completed",
+      "elapsed_seconds": 2.889999999999418
+    }
+  ],
+  "model_seeds": [
+    701,
+    709,
+    719
+  ],
+  "interpretation": "Bounded independent study; stage and replication are explicit, not proof of equivalence"
+}

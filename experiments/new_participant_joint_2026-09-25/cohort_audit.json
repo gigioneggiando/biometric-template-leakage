@@ -1,0 +1,147 @@
+{
+  "created_utc": "2026-09-25T13:47:51.983993+00:00",
+  "status": "blocked_pending_new_authorized_participants",
+  "new_experiment_run": false,
+  "scope": "Existing FEI/MOBIO embedding inputs, not a global search for people",
+  "prior_manifest_sha256": "44b511f48133203af059fa33012b3380e278d4ba1442fc66fa163bea9a411dbb",
+  "audit_source_sha256": "685881c5bc1813e841760b646cfc0186320edbdc52877592fa7c3453e5fd79f4",
+  "recipe_sha256": "c0ebe172a949f21a827f59754e2b92ac0b8a4a79ddbdca477babd2ffa893f5c7",
+  "analyzer_sha256": "0bcc0d98813d5498b86f41c7e6eb6e79263a66890d94f46f9f92eb815f5ebd1b",
+  "cohorts": [
+    {
+      "dataset": "FEI",
+      "metadata_path": "data/processed/embeddings/fei_multiexposure/buffalo_l_yunet/metadata.json",
+      "metadata_sha256": "e1d7015632d7e7cf9d31fde00752e26cd8d326c3711c53a5445c804a87688da2",
+      "matches_prior_input_exactly": true,
+      "records": 2378,
+      "participants": 200,
+      "eligible_participants": 200,
+      "minimum_records": 11,
+      "previously_seen_participants": 200,
+      "eligible_not_seen_by_id": 0,
+      "new_participants_verified": 0,
+      "identity_check_scope": "Within-source stable IDs only; different IDs do not prove different people",
+      "status": "blocked_no_new_ids"
+    },
+    {
+      "dataset": "MOBIO",
+      "metadata_path": "data/processed/embeddings/mobio/buffalo_l_yunet/metadata.json",
+      "metadata_sha256": "2cd72bf9f7cf53488eeae6442a920908a097039cf056ca7da6d418765d8cc83e",
+      "matches_prior_input_exactly": true,
+      "records": 1799,
+      "participants": 150,
+      "eligible_participants": 150,
+      "minimum_records": 11,
+      "previously_seen_participants": 150,
+      "eligible_not_seen_by_id": 0,
+      "new_participants_verified": 0,
+      "identity_check_scope": "Within-source stable IDs only; different IDs do not prove different people",
+      "status": "blocked_no_new_ids"
+    }
+  ],
+  "source_analysis": {
+    "recurring": {
+      "entry": "recurring",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 21,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "bounded",
+            "capacity": 4,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "recurring"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 21,
+          "message": "whole: bounded key provenance, capacity <= 4"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    },
+    "partial": {
+      "entry": "partial",
+      "record_argument": "record_id",
+      "decision": "reuse",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 27,
+          "component": "shared_prefix",
+          "weight": null,
+          "key": {
+            "scope": "fixed",
+            "capacity": 1,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "partial"
+          ]
+        },
+        {
+          "line": 27,
+          "component": "private_suffix",
+          "weight": null,
+          "key": {
+            "scope": "record_injective",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "partial"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "rule": "IMPLEMENTATION_REUSE",
+          "line": 27,
+          "message": "shared_prefix: fixed key provenance, capacity <= 1"
+        }
+      ],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    },
+    "separated": {
+      "entry": "separated",
+      "record_argument": "record_id",
+      "decision": "conditional_fresh",
+      "complete": true,
+      "sinks": [
+        {
+          "line": 32,
+          "component": "whole",
+          "weight": 1.0,
+          "key": {
+            "scope": "record_injective",
+            "capacity": null,
+            "integer": null,
+            "reference": null,
+            "blocks": []
+          },
+          "trace": [
+            "separated"
+          ]
+        }
+      ],
+      "findings": [],
+      "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+    }
+  },
+  "other_local_data": "LFW exists but is not certified new or interchangeable with FEI; cross-source participant review required"
+}

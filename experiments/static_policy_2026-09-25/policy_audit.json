@@ -1,0 +1,74 @@
+{
+  "baseline": {
+    "algorithm": "key-scope-static-analysis-v1",
+    "decision": "block",
+    "scopes": [
+      {
+        "scheme": "iomgrp_paper_specified",
+        "condition": "random_key_pool_4",
+        "scope": "shared_across_splits"
+      },
+      {
+        "scheme": "polyprotect_paper_specified",
+        "condition": "random_key_pool_4",
+        "scope": "shared_across_splits"
+      }
+    ],
+    "findings": [
+      {
+        "rule": "KEY_REUSE",
+        "severity": "error",
+        "path": "conditions[0]",
+        "message": "iomgrp_paper_specified: random_key_pool_4 permits the same hidden transforms across identities and splits."
+      },
+      {
+        "rule": "NATIVE_LINKAGE_REVIEW",
+        "severity": "review",
+        "path": "schemes[1]",
+        "message": "PolyProtect is outside the rotational-invariance argument; fresh keys do not establish unlinkability."
+      },
+      {
+        "rule": "KEY_REUSE",
+        "severity": "error",
+        "path": "conditions[0]",
+        "message": "polyprotect_paper_specified: random_key_pool_4 permits the same hidden transforms across identities and splits."
+      },
+      {
+        "rule": "RUNTIME_ASSUMPTIONS",
+        "severity": "review",
+        "path": "$",
+        "message": "Configuration cannot verify input norms, key secrecy/entropy, unique record IDs, implementation fidelity, side channels, or authentication utility. Reproducible experiment seeds are not production secrets."
+      }
+    ]
+  },
+  "candidate": {
+    "algorithm": "key-scope-static-analysis-v1",
+    "decision": "review",
+    "scopes": [
+      {
+        "scheme": "iomgrp_paper_specified",
+        "condition": "independent_unseen_keys",
+        "scope": "fresh_declared"
+      },
+      {
+        "scheme": "polyprotect_paper_specified",
+        "condition": "independent_unseen_keys",
+        "scope": "fresh_declared"
+      }
+    ],
+    "findings": [
+      {
+        "rule": "NATIVE_LINKAGE_REVIEW",
+        "severity": "review",
+        "path": "schemes[1]",
+        "message": "PolyProtect is outside the rotational-invariance argument; fresh keys do not establish unlinkability."
+      },
+      {
+        "rule": "RUNTIME_ASSUMPTIONS",
+        "severity": "review",
+        "path": "$",
+        "message": "Configuration cannot verify input norms, key secrecy/entropy, unique record IDs, implementation fidelity, side channels, or authentication utility. Reproducible experiment seeds are not production secrets."
+      }
+    ]
+  }
+}

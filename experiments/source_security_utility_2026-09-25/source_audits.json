@@ -1,0 +1,104 @@
+{
+  "recurring": {
+    "entry": "recurring",
+    "record_argument": "record_id",
+    "decision": "reuse",
+    "complete": true,
+    "sinks": [
+      {
+        "line": 21,
+        "component": "whole",
+        "weight": 1.0,
+        "key": {
+          "scope": "bounded",
+          "capacity": 4,
+          "integer": null,
+          "reference": null,
+          "blocks": []
+        },
+        "trace": [
+          "recurring"
+        ]
+      }
+    ],
+    "findings": [
+      {
+        "rule": "IMPLEMENTATION_REUSE",
+        "line": 21,
+        "message": "whole: bounded key provenance, capacity <= 4"
+      }
+    ],
+    "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+  },
+  "partial": {
+    "entry": "partial",
+    "record_argument": "record_id",
+    "decision": "reuse",
+    "complete": true,
+    "sinks": [
+      {
+        "line": 27,
+        "component": "shared_prefix",
+        "weight": null,
+        "key": {
+          "scope": "fixed",
+          "capacity": 1,
+          "integer": null,
+          "reference": null,
+          "blocks": []
+        },
+        "trace": [
+          "partial"
+        ]
+      },
+      {
+        "line": 27,
+        "component": "private_suffix",
+        "weight": null,
+        "key": {
+          "scope": "record_injective",
+          "capacity": null,
+          "integer": null,
+          "reference": null,
+          "blocks": []
+        },
+        "trace": [
+          "partial"
+        ]
+      }
+    ],
+    "findings": [
+      {
+        "rule": "IMPLEMENTATION_REUSE",
+        "line": 27,
+        "message": "shared_prefix: fixed key provenance, capacity <= 1"
+      }
+    ],
+    "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+  },
+  "separated": {
+    "entry": "separated",
+    "record_argument": "record_id",
+    "decision": "conditional_fresh",
+    "complete": true,
+    "sinks": [
+      {
+        "line": 32,
+        "component": "whole",
+        "weight": 1.0,
+        "key": {
+          "scope": "record_injective",
+          "capacity": null,
+          "integer": null,
+          "reference": null,
+          "blocks": []
+        },
+        "trace": [
+          "separated"
+        ]
+      }
+    ],
+    "findings": [],
+    "assumptions": "Integer record IDs are unique; other inputs fixed in audited context; trusted unmodified callee contracts; ideal collision-free KDF; no reflection, monkeypatching or external state mutation. Freshness is not secrecy, independence, unlinkability or a deployment approval."
+  }
+}

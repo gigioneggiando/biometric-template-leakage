@@ -1,0 +1,32 @@
+{
+  "cases": 24,
+  "bandit_version": "1.8.6",
+  "metrics": {
+    "source": {
+      "tp": 13,
+      "fp": 0,
+      "tn": 7,
+      "fn": 0,
+      "abstain": 4,
+      "unlabeled": 0
+    },
+    "configuration": {
+      "tp": 0,
+      "fp": 0,
+      "tn": 7,
+      "fn": 17,
+      "abstain": 0,
+      "unlabeled": 0
+    },
+    "bandit": {
+      "tp": 1,
+      "fp": 0,
+      "tn": 7,
+      "fn": 16,
+      "abstain": 0,
+      "unlabeled": 0
+    }
+  },
+  "label_status": "same-author corpus, separate finite-domain runtime oracle; independent review pending",
+  "comparison_scope": "Bandit generic warnings are not biometric-reuse findings; YAML baseline trusts declared fresh condition"
+}
