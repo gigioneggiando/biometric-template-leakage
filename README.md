@@ -50,6 +50,11 @@ the concrete language-coverage work for a separate v2.
 false-fresh decisions. This passes the development gates; unseen confirmation and
 the separate biometric security/utility gate remain open.
 
+The [frozen v2 confirmation](experiments/source_holdout_v2_confirmation_2026-09-25/README.md)
+adds 20 new valid programs: 19/19 emitted decisions are correct, coverage is 95%,
+no reuse case is predicted fresh and all fixed gates pass. It is an internally
+authored post-implementation holdout, not external validation.
+
 ## Static analysis and security evaluation
 
 [KSSA v1](src/biometrics_ai/protection/policy.py) statically audits the YAML key policy

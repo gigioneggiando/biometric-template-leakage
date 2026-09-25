@@ -1,0 +1,32 @@
+{
+  "status": "completed",
+  "wall_seconds": 0.004956700002367143,
+  "source_sha256": {
+    "analyzer_v2": "4378a73e791a76829390645851e8d8cf61900257581d16fa406f51a3c4b017e9",
+    "cases": "7fe3e2c98db91ef4ae1b5e8fbbeb6e2af303dfaab1592d9e7faf93a6f16c0dd0",
+    "evaluator": "87e24a34497156fcdb9550607c0e6d7363719af9576ea1822912cf1142c65d63",
+    "protocol": "74b3acd689d0308ddc19a8f2cae66912d6eb504bd15ec701cd5cdbe73558753d"
+  },
+  "case_source_sha256": {
+    "fresh_real_keywords": "64119e7f9c24a52b8850336cb8d612f9b3d78426b85047be03dabd6699d5218e",
+    "fresh_list_selection": "71127a38c0e396ca94c625ae83aaf9d839d6b7554b69887abb14f839a2c6487f",
+    "fresh_dictionary_selection": "a009879e8acc566e8cf9aec7c75d91f60a8976f14c8054b9d7c5a5b4914b1e06",
+    "fresh_literal_loop": "3de0427afe1c1a6adbb255d85cdb10219cf42f5279bddf436aa0f2c980985a29",
+    "fresh_helper_keywords": "b906b37ec39324c9ce50f7032f781be8570c7e046ebee3e0d2f469cf4052a6aa",
+    "fresh_default_config": "d4dfab71be78f032cf468ccf0527c6a3e821599f553eb88995acbe20e56dfdff",
+    "fresh_projection_keywords": "3061e99e09c31183229cd96893f716cf990bde4fa33ec757f4a95da66817ddfa",
+    "fresh_floor_identity": "271970cb7cff00ee21aa93d0471c8f15298712a995832d600fb23e2356f67742",
+    "fresh_negative_affine": "63c81ea0d3bdf0f09ae4280a80091b590bdf7a435ffef47cef12a811bb973c37",
+    "fresh_projection_default_flag": "4689a89247b05321e3704f390c74116c78345688bf42ad762514b276fac5ea56",
+    "reuse_negative_floor_division": "90d2c2390bbc64d8aa11c398c831404dfa7bdfa384692959115a1acc44a8200d",
+    "reuse_fixed_dictionary_selection": "acfde1b97573dd76018290473ea469ac1d32a1260bc344f996ba4eef5582b99f",
+    "reuse_bounded_dictionary_selection": "a105081c59de70b24052824208b535cc4653cc87f1759128cc1ebb6ea1a24480",
+    "reuse_fixed_list_selection": "cb4e730b9a19435a551a21ccb85e498946fa4bf16677137707d99ac537d8d068",
+    "reuse_helper_keywords": "571c5d992a18bf7ed63e7ee63e7777d49af65d33569efd259a2e47c5e227c3a9",
+    "reuse_correlated_keywords": "7a5cb0f3416d17af5efc8429d234b5a0253919312ca9ede9a2fb6d05a9b55ed1",
+    "reuse_projection_keywords": "73171b72e5baf0b97a0789a60873914d2bb4dfa2265d16f7672234fc54f9fc5a",
+    "reuse_nested_self_subtraction": "3283f69b38830bb5c6d9c49378f9308b65b470f091e44ca96e0419ff6905bcae",
+    "reuse_loop_then_modulo": "45f50a7387fa420d7239cb2fd7441e9fc55dec74e91bf0e77eb885b8b7b23b89",
+    "reuse_branch_mixed_pools": "13abaf44abdf9329026e998ba04a991286f7b4607d352267a6bc38ffd2fa54f9"
+  }
+}

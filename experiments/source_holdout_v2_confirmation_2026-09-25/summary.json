@@ -1,0 +1,25 @@
+{
+  "status": "completed",
+  "scope": "internally authored, post-implementation frozen confirmation",
+  "cases": 20,
+  "labels": {
+    "reuse": 10,
+    "fresh": 10
+  },
+  "decided": 19,
+  "abstained": 1,
+  "correct_decisions": 19,
+  "false_fresh": 0,
+  "false_reuse": 0,
+  "coverage": 0.95,
+  "selective_accuracy": 1.0,
+  "targets": {
+    "false_fresh": 0,
+    "selective_accuracy_min": 0.95,
+    "coverage_min": 0.75
+  },
+  "safety_gate_pass": true,
+  "accuracy_gate_pass": true,
+  "coverage_gate_pass": true,
+  "all_gates_pass": true
+}

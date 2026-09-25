@@ -40,6 +40,9 @@ coverage gate: 16 decisions and eight abstentions give 66.67% coverage.
 [V2 development evaluation](../experiments/source_holdout_v2_2026-09-25/README.md)
 corrects the invalid keyword case and improves valid-case coverage from 69.57% to
 95.65% without an observed error. It is not an unseen confirmation.
+The [frozen v2 confirmation](../experiments/source_holdout_v2_confirmation_2026-09-25/README.md)
+passes all gates on 20 new valid cases: 19 correct decisions, one abstention, 95%
+coverage and no false-fresh result. It remains internally authored.
 
 Regenerate with `python scripts/figures/make_source_security_report.py`.
 
