@@ -1,0 +1,36 @@
+{
+  "status": "completed",
+  "wall_seconds": 0.006929999995918479,
+  "source_sha256": {
+    "analyzer": "0bcc0d98813d5498b86f41c7e6eb6e79263a66890d94f46f9f92eb815f5ebd1b",
+    "cases": "34122d5526e9ce5d770028d813c82a300854a7f1c25eaa7fe207f28ae40e9102",
+    "evaluator": "334e5048cf6d5f8849232c2918845a3213126faf22003804019586fecbfd9dd0",
+    "protocol": "e78488c543d8e17537f0d3da689ede837718d1d8a2f574fa5253316a6288abce"
+  },
+  "case_source_sha256": {
+    "fresh_direct_record": "c2ef28b3fb8ca73e7f91b7626191289af0052dba497032867430eabfb29e07ea",
+    "fresh_affine_record": "4833347f9501ae26476691333cfeef1972bb9b9698d43a3af8dfa4d24ce3f2a2",
+    "fresh_nested_derivation": "c711887929389b1165334d786f8c887324efaf1fd0d82c0134b3ced32cbe66b4",
+    "fresh_reverse_affine": "44478571a3c2b34023820fae11f4854f8ee4b4a87ab92f603b87b090b7612130",
+    "fresh_helper_alias": "545b6fea902c4705adffdeafcc434c4e13f2d29a2d2c1997361bec4381edf7df",
+    "fresh_correlated_zero_shared": "c0a676a1b2dd0236a1f22e3ccd10d9725e06795f1c9a8b1b79741d981430066f",
+    "fresh_two_projection_blocks": "a9a441427461e841707796a47a3dc4d2d227bb1899ce287a92ea1514df9e333d",
+    "fresh_single_projection": "56daf0ce2e16813ea07374242e722d876a58d082aa5cb3b8695f6be002ccf9ca",
+    "reuse_fixed_key": "aa4c8fb6aadc1ddbadd68214ec455959d050a87e220d2c43ed20be93b3b8ed6c",
+    "reuse_modulo_pool": "fd5fd4d4a2b0b43cae15cde71c2a0b9e49522b52234cdbd3ad07ce7e296917cc",
+    "reuse_mask_pool": "5149339750d3b1955b46c4981ba8ebfbac7ae6d51a07b424b1bc84c6de09caf1",
+    "reuse_zero_product": "8825a060b280e3a61a2ff6dff645dc52dfbd03ec6c873a5404a2c62925cdac62",
+    "reuse_helper_pool": "ac8b1fd7134f14ea0f48ec371bc673e1dcc065e53c4d1ad62f84f8f5d3200715",
+    "reuse_correlated_prefix": "fe1867b72cdc5288e46f065c84a5719a964a63f9ec8870a0ed0848178c0562fa",
+    "reuse_projection_prefix": "4c631f9d3a41ec023d5444b5a8f55b789e346817d40e2aa1d13f4bf142636a44",
+    "reuse_after_nested_derivation": "2d878f83244a543a179553c93405bce97e922064e9833e7b7fd8ad12625f2845",
+    "fresh_equivalent_branches": "107747390f64ae05b4d2958951675586f306182da4ed237f00144e00df3809fe",
+    "fresh_keyword_arguments": "500bdfe916e3b55af750ad377a212bfd911c6e34e90b1155bcc07038b9dae182",
+    "fresh_tuple_selection": "c131306f313df9fbeccd36cd5ce48ef62f0320dc89528967307d25932445cae5",
+    "fresh_bounded_loop": "c3c4d33b7591f35d65e0e0a56ab5dbe9b02f6f485237c35b47db28434e2a16dd",
+    "reuse_branch_constants": "3061fe51916255671e39bafb752633e00a48ed0b3092ba8c330b0e3e5fade3bf",
+    "reuse_floor_division": "2937c0cfdfdf2be32c36f4ed2e0e5df848e437ec15875b304b59e58a9f2128d9",
+    "reuse_dictionary_pool": "38d63e7ad3053fdd320fc89f096ad24249acb4fd224109b4fbcb9a7a7e61d349",
+    "reuse_self_subtraction": "817678992dd578b462381803a783beecd225232eb993454c8d242ed601c1f664"
+  }
+}

@@ -40,6 +40,11 @@ MOBIO/FEI attacker and trusted-key verification endpoints. Open the
 labels and research novelty remain unverified. This is a bounded research
 prototype, not a general source analyzer or a deployment security certificate.
 
+The [frozen 24-case holdout](experiments/source_holdout_2026-09-25/README.md)
+produced 16/16 correct decisions with no false-fresh result, but abstained on eight
+realistic unsupported cases. Its 66.67% coverage misses the fixed 75% gate, defining
+the concrete language-coverage work for a separate v2.
+
 ## Static analysis and security evaluation
 
 [KSSA v1](src/biometrics_ai/protection/policy.py) statically audits the YAML key policy

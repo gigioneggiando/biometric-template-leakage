@@ -1,0 +1,25 @@
+{
+  "status": "completed",
+  "evaluation_scope": "internal frozen holdout created after implementation inspection",
+  "cases": 24,
+  "labels": {
+    "reuse": 12,
+    "fresh": 12
+  },
+  "decided": 16,
+  "abstained": 8,
+  "correct_decisions": 16,
+  "false_fresh": 0,
+  "false_reuse": 0,
+  "coverage": 0.6666666666666666,
+  "selective_accuracy": 1.0,
+  "targets": {
+    "false_fresh": 0,
+    "selective_accuracy_min": 0.95,
+    "coverage_min": 0.75
+  },
+  "safety_gate_pass": true,
+  "accuracy_gate_pass": true,
+  "coverage_gate_pass": false,
+  "all_gates_pass": false
+}

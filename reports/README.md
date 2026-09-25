@@ -34,6 +34,10 @@ matching accuracy. Independent source labels and research-priority review remain
 open. See [the formal model](../docs/theory/source_scope_and_utility.md) and
 [manuscript Section 4.2](paper_draft.md#42-source-derived-component-scope-and-utility-constrained-remediation).
 
+The later [frozen 24-case holdout](../experiments/source_holdout_2026-09-25/README.md)
+has 100% selective accuracy and no false-fresh decision, but fails its preregistered
+coverage gate: 16 decisions and eight abstentions give 66.67% coverage.
+
 Regenerate with `python scripts/figures/make_source_security_report.py`.
 
 ## Static-analysis update: 2026-09-25
