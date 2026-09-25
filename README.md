@@ -45,6 +45,11 @@ produced 16/16 correct decisions with no false-fresh result, but abstained on ei
 realistic unsupported cases. Its 66.67% coverage misses the fixed 75% gate, defining
 the concrete language-coverage work for a separate v2.
 
+[Source-analysis v2](experiments/source_holdout_v2_2026-09-25/README.md) resolves
+22/23 valid development cases with 100% selective accuracy, 95.65% coverage and no
+false-fresh decisions. This passes the development gates; unseen confirmation and
+the separate biometric security/utility gate remain open.
+
 ## Static analysis and security evaluation
 
 [KSSA v1](src/biometrics_ai/protection/policy.py) statically audits the YAML key policy

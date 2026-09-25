@@ -1,0 +1,10 @@
+{
+  "status": "completed",
+  "wall_seconds": 0.007460900000296533,
+  "source_sha256": {
+    "analyzer_v1": "0bcc0d98813d5498b86f41c7e6eb6e79263a66890d94f46f9f92eb815f5ebd1b",
+    "analyzer_v2": "4378a73e791a76829390645851e8d8cf61900257581d16fa406f51a3c4b017e9",
+    "cases": "34122d5526e9ce5d770028d813c82a300854a7f1c25eaa7fe207f28ae40e9102",
+    "evaluator": "070df2a91d645356ced353b742de4ca03d494415de27b5da233100c6f752d3e3"
+  }
+}

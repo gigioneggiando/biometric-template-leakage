@@ -1,0 +1,25 @@
+{
+  "status": "completed",
+  "scope": "v2 development evaluation on the frozen v1 holdout; not an unseen confirmation",
+  "raw_cases": 24,
+  "invalid_cases": {
+    "fresh_keyword_arguments": "uses keyword names absent from the real generate_key signature"
+  },
+  "valid_cases": 23,
+  "decided": 22,
+  "abstained": 1,
+  "correct_decisions": 22,
+  "false_fresh": 0,
+  "false_reuse": 0,
+  "coverage": 0.9565217391304348,
+  "selective_accuracy": 1.0,
+  "targets": {
+    "false_fresh": 0,
+    "selective_accuracy_min": 0.95,
+    "coverage_min": 0.75
+  },
+  "safety_gate_pass": true,
+  "accuracy_gate_pass": true,
+  "coverage_gate_pass": true,
+  "all_gates_pass": true
+}

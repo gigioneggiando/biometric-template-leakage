@@ -37,6 +37,9 @@ open. See [the formal model](../docs/theory/source_scope_and_utility.md) and
 The later [frozen 24-case holdout](../experiments/source_holdout_2026-09-25/README.md)
 has 100% selective accuracy and no false-fresh decision, but fails its preregistered
 coverage gate: 16 decisions and eight abstentions give 66.67% coverage.
+[V2 development evaluation](../experiments/source_holdout_v2_2026-09-25/README.md)
+corrects the invalid keyword case and improves valid-case coverage from 69.57% to
+95.65% without an observed error. It is not an unseen confirmation.
 
 Regenerate with `python scripts/figures/make_source_security_report.py`.
 
