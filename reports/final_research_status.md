@@ -57,6 +57,13 @@ Implemented **KSSA v1**, a static checker for the repository's YAML protection p
 
 The [new matched rerun](../experiments/static_policy_2026-09-25/README.md) completed **16 cells / 96 trained endpoints in 352.766 seconds**, on MOBIO/FEI, IoM-GRP/PolyProtect, two identity assignments and three model seeds. All eight primary ten-record pool-4-minus-fresh reductions are positive (72.08-94.48 points), with positive paired intervals and Holm p = 0.004. Fresh learned intervals include chance, not equivalence. Fresh PolyProtect native top-1 remains descriptively 7.80-13.33%; its warning remains. Authentication utility, broader analyzer accuracy, independent-pool robustness and production secrecy are unverified. SCface was not rerun because embeddings are absent locally.
 
+The later [source-analysis v3 integration](../experiments/source_real_integration_2026-09-25/README.md)
+adds explicit BioHash, IoM-GRP and PolyProtect call contracts. It produces 25/25
+correct emitted decisions, one abstention, 96.15% coverage and zero false-fresh
+results across six executable local recipes plus the frozen 20-case regression
+corpus. This is internally authored bounded evidence, not external validation or
+a general Python soundness result. The separate security/utility gate is unchanged.
+
 The [three-page static-analysis PDF](Static_Policy_Analysis_2026-09-25.pdf), [revised manuscript](paper_draft.md), [prospective protocol](../docs/protocols/static_policy_2026-09-25.md), and hash-frozen aggregate results are the new package. The previous 19-page September report, 15-slide deck, 22 figures and historical experiment families are preserved rather than silently re-labeled.
 
 ## Findings update: 2026-09-19

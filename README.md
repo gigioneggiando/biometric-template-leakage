@@ -55,6 +55,13 @@ adds 20 new valid programs: 19/19 emitted decisions are correct, coverage is 95%
 no reuse case is predicted fresh and all fixed gates pass. It is an internally
 authored post-implementation holdout, not external validation.
 
+[V3 integration](experiments/source_real_integration_2026-09-25/README.md) adds
+explicit BioHash, IoM-GRP and PolyProtect sink contracts. Across six executable
+scheme recipes and the 20-case frozen regression corpus, v3 emits 25/25 correct
+decisions with 96.15% coverage and zero false-fresh results. A transparent local
+AST baseline reaches 23.08% coverage and 5/6 correct decisions; it is not a
+state-of-the-art comparator.
+
 ## Static analysis and security evaluation
 
 [KSSA v1](src/biometrics_ai/protection/policy.py) statically audits the YAML key policy

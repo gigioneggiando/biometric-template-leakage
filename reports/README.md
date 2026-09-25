@@ -43,6 +43,10 @@ corrects the invalid keyword case and improves valid-case coverage from 69.57% t
 The [frozen v2 confirmation](../experiments/source_holdout_v2_confirmation_2026-09-25/README.md)
 passes all gates on 20 new valid cases: 19 correct decisions, one abstention, 95%
 coverage and no false-fresh result. It remains internally authored.
+[V3 real-protection integration](../experiments/source_real_integration_2026-09-25/README.md)
+adds BioHash, IoM-GRP and PolyProtect contracts and correctly resolves all six
+executable recurring/fresh recipes. Combined frozen coverage is 25/26 with no
+observed error; the intraprocedural baseline resolves 6/26 and makes one error.
 
 Regenerate with `python scripts/figures/make_source_security_report.py`.
 

@@ -1,0 +1,13 @@
+{
+  "status": "completed",
+  "wall_seconds": 0.01060940000024857,
+  "source_sha256": {
+    "v3": "7a04767b79b0c13a7f889affdbc2ab4c7b26289693fa4a5d2e4e0fb905785800",
+    "v2": "4378a73e791a76829390645851e8d8cf61900257581d16fa406f51a3c4b017e9",
+    "baseline": "c40eb5106fdb31386d3a6c82f276195e1632688db3fb3d7191c93950d27718b6",
+    "recipes": "8e290dcb75872c092557921c48d4b8bee21eb552da1c54752d3d3a0ad9c109eb",
+    "confirmation_cases": "7fe3e2c98db91ef4ae1b5e8fbbeb6e2af303dfaab1592d9e7faf93a6f16c0dd0",
+    "evaluator": "975b4efcc9e07e0b98a88569ec6f50fb79f624e72d04a90bcaa69f29b4a96a25",
+    "protocol": "7adaea4e8fc0d25499ce2e716c8a5129acfcef421f61b8e0cbf84f6c283a69be"
+  }
+}
