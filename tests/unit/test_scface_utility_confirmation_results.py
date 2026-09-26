@@ -1,15 +1,16 @@
 import csv
-import hashlib
 import json
 from pathlib import Path
 
+from scripts.diagnostics.source_provenance import verify_source
 
 ROOT = Path(__file__).resolve().parents[2]
 STUDY = ROOT / "experiments/scface_utility_confirmation_2026-09-25"
 
 
 def digest(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    expected = json.loads((STUDY / "execution_manifest.json").read_text())["source_sha256"]
+    return verify_source(path, expected.values())["sha256"]
 
 
 def test_scface_utility_confirmation_preserves_failed_gates():

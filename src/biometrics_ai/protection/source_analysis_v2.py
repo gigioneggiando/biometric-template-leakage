@@ -217,8 +217,19 @@ class SourceAnalysisV2(SourceAnalysis):
             elif isinstance(statement, ast.Expr):
                 self.expression(statement.value, current)
             elif isinstance(statement, ast.If):
+                predicate_nodes = (
+                    ast.Name, ast.Load, ast.Constant, ast.BinOp, ast.Mod, ast.BitAnd,
+                    ast.Add, ast.Sub, ast.Mult, ast.FloorDiv, ast.Compare, ast.Eq,
+                    ast.NotEq, ast.Lt, ast.LtE, ast.Gt, ast.GtE, ast.BoolOp, ast.And,
+                    ast.Or, ast.UnaryOp, ast.Not, ast.USub, ast.UAdd,
+                )
+                if any(not isinstance(node, predicate_nodes) for node in ast.walk(statement.test)):
+                    self.warn(statement.test, "Branch condition has unsupported execution or side effects")
+                sink_count = len(self.sinks)
                 then_environment, then_value, then_returned = self.execute_block(statement.body, current)
                 else_environment, else_value, else_returned = self.execute_block(statement.orelse, current)
+                if len(self.sinks) != sink_count:
+                    self.warn(statement, "Branch-local protection calls require cross-path key analysis")
                 if then_returned or else_returned:
                     if then_returned and else_returned:
                         return current, self.join([then_value or UNKNOWN, else_value or UNKNOWN]), True

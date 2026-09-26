@@ -105,6 +105,21 @@ The [18-endpoint study](../experiments/source_security_utility_2026-09-25/README
 
 **Contribution boundary.** The proposal integrates key/component provenance, reuse accounting and utility-constrained evidence. Abstract interpretation, fresh-key principles, collision formulas and noninferiority are established ideas. The [study attribution and review requirements](../experiments/source_security_utility_2026-09-25/README.md#attribution-and-novelty-boundary) identify independent labeling, specialist prior-art review, proof review, application-owner margin approval and a prospectively powered joint replication as remaining gates. A new expression alone is not evidence of journal-level novelty. The [four-page PDF](Source_Security_Utility_2026-09-25.pdf) presents these limitations alongside the measured results.
 
+**Post-execution correctness amendment, 2026-09-26.** A counterexample to v2/v3's
+cross-path freshness inference was reproduced: protecting directly in each branch
+with index `record_id` for odd records and `record_id + 1` for even records yields
+four distinct keys for eight records, yet the original implementation emitted a
+complete fresh decision. The branch join did not invalidate prior sink summaries.
+The [repair and regression record](../experiments/source_branch_fix_2026-09-26/README.md)
+now conservatively marks branch-local sinks and unsupported predicates incomplete,
+preventing that freshness claim. This does not prove soundness for all Python.
+All 69 evaluations on the overlapping historical internal corpora retain their
+predictions; the new counterexample abstains. These are not independent validation
+results. Exact executed v2 source bytes are archived, original tables/manifests
+remain unchanged, and line-ending conversions in checkout verification are explicit
+and accepted only when they reproduce an existing recorded hash. Independent
+review is deferred at the user's request and remains an open requirement.
+
 ### 4.3 Review preparation and fixed utility-only replication
 
 An [answer-free packet](../experiments/source_review_2026-09-25/README.md) provides

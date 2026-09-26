@@ -25,8 +25,8 @@ def page(title: str, number: int):
     figure = plt.figure(figsize=(8.27, 11.69), facecolor="white")
     figure.text(.075, .95, title, fontsize=23, weight="bold", va="top", color=INK,
                 family="DejaVu Serif")
-    figure.text(.075, .905, "THE PIZZA EXPLANATION  |  25 SEPTEMBER 2026", fontsize=9, color=GREEN)
-    figure.text(.075, .04, f"Research prototype. Not a security certificate.                             {number} / 8",
+    figure.text(.075, .905, "THE PIZZA EXPLANATION  |  UPDATED 26 SEPTEMBER 2026", fontsize=9, color=GREEN)
+    figure.text(.075, .04, f"Research prototype. Not a security certificate.                             {number} / 9",
                 fontsize=9, color=INK)
     return figure
 
@@ -146,6 +146,18 @@ def report_pages():
     paragraph(figure, .26, "4. Require all three checks together", "The bounds must support less attacker success, no more than a three-point loss in genuine acceptance, and false matches at most 2%. Keep failures and uncertainty. Do not combine an old attack result with new matching to claim a pass.")
     figure.text(.075, .105, "PROTOCOL PREPARED ONLY. Waiting for authorized data and review.\nFull design: docs/protocols/new_participant_joint_2026-09-25.md",
                 fontsize=9, linespacing=1.5, color=INK)
+    figures.append(figure)
+
+    regression = json.loads((ROOT / "experiments/source_branch_fix_2026-09-26/regression.json").read_text())
+    confirmation = load_rows(ROOT / "experiments/scface_utility_confirmation_2026-09-25/effects.csv")
+    if regression["changed_predictions"] != 0 or len(confirmation) != 4 or any(row["utility_pass"] != "False" for row in confirmation):
+        raise ValueError("Review the update wording against changed evidence")
+    figure = page("A safer inspector, not a safety proof", 9)
+    paragraph(figure, .84, "Two order queues can reuse one pattern", "Imagine odd order numbers keep their number, while even numbers add one. Orders 0 and 1 now both use pattern 1. Our review found that separate recipe branches could hide this collision from v2 and v3. Eight records used only four actual keys.")
+    paragraph(figure, .63, "The inspector now says unknown", "Protection calls inside branches now require further review instead of a freshness claim. Unsupported conditions also raise a warning. All 69 historical case evaluations keep the same predictions after the fix. This is internal regression evidence, not independent validation or a proof for all Python programs.")
+    paragraph(figure, .42, "The later matching study still did not pass", "Luigi's 96 MOBIO/SCface utility evaluations passed the false-match ceiling, but 0 of 4 cells passed the three-point genuine-matching tolerance. The earlier MOBIO passes did not hold across these new splits. No attack was retrained in that study, and no joint security pass follows.")
+    paragraph(figure, .21, "What is ready, and what must wait", "The branch repair and portable source-hash checks are ready. Original results and executed source bytes are preserved. Independent validation is deferred to you and your reviewers. New authorized people, a justified sample size and a joint attack/matching test remain necessary.")
+    figure.text(.075, .085, "Repair record: experiments/source_branch_fix_2026-09-26/README.md", fontsize=8, color=INK)
     figures.append(figure)
     return figures
 

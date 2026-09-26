@@ -1,5 +1,13 @@
 # Research log
 
+## 2026-09-26 (cross-branch freshness and Windows provenance repair)
+
+- User requested the review findings be addressed and documentation updated, with independent validation to be done later. Independent labels, proof/novelty review and signoff remain pending, not waived.
+- Reproduced an unsafe v2/v3 freshness verdict when odd records use their ID and even records use ID + 1 inside separate protection-call branches. Eight IDs give four actual keys. Branch-local sinks now warn that cross-path analysis is unsupported; unmodeled predicate execution also warns. The case now abstains, and reuse warnings retain incomplete status.
+- Preserved exact original v2 bytes in a hash-verified ZIP before editing. Fixed six Windows provenance tests using explicit LF/CRLF conversions checked against unchanged expected hashes, plus explicit snapshot verification for the modified historical analyzer. Tampered sources and incorrect snapshots are rejected.
+- Recorded [69 post-fix historical case evaluations](../experiments/source_branch_fix_2026-09-26/README.md), with unchanged predictions. The corpora overlap; this is not 69 unique independent programs. Kept every original experiment table and manifest unchanged.
+- Updated the manuscript, status and [nine-page pizza PDF](../reports/Pizza_Algorithm_Explained_2026-09-25.pdf). Included the later 0/4 MOBIO/SCface utility failure. No new participant acquisition, private-data experiment, sample-size power calculation or joint security pass was performed or claimed.
+
 ## 2026-09-25 (new-participant audit and joint-study preparation)
 
 - User requested genuinely new participants, an algorithm-linked joint attack/matching study and updated PDF. Audited available FEI/MOBIO embedding metadata against the frozen original inputs: 200/150 people, all previously used; zero eligible new IDs. Counted 2,800 raw FEI JPG files representing 200 IDs, so additional views cannot supply new people.

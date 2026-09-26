@@ -1,5 +1,29 @@
 # Final research status
 
+## Branch correctness and provenance repair: 2026-09-26
+
+A review reproduced a v2/v3 false-fresh result for protection calls inside distinct
+branches: eight records shared four actual derived keys, but each path's sink was
+marked fresh. The [repair](../experiments/source_branch_fix_2026-09-26/README.md)
+adds a cross-path warning for branch-local sinks and rejects unsupported predicates
+as complete evidence. The counterexample now returns unknown/incomplete. Existing
+reuse findings may remain reuse/incomplete. This is a bounded conservative repair,
+not independent proof of general Python soundness.
+
+Separate post-fix regression records all 69 historical evaluations (overlapping
+corpora) with unchanged predictions. Original manifests and result tables remain
+unchanged; the exact executed v2 bytes are archived and hash-verified. Six Windows
+provenance failures were LF/CRLF checkout differences. The shared verifier permits
+only explicit newline conversions that reproduce recorded hashes, and explicit
+exact-byte snapshots for modified historical sources. Content changes still fail.
+
+The [pizza PDF](Pizza_Algorithm_Explained_2026-09-25.pdf) now has nine pages. At the
+user's request, independent labels, external proof/novelty review and signoff are
+deferred for later, not marked complete. No new biometric evaluation was run for
+the fix. The 0/2 original joint, 2/4 first utility and 0/4 later utility results
+remain separate and unchanged. New authorized people and approved power/margin
+planning remain necessary for the proposed joint confirmation.
+
 ## Utility failure diagnosis: 2026-09-26
 
 The [frozen MOBIO/SCface confirmation](../experiments/scface_utility_confirmation_2026-09-25/README.md)
@@ -36,13 +60,13 @@ new test participants. It proposes 500 eligible new people (200 train, 100 valid
 a planning target, not a completed power calculation or independently approved
 protocol. Access, overlap review, feasibility, power and margin approval remain
 execution gates. **No new participants, new-cohort endpoints or joint pass exist.**
-The [pizza report](Pizza_Algorithm_Explained_2026-09-25.pdf) now has eight pages,
+The [pizza report](Pizza_Algorithm_Explained_2026-09-25.pdf) now has nine pages,
 including the data blocker and algorithm-to-experiment connection.
 
 ## Review preparation and utility replication: 2026-09-25
 
 The [simple pizza PDF](Pizza_Algorithm_Explained_2026-09-25.pdf) explains the
-algorithm and limitations, now extended to eight pages. A [24-case reviewer archive](../experiments/source_review_2026-09-25/README.md)
+algorithm and limitations, now extended to nine pages. A [24-case reviewer archive](../experiments/source_review_2026-09-25/README.md)
 withholds our predictions and oracle labels, but no independent forms or new
 externally authored cases have been received. The [internal review](../docs/review/source_proof_novelty_2026-09-25.md)
 documents proof obligations and overlap with abstract interpretation, CogniCrypt,

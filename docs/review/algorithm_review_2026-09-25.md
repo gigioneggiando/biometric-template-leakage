@@ -3,6 +3,21 @@
 Date: 2026-09-25  
 Status: internal engineering and methods review; not professor or peer approval
 
+## Amendment: 2026-09-26
+
+The review below describes the earlier prototype. V2/v3 later added selected
+control flow and scheme contracts, but a cross-branch false-fresh counterexample
+was reproduced. The [dated correction](../../experiments/source_branch_fix_2026-09-26/README.md)
+now blocks complete freshness from branch-local sinks and unsupported predicates.
+The original source snapshot and results remain available; 69 overlapping
+historical case evaluations retain their predictions after repair. This is
+internal regression evidence, not a general soundness theorem. Portable provenance
+checks now distinguish exact bytes from manifest-matching newline conversions.
+
+The later MOBIO/SCface utility confirmation passes 0/4 cells. Independent validation
+is deferred to the user and reviewers, and the data, power and joint-utility gates
+remain open. A software repair does not establish successful biometric remediation.
+
 ## Verdict
 
 The work is a useful research prototype and is presented more cautiously than the

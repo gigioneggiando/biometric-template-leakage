@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from scripts.diagnostics.source_holdout_cases import CASES
+from scripts.diagnostics.source_provenance import verify_source
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -11,7 +12,8 @@ STUDY = ROOT / "experiments/source_holdout_2026-09-25"
 
 
 def digest(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    expected = json.loads((STUDY / "execution_manifest.json").read_text())["source_sha256"]
+    return verify_source(path, expected.values())["sha256"]
 
 
 def test_frozen_holdout_results_and_gates_are_preserved():

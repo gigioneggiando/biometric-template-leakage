@@ -1,8 +1,8 @@
 import csv
-import hashlib
 import json
 from pathlib import Path
 
+from scripts.diagnostics.source_provenance import verify_source
 
 ROOT = Path(__file__).resolve().parents[2]
 STUDY = ROOT / "experiments/utility_failure_diagnostics_2026-09-26"
@@ -34,6 +34,6 @@ def test_utility_diagnostic_outputs_are_compact_and_preserved():
 def test_utility_diagnostic_manifest_matches_source_and_exports_no_private_rows():
     manifest = json.loads((STUDY / "execution_manifest.json").read_text())
     source = ROOT / "scripts/diagnostics/analyse_utility_failure.py"
-    assert manifest["source_sha256"] == hashlib.sha256(source.read_bytes()).hexdigest()
+    assert verify_source(source, [manifest["source_sha256"]])["sha256"] == manifest["source_sha256"]
     assert manifest["private_files_read"] == 96
     assert manifest["private_identity_rows_exported"] == 0

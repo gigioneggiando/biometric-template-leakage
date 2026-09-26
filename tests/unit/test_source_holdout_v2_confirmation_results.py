@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from scripts.diagnostics.source_holdout_v2_confirmation_cases import CASES
+from scripts.diagnostics.source_provenance import verify_source
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -11,7 +12,10 @@ STUDY = ROOT / "experiments/source_holdout_v2_confirmation_2026-09-25"
 
 
 def digest(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    expected = json.loads((STUDY / "execution_manifest.json").read_text())["source_sha256"]
+    snapshot = (ROOT / "experiments/source_branch_fix_2026-09-26/executed_source_analysis_v2.zip",
+                "source_analysis_v2.py") if path.name == "source_analysis_v2.py" else None
+    return verify_source(path, expected.values(), snapshot)["sha256"]
 
 
 def test_v2_confirmation_results_and_gates_are_preserved():

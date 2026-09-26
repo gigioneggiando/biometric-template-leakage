@@ -1,8 +1,21 @@
 # Research package
 
+## Engineering correction: 2026-09-26
+
+The [branch-fix record](../experiments/source_branch_fix_2026-09-26/README.md)
+documents the reproduced v2/v3 false-fresh bug, conservative repair, exact executed
+source snapshot and portable provenance checks. All 69 historical case evaluations
+retain their predictions; the new collision case returns unknown. Zero errors
+on the old finite corpora are not a universal freshness guarantee.
+
+Independent validation is deferred, not completed. No matching failure has been
+overridden: the later MOBIO/SCface utility study still passes 0/4 cells. The pizza
+report's new page 9 records both the repair and this limitation. Older report and
+slide files remain dated historical artifacts; read this correction alongside them.
+
 ## Pizza explanation and utility replication
 
-Start with the [eight-page pizza PDF](Pizza_Algorithm_Explained_2026-09-25.pdf).
+Start with the [nine-page pizza PDF](Pizza_Algorithm_Explained_2026-09-25.pdf).
 It explains the source analyzer in simple terms with pizza diagrams and plain
 ASCII punctuation. The [new utility study](../experiments/utility_replication_2026-09-25/README.md)
 completed 96 evaluations: 2/4 utility gates pass, both on MOBIO. FEI remains

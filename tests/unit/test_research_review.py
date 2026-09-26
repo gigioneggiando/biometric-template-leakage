@@ -54,7 +54,7 @@ def test_pizza_report_ascii_layout_and_render(tmp_path):
     from scripts.figures.make_pizza_algorithm_report import build_report, report_pages
 
     figures = report_pages()
-    assert len(figures) == 8
+    assert len(figures) == 9
     for figure in figures:
         figure.canvas.draw()
         renderer = figure.canvas.get_renderer()
@@ -71,7 +71,7 @@ def test_pizza_report_ascii_layout_and_render(tmp_path):
         plt.close(figure)
     destination = build_report(tmp_path / "pizza.pdf")
     with pdfium.PdfDocument(destination) as document:
-        assert len(document) == 8
+        assert len(document) == 9
         text_parts = []
         for page in document:
             text_parts.append(page.get_textpage().get_text_range())
@@ -83,6 +83,9 @@ def test_pizza_report_ascii_layout_and_render(tmp_path):
         assert "No new participants added" in text
         assert "PROTOCOL PREPARED ONLY" in text
         assert "same 200 test people" in text
+        normalized_text = " ".join(text.split())
+        assert "69 historical case evaluations" in normalized_text
+        assert "0 of 4 cells" in normalized_text
 
 
 def test_replication_artifact_counts_gates_and_frozen_hashes():
