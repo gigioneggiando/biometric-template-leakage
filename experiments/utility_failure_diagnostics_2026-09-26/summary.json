@@ -1,0 +1,26 @@
+{
+  "status": "completed",
+  "scope": "post-hoc descriptive diagnosis; frozen utility decisions unchanged",
+  "variability_cells": 4,
+  "scface_capture_cells": 48,
+  "split_overlap": {
+    "MOBIO": {
+      "test_identities_per_split": 30,
+      "overlap": 7
+    },
+    "SCface": {
+      "test_identities_per_split": 26,
+      "overlap": 2
+    }
+  },
+  "scface_distance_extremes": {
+    "93083": {
+      "lowest_candidate_tar_distance": "1",
+      "highest_candidate_tar_distance": "3"
+    },
+    "93089": {
+      "lowest_candidate_tar_distance": "1",
+      "highest_candidate_tar_distance": "3"
+    }
+  }
+}

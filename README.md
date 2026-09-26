@@ -1,6 +1,6 @@
 # Key-agnostic multi-exposure biometric template leakage
 
-**Last status update:** 2026-09-25. New-participant audit and algorithm-linked joint protocol prepared; no new-cohort experiment run. Historical results remain separate.
+**Last status update:** 2026-09-26. V3 integration, utility confirmation and post-hoc failure diagnostics complete; no new-cohort experiment run. Historical results remain separate.
 
 **Navigation:** [Research package index](reports/README.md), [current evidence and gates](reports/final_research_status.md), [figure captions](reports/figures/README.md), and [review slides](reports/slides/research_review.pdf).
 
@@ -62,6 +62,14 @@ decisions with 96.15% coverage and zero false-fresh results. A transparent local
 AST baseline reaches 23.08% coverage and 5/6 correct decisions; it is not a
 state-of-the-art comparator.
 
+After `pip install -e .`, inspect a source entry point with:
+
+```powershell
+python -m biometrics_ai.protection.source_analysis_v3 scripts/diagnostics/protection_policy_recipes.py --entry biohash_recurring
+```
+
+The output is a bounded provenance finding, not a security certificate.
+
 The prospective [MOBIO/SCface utility confirmation](experiments/scface_utility_confirmation_2026-09-25/README.md)
 completed 96 evaluations. All four FMR bounds pass, but all four cells fail the
 fixed TAR noninferiority bound; the new MOBIO partitions do not replicate the two
@@ -71,6 +79,11 @@ utility for the fresh-key remediation is not established.
 Open the concise [four-slide PDF](reports/slides/algorithm_update_2026-09-25.pdf)
 or [PowerPoint](reports/slides/algorithm_update_2026-09-25.pptx) for the architecture,
 analyzer evidence, real-scheme integration and utility blocker prepared for Sani.
+
+The [post-hoc utility diagnostic](experiments/utility_failure_diagnostics_2026-09-26/README.md)
+finds substantial crossed identity/key variability and a strong SCface distance
+gradient, but no systematic fresh-key degradation or large threshold shift. It
+does not revise the failed utility gate; it informs the next powered protocol.
 
 ## Static analysis and security evaluation
 

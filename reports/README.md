@@ -58,6 +58,10 @@ The updated algorithm briefing is available as a [four-slide PDF](slides/algorit
 and [PowerPoint](slides/algorithm_update_2026-09-25.pptx). Regenerate both with
 `python scripts/figures/make_algorithm_update_deck.py`.
 
+The [exploratory utility-failure diagnostic](../experiments/utility_failure_diagnostics_2026-09-26/README.md)
+separates identity/key variability and SCface camera-distance strata without
+exporting private identity rows. It informs future design but changes no frozen gate.
+
 Regenerate with `python scripts/figures/make_source_security_report.py`.
 
 ## Static-analysis update: 2026-09-25

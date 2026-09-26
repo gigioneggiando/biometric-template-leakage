@@ -1,0 +1,9 @@
+{
+  "status": "completed",
+  "source_sha256": "2b4e48bd64d9ee12cbf3f9705eea5ff4cac8641b74c618e7b647b14f7e289976",
+  "private_endpoint_bundle_sha256": "f4ebf0bcefe771e7886f6561fd3cdf7e848e36b05fe33289235b68325dc015ea",
+  "scface_metadata_sha256": "bdb04203171f9303fe5965fbde90cb4d24c819f40c24396e9573496f1a0b9103",
+  "scface_embeddings_sha256": "a13dd0fbed371aa59b6045f43ae0f126e3b080510c04bac96c1a4f245981aaa7",
+  "private_files_read": 96,
+  "private_identity_rows_exported": 0
+}

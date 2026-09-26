@@ -1,5 +1,24 @@
 # Final research status
 
+## Utility failure diagnosis: 2026-09-26
+
+The [frozen MOBIO/SCface confirmation](../experiments/scface_utility_confirmation_2026-09-25/README.md)
+completed 96 evaluations and passes every 2% FMR ceiling, but **0/4 cells pass**
+the unchanged three-point TAR noninferiority criterion. The four lower bounds are
+-3.16 to -5.36 points. SCface mean changes are nonnegative, so this is primarily
+an uncertainty failure rather than consistent observed degradation; the two new
+MOBIO failures also show partition sensitivity relative to the earlier passes.
+
+The [post-hoc diagnostic](../experiments/utility_failure_diagnostics_2026-09-26/README.md)
+exports only aggregate, non-identifying results. Identity-axis and key-axis
+variation are material relative to the margin, while mean threshold shifts are
+at most 0.26 points. SCface TAR is strongly distance-structured, from roughly
+8-10% at distance 1 to 50-56% at distance 3. No frozen gate was changed. The
+next defensible evaluation needs an application-approved utility margin, a new
+authorized identity cohort, a prospective crossed identity/key power analysis
+and predefined capture strata. More key seeds alone do not resolve population
+uncertainty.
+
 ## New-participant joint protocol: preparation only
 
 The [local cohort audit](../experiments/new_participant_joint_2026-09-25/README.md)
