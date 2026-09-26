@@ -1,10 +1,19 @@
 # Key-agnostic multi-exposure biometric template leakage
 
-**Last status update:** 2026-09-26. Cross-branch freshness bug and Windows provenance checks repaired; independent validation deferred, no new-cohort experiment run.
+**Last status update:** 2026-09-26. Corrected-analyzer reviewer handoff ready; external submissions pending. Aggregate utility precision planning completed; no new-cohort experiment run.
 
 **Navigation:** [Research package index](reports/README.md), [current evidence and gates](reports/final_research_status.md), [figure captions](reports/figures/README.md), and [review slides](reports/slides/research_review.pdf).
 
 ## Current engineering correction
+
+The user can now arrange independent reviewers. Use the
+[frozen reviewer handoff](experiments/independent_validation_2026-09-26/README.md);
+send only its invitation and masked case ZIP before label lock. No independent
+labels or external cases have arrived. A separate
+[384-scenario precision analysis](experiments/utility_precision_planning_2026-09-26/README.md)
+warns that the proposed participant/key counts are not demonstrably powered.
+It uses historical aggregate variance proxies, not new matching evidence or
+approved joint power. There is still no new authorized participant cohort.
 
 The [repair record](experiments/source_branch_fix_2026-09-26/README.md) documents a
 false-fresh counterexample in v2/v3: eight record IDs could share four keys across
@@ -16,7 +25,7 @@ this is regression evidence, not 69 unique independent cases or a soundness proo
 Frozen v2 source bytes are archived and verified separately from the repaired
 source. Windows LF/CRLF conversion is accepted only when it reproduces an existing
 manifest hash. Original results and manifests are unchanged. Independent validation
-is deferred to the user and reviewers. The later 0/4 utility result remains a blocker,
+awaits external submissions. The later 0/4 utility result remains a blocker,
 and no new participants or joint security result have been added.
 
 ## Simple explanation and next research gates

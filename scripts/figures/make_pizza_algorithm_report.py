@@ -156,8 +156,8 @@ def report_pages():
     paragraph(figure, .84, "Two order queues can reuse one pattern", "Imagine odd order numbers keep their number, while even numbers add one. Orders 0 and 1 now both use pattern 1. Our review found that separate recipe branches could hide this collision from v2 and v3. Eight records used only four actual keys.")
     paragraph(figure, .63, "The inspector now says unknown", "Protection calls inside branches now require further review instead of a freshness claim. Unsupported conditions also raise a warning. All 69 historical case evaluations keep the same predictions after the fix. This is internal regression evidence, not independent validation or a proof for all Python programs.")
     paragraph(figure, .42, "The later matching study still did not pass", "Luigi's 96 MOBIO/SCface utility evaluations passed the false-match ceiling, but 0 of 4 cells passed the three-point genuine-matching tolerance. The earlier MOBIO passes did not hold across these new splits. No attack was retrained in that study, and no joint security pass follows.")
-    paragraph(figure, .21, "What is ready, and what must wait", "The branch repair and portable source-hash checks are ready. Original results and executed source bytes are preserved. Independent validation is deferred to you and your reviewers. New authorized people, a justified sample size and a joint attack/matching test remain necessary.")
-    figure.text(.075, .085, "Repair record: experiments/source_branch_fix_2026-09-26/README.md", fontsize=8, color=INK)
+    paragraph(figure, .21, "What is ready, and what must wait", "A reviewer handoff now freezes the corrected code. You will arrange external reviewers; no independent labels have arrived. A planning check warns that more people alone may not give precise matching bounds. New authorized data and approved joint-study power planning remain necessary.")
+    figure.text(.075, .085, "Review handoff: experiments/independent_validation_2026-09-26/README.md", fontsize=8, color=INK)
     figures.append(figure)
     return figures
 

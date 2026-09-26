@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import csv
+from datetime import datetime, timezone
 import hashlib
 from io import StringIO
 import json
@@ -103,6 +104,42 @@ def build_packet(destination: Path = DESTINATION, coordinator: Path | None = Non
                 "independent_labels_received": 0, "holdout_cases_received": 0,
                 "blinding": "Predictions, oracle labels and original filenames withheld; source visible"}
     (destination / "packet_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    return manifest
+
+
+def freeze_review_target(destination: Path) -> dict:
+    names = ("independent_cases.zip", "source_after_label_lock.zip", "target_manifest.json")
+    if any((destination / name).exists() for name in names):
+        raise FileExistsError("Refusing to overwrite the external review target")
+    packet_manifest = json.loads((DESTINATION / "packet_manifest.json").read_text())
+    packet = (DESTINATION / "independent_cases.zip").read_bytes()
+    packet_hash = hashlib.sha256(packet).hexdigest()
+    if packet_hash != packet_manifest["archive_sha256"]:
+        raise ValueError("Original masked packet hash mismatch")
+    sources = sorted((ROOT / "src/biometrics_ai").rglob("*.py"))
+    sources += [ROOT / "pyproject.toml", ROOT / "requirements-lock.txt", Path(__file__)]
+    contents = {path.relative_to(ROOT).as_posix(): path.read_bytes() for path in sources}
+    destination.mkdir(parents=True, exist_ok=True)
+    (destination / names[0]).write_bytes(packet)
+    with zipfile.ZipFile(destination / names[1], "w", zipfile.ZIP_DEFLATED) as archive:
+        for name, content in contents.items():
+            archive.writestr(name, content)
+    manifest = {
+        "status": "awaiting_external_submissions",
+        "created_utc": datetime.now(timezone.utc).isoformat(),
+        "analyzer": "biometrics_ai.protection.source_analysis_v3.analyse_source",
+        "version_note": "Corrected branch handler; source hashes identify the exact target",
+        "case_packet_sha256": packet_hash,
+        "source_archive_sha256": hashlib.sha256((destination / names[1]).read_bytes()).hexdigest(),
+        "source_members_sha256": {name: hashlib.sha256(content).hexdigest()
+                                  for name, content in contents.items()},
+        "independent_labels_received": 0,
+        "externally_authored_cases_received": 0,
+        "reviewer_agreements_received": 0,
+        "sent_automatically": False,
+        "disclosure_rule": "Send only independent_cases.zip before labels and new cases are locked",
+    }
+    (destination / names[2]).write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     return manifest
 
 

@@ -1,0 +1,24 @@
+{
+  "status": "completed_exploratory_planning_only",
+  "scenarios": 384,
+  "new_participants": 0,
+  "new_biometric_evaluations": 0,
+  "independent_validation_completed": false,
+  "joint_power_established": false,
+  "formula": "SE_proxy^2 = variance_multiplier * (identity_axis_sd^2 / N + key_axis_sd^2 / K)",
+  "assumptions": [
+    "Treat published marginal axis SDs as variance proxies, not fitted independent components.",
+    "Marginal SDs include residual variation; this is not a crossed-ANOVA or hierarchical simulation.",
+    "Normal grand-mean approximation with known plug-in variance; variance-estimation uncertainty ignored.",
+    "The actual proposed bootstrap gate is not simulated or coverage-calibrated.",
+    "Gallery, threshold estimation and new-cohort population shift are not modeled.",
+    "Four historical cells overlap; keep separate, do not pool as independent replications.",
+    "TAR-only sensitivity at proposed alpha .05/3, not the historical alpha .05/8 or joint power.",
+    "No result selects or approves a cohort size, key count, margin or protocol change."
+  ],
+  "source_sha256": {
+    "scripts/diagnostics/plan_utility_precision.py": "5b195f0aaba5d470067ff9c83b1c9ec192e75c49d11922cde264b1d8e3b8e455",
+    "experiments/utility_failure_diagnostics_2026-09-26/variability.csv": "90be91a1a12c76906662f8a359a3ad4c54525853b62fe1380fd0882dc2a38c55"
+  },
+  "scenarios_sha256": "bebc6a142913d0290bb72e6032074bdbd3f0ef94fb1fef63f131b88895bc549c"
+}

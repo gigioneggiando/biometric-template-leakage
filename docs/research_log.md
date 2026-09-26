@@ -1,5 +1,13 @@
 # Research log
 
+## 2026-09-26 (reviewer handoff and aggregate utility precision planning)
+
+- User requested progress on independent validation and matching preservation, confirmed they can arrange reviewers, and confirmed no new authorized cohort. Independent validation is no longer deliberately postponed, but still awaits actual submissions.
+- Prepared a [corrected-analyzer handoff](../experiments/independent_validation_2026-09-26/README.md): unchanged masked 24-case ZIP, invitation, coordinator workflow, and exact source/dependency snapshot for disclosure after label lock. Nothing sent automatically; zero reviewer agreements, external labels, new cases or signoffs received.
+- Ran [384 aggregate-only precision scenarios](../experiments/utility_precision_planning_2026-09-26/README.md). The later study's private per-person records were not present locally, so no fitted crossed model or hierarchical power simulation is claimed. Published marginal SDs feed a known-variance normal TAR-only approximation with explicit limitations.
+- Under SCface variability, 200 test people/12 keys yield illustrative TAR-gate probabilities of 33.9-49.0% even at zero assumed mean loss. This warns against asserting adequate power. It neither selects a new key count nor establishes actual or joint power. No old gate, margin or frozen protocol was changed.
+- Updated the manuscript, navigation, current status and pizza PDF. External reviewer submissions, approved joint power/coverage planning and new authorized people remain blocking inputs for scientific confirmation.
+
 ## 2026-09-26 (cross-branch freshness and Windows provenance repair)
 
 - User requested the review findings be addressed and documentation updated, with independent validation to be done later. Independent labels, proof/novelty review and signoff remain pending, not waived.

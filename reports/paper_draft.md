@@ -118,7 +118,7 @@ predictions; the new counterexample abstains. These are not independent validati
 results. Exact executed v2 source bytes are archived, original tables/manifests
 remain unchanged, and line-ending conversions in checkout verification are explicit
 and accepted only when they reproduce an existing recorded hash. Independent
-review is deferred at the user's request and remains an open requirement.
+review now has a frozen handoff, but submissions remain an open requirement.
 
 ### 4.3 Review preparation and fixed utility-only replication
 
@@ -185,6 +185,40 @@ power result. Authorization, cross-cohort identity review and independent approv
 must precede execution. A new dataset is an external-cohort test, not an FEI extension
 by relabeling. The key-policy intervention is evaluated; scanning alone does not
 cause the protection improvement or establish source-detector generalization.
+
+### 4.5 Independent review handoff and exploratory precision planning
+
+On 2026-09-26 the user confirmed access to potential reviewers, but no new
+authorized participant cohort. A [separate review target](../experiments/independent_validation_2026-09-26/README.md)
+freezes the corrected v3 implementation and dependencies. Its first-phase packet
+is byte-identical to the existing 24-case answer-masked packet; source disclosure
+follows label lock. Two reviewers are requested to provide declarations and
+independently authored cases before seeing results, with separate reporting of
+relabeled development cases and new external cases. No reviewer agreements,
+independent labels, new cases, mathematical signoff or novelty endorsement have
+yet been received. This is a prepared workflow, not completed external validation.
+
+A [384-scenario sensitivity analysis](../experiments/utility_precision_planning_2026-09-26/README.md)
+uses the four published identity-axis and key-axis SDs as variance proxies in
+SE squared = v times (person SD squared / N + key SD squared / K). The marginal
+SDs contain residual variation and are not fitted independent components. With
+a known-variance normal approximation, assumed mean changes 0/-1/-2 points,
+variance multipliers 1/2 and the proposed alpha 0.05/3, it explores test-person
+counts 40/100/200/400 and key counts 12/24/48/96. It neither resamples new people
+nor simulates the actual joint bootstrap gate. Variance estimation, new-gallery
+uncertainty, threshold estimation, cohort shift and cross-endpoint dependence
+are not accounted for; the local private per-person records of the later study
+were unavailable. The four overlapping historical cells are not pooled.
+
+At 200 test people/12 keys, the SCface-based normal TAR-only approximation is
+33.9-49.0% under zero assumed mean loss, or 16.2-23.4% under a one-point loss.
+Under a one-point loss and doubled variance, even 96 keys give only 44.4-50.0%.
+These are scenario calculations, not calibrated bounds on actual power or
+empirical matching outcomes. They caution against presenting the proposed sample
+as adequately powered and motivate review of both person and key counts. No
+scenario selects a replacement protocol. Joint attack/TAR/FMR power and interval
+coverage still require prospective simulation and approval. The original 0/4
+utility decision and the new-cohort protocol are unchanged.
 
 ## 5. Earlier Exploratory Results (Separate Evidence)
 

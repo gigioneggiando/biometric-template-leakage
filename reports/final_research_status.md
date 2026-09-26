@@ -1,5 +1,28 @@
 # Final research status
 
+## External review ready; utility precision planning completed
+
+Later on 2026-09-26 the user confirmed they can arrange reviewers but still have
+no new authorized cohort. The [handoff](../experiments/independent_validation_2026-09-26/README.md)
+freezes the corrected analyzer separately from an unchanged answer-masked 24-case
+packet. The invitation requests independent declarations, labels and new cases
+before source/results disclosure. No invitations were sent automatically; no
+reviewer agreements, labels, new cases or signoffs have been received.
+
+A [384-scenario planning analysis](../experiments/utility_precision_planning_2026-09-26/README.md)
+uses published identity/key variability as proxies. Under its known-variance normal
+approximation, 200 people/12 keys give only 33.9-49.0% TAR-gate probability using
+SCface variability even assuming zero mean loss. More people alone leave key
+uncertainty. This is not fitted hierarchical variance, calibrated bootstrap power
+or joint power; local private per-person records of that later study were absent.
+No scenario selects a replacement design or authorizes a run.
+
+The required next steps are real reviewer submissions, approved joint power and
+coverage planning, authorized new people and matched attack/verification testing.
+All historical gates remain unchanged. The paper and nine-page pizza PDF now
+distinguish these preparations from completed independent validation or utility
+retention evidence.
+
 ## Branch correctness and provenance repair: 2026-09-26
 
 A review reproduced a v2/v3 false-fresh result for protection calls inside distinct
@@ -18,8 +41,8 @@ only explicit newline conversions that reproduce recorded hashes, and explicit
 exact-byte snapshots for modified historical sources. Content changes still fail.
 
 The [pizza PDF](Pizza_Algorithm_Explained_2026-09-25.pdf) now has nine pages. At the
-user's request, independent labels, external proof/novelty review and signoff are
-deferred for later, not marked complete. No new biometric evaluation was run for
+user's initial request, independent labels, external proof/novelty review and signoff
+were deferred. The handoff above is now ready; submissions remain pending. No new biometric evaluation was run for
 the fix. The 0/2 original joint, 2/4 first utility and 0/4 later utility results
 remain separate and unchanged. New authorized people and approved power/margin
 planning remain necessary for the proposed joint confirmation.

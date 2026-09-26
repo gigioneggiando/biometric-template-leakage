@@ -1,5 +1,19 @@
 # Research package
 
+## Reviewer handoff and utility planning
+
+The user will arrange reviewers. The
+[corrected-analyzer handoff](../experiments/independent_validation_2026-09-26/README.md)
+provides an invitation, the unchanged masked case packet and a separately frozen
+source snapshot for disclosure after label lock. No external labels or new
+reviewer-authored cases have been received.
+
+The [utility precision analysis](../experiments/utility_precision_planning_2026-09-26/README.md)
+reports 384 aggregate-only sensitivity scenarios. Its normal approximation is not
+a validated power calculation or new matching test. The proposed sample and key
+counts still need review, and no new authorized cohort is available. The paper
+and pizza PDF now reflect this handoff and planning status.
+
 ## Engineering correction: 2026-09-26
 
 The [branch-fix record](../experiments/source_branch_fix_2026-09-26/README.md)
@@ -8,7 +22,7 @@ source snapshot and portable provenance checks. All 69 historical case evaluatio
 retain their predictions; the new collision case returns unknown. Zero errors
 on the old finite corpora are not a universal freshness guarantee.
 
-Independent validation is deferred, not completed. No matching failure has been
+Independent validation awaits submissions and is not completed. No matching failure has been
 overridden: the later MOBIO/SCface utility study still passes 0/4 cells. The pizza
 report's new page 9 records both the repair and this limitation. Older report and
 slide files remain dated historical artifacts; read this correction alongside them.

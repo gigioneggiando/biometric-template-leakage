@@ -46,6 +46,44 @@ def test_review_packet_withholds_predictions_and_rejects_blank_labels(tmp_path):
             assert hashlib.sha256(archive.read(name)).hexdigest() == digest
 
 
+def test_corrected_review_target_is_separate_frozen_and_not_completed(tmp_path):
+    import hashlib
+    import zipfile
+    from scripts.diagnostics.prepare_independent_review import DESTINATION, freeze_review_target
+
+    destination = tmp_path / "external"
+    manifest = freeze_review_target(destination)
+    assert manifest["status"] == "awaiting_external_submissions"
+    assert manifest["independent_labels_received"] == 0
+    assert manifest["externally_authored_cases_received"] == 0
+    assert not manifest["sent_automatically"]
+    assert (destination / "independent_cases.zip").read_bytes() == (DESTINATION / "independent_cases.zip").read_bytes()
+    with zipfile.ZipFile(destination / "source_after_label_lock.zip") as archive:
+        assert "src/biometrics_ai/protection/source_analysis_v2.py" in archive.namelist()
+        for name, digest in manifest["source_members_sha256"].items():
+            assert hashlib.sha256(archive.read(name)).hexdigest() == digest
+    with pytest.raises(FileExistsError, match="overwrite"):
+        freeze_review_target(destination)
+
+
+def test_saved_review_target_matches_frozen_member_and_archive_hashes():
+    import hashlib
+    import json
+    import zipfile
+    from scripts.diagnostics.prepare_independent_review import ROOT
+
+    destination = ROOT / "experiments/independent_validation_2026-09-26"
+    manifest = json.loads((destination / "target_manifest.json").read_text())
+    assert manifest["independent_labels_received"] == manifest["externally_authored_cases_received"] == 0
+    for name, key in (("independent_cases.zip", "case_packet_sha256"),
+                      ("source_after_label_lock.zip", "source_archive_sha256")):
+        assert hashlib.sha256((destination / name).read_bytes()).hexdigest() == manifest[key]
+    with zipfile.ZipFile(destination / "source_after_label_lock.zip") as archive:
+        assert set(archive.namelist()) == set(manifest["source_members_sha256"])
+        for name, digest in manifest["source_members_sha256"].items():
+            assert hashlib.sha256(archive.read(name)).hexdigest() == digest
+
+
 def test_pizza_report_ascii_layout_and_render(tmp_path):
     import matplotlib.pyplot as plt
     import numpy as np
@@ -86,6 +124,8 @@ def test_pizza_report_ascii_layout_and_render(tmp_path):
         normalized_text = " ".join(text.split())
         assert "69 historical case evaluations" in normalized_text
         assert "0 of 4 cells" in normalized_text
+        assert "A reviewer handoff now freezes the corrected code" in normalized_text
+        assert "no independent labels have arrived" in normalized_text
 
 
 def test_replication_artifact_counts_gates_and_frozen_hashes():

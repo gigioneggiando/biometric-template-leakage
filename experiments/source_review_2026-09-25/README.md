@@ -3,6 +3,11 @@
 Status: prepared, not independently reviewed. Zero independent labels or new
 externally authored holdout cases have been received.
 
+Update 2026-09-26: the user can arrange reviewers. Use the
+[corrected-analyzer handoff](../independent_validation_2026-09-26/README.md) for
+the invitation and disclosure sequence. It preserves this masked packet unchanged
+and freezes the corrected code separately. External submissions remain pending.
+
 Send only [independent_cases.zip](independent_cases.zip) to each case reviewer.
 Its instructions, 24 neutral filenames and blank CSV omit our predictions and
 runtime labels. The original-to-neutral mapping stays in the ignored results
